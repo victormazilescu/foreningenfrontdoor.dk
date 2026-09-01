@@ -1,6 +1,10 @@
 <?php
 require_once __DIR__ . '/auth.php';
-require_login();
+// Suspend/reactivate/cancel/delete are admin-only actions — the events.php
+// list only shows these buttons to admins, but that was UI-only; this
+// endpoint must enforce it too, or any logged-in member could call it
+// directly on any event.
+require_director();
 
 $id     = isset($_GET['id'])     ? (int)$_GET['id']     : 0;
 $action = isset($_GET['action']) ? $_GET['action']       : '';
@@ -25,7 +29,7 @@ if ($action === 'delete') {
     $stmt->execute([$id]);
     $row = $stmt->fetch();
     if ($row && $row['cover_image']) {
-        $path = '/home/dzppntag/public_html/' . ltrim($row['cover_image'], '/');
+        $path = dirname(__DIR__) . '/' . ltrim($row['cover_image'], '/');
         if (file_exists($path)) @unlink($path);
     }
     $pdo->prepare('DELETE FROM events WHERE id = ?')->execute([$id]);

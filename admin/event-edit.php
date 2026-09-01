@@ -56,19 +56,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!in_array($f['status'], ['active','suspended','cancelled'])) $errors[] = 'Status invalid.';
 
     // Upload copertă
-    if (!empty($_FILES['cover_image']['tmp_name'])) {
-        $file    = $_FILES['cover_image'];
-        $allowed = ['image/jpeg','image/png','image/webp'];
-        if (!in_array($file['type'], $allowed)) {
-            $errors[] = 'Format imagine invalid (JPG, PNG, WebP).';
-        } elseif ($file['size'] > 5*1024*1024) {
+    // Nu avem încredere în Content-Type-ul trimis de browser (poate fi
+    // falsificat) și nu folosim extensia din numele fișierului urcat —
+    // amândouă sunt controlate de client. Verificăm conținutul real cu
+    // getimagesize() și alegem noi extensia, pe baza tipului detectat.
+    if (!empty($_FILES['cover_image']['tmp_name']) && $_FILES['cover_image']['error'] === UPLOAD_ERR_OK) {
+        $file = $_FILES['cover_image'];
+        $allowed_types = [
+            IMAGETYPE_JPEG => 'jpg',
+            IMAGETYPE_PNG  => 'png',
+            IMAGETYPE_WEBP => 'webp',
+        ];
+        $info = @getimagesize($file['tmp_name']);
+        if ($file['size'] > 5*1024*1024) {
             $errors[] = 'Imaginea depășește 5 MB.';
+        } elseif (!$info || !isset($allowed_types[$info[2]])) {
+            $errors[] = 'Format imagine invalid (JPG, PNG, WebP).';
         } else {
-            $ext  = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            $ext   = $allowed_types[$info[2]];
             $fname = 'event-'.time().'-'.bin2hex(random_bytes(4)).'.'.$ext;
-            $dest  = '/home/dzppntag/foreningenfrontdoor.dk/public_html/assets/events/'.$fname;
+            $dest  = dirname(__DIR__) . '/assets/events/'.$fname;
             if (move_uploaded_file($file['tmp_name'], $dest)) {
-                if ($ev['cover_image']) { @unlink('/home/dzppntag/foreningenfrontdoor.dk/public_html/'.ltrim($ev['cover_image'],'/')); }
+                if ($ev['cover_image']) { @unlink(dirname(__DIR__) . '/' . ltrim($ev['cover_image'],'/')); }
                 $f['cover_image'] = 'assets/events/'.$fname;
             } else {
                 $errors[] = 'Eroare la salvarea imaginii.';

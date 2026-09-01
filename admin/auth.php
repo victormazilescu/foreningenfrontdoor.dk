@@ -3,10 +3,9 @@
    Front Door DK — admin/auth.php
    ============================================================= */
 
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'dzppntag_evenimente_dk');
-define('DB_USER', 'dzppntag_eventmaster');
-define('DB_PASS', 'asociatiaFrontDoor2026!');
+// DB_HOST / DB_NAME / DB_USER / DB_PASS live in /config.php (gitignored).
+// Copy config.sample.php → config.php and fill in real values.
+require_once __DIR__ . '/../config.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start([
@@ -66,6 +65,19 @@ function csrf_verify(): void {
     if (!hash_equals($_SESSION['fd_csrf'] ?? '', $_POST['csrf'] ?? '')) {
         http_response_code(403); die('Token invalid.');
     }
+}
+
+/**
+ * Generează o parolă temporară aleatorie (pentru useri noi / resetare parolă).
+ * Nu mai folosim un string fix — asta era vizibil oricui citea codul sursă.
+ */
+function gen_temp_password(): string {
+    $alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+    $pwd = '';
+    for ($i = 0; $i < 12; $i++) {
+        $pwd .= $alphabet[random_int(0, strlen($alphabet) - 1)];
+    }
+    return $pwd;
 }
 
 function e(string $s): string {

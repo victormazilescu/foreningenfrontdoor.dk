@@ -19,18 +19,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $name = trim($_POST['name'] ?? '');
         if (!$name) { flash('error','Numele e obligatoriu.'); header('Location: /admin/settings.php?s=profile'); exit; }
 
-        // Avatar upload
+        // Avatar upload — same rule as event covers: never trust the
+        // client's Content-Type or filename extension, verify real
+        // image content with getimagesize() and derive the extension
+        // ourselves.
         $avatar = $user['avatar'] ?? null;
-        if (!empty($_FILES['avatar']['tmp_name'])) {
+        if (!empty($_FILES['avatar']['tmp_name']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
             $file = $_FILES['avatar'];
-            $allowed = ['image/jpeg','image/png','image/webp'];
-            if (in_array($file['type'], $allowed) && $file['size'] <= 3*1024*1024) {
-                $ext  = pathinfo($file['name'], PATHINFO_EXTENSION);
-                $fname = 'avatar-' . $user['id'] . '-' . time() . '.' . strtolower($ext);
-                $dest  = '/home/dzppntag/foreningenfrontdoor.dk/public_html/assets/avatars/' . $fname;
+            $allowed_types = [
+                IMAGETYPE_JPEG => 'jpg',
+                IMAGETYPE_PNG  => 'png',
+                IMAGETYPE_WEBP => 'webp',
+            ];
+            $info = @getimagesize($file['tmp_name']);
+            if ($file['size'] <= 3*1024*1024 && $info && isset($allowed_types[$info[2]])) {
+                $ext   = $allowed_types[$info[2]];
+                $fname = 'avatar-' . $user['id'] . '-' . time() . '-' . bin2hex(random_bytes(4)) . '.' . $ext;
+                $dest  = dirname(__DIR__) . '/assets/avatars/' . $fname;
                 @mkdir(dirname($dest), 0755, true);
                 if (move_uploaded_file($file['tmp_name'], $dest)) {
-                    if ($avatar) { $old = '/home/dzppntag/foreningenfrontdoor.dk/public_html/' . ltrim($avatar,'/'); @unlink($old); }
+                    if ($avatar) { @unlink(dirname(__DIR__) . '/' . ltrim($avatar,'/')); }
                     $avatar = 'assets/avatars/' . $fname;
                 }
             }
@@ -76,11 +84,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $plabel   = trim($_POST['position_label'] ?? '');
                 if ($uname && $uemail && filter_var($uemail, FILTER_VALIDATE_EMAIL) && array_key_exists($position, POSITIONS)) {
                     $role = POSITIONS[$position]['role'];
-                    $hash = password_hash('FrontDoor2026!', PASSWORD_BCRYPT, ['cost'=>12]);
+                    $temp_pwd = gen_temp_password();
+                    $hash = password_hash($temp_pwd, PASSWORD_BCRYPT, ['cost'=>12]);
                     try {
                         $pdo->prepare('INSERT INTO bf_users (name,email,password,role,position,position_label,must_change_pwd,active) VALUES (?,?,?,?,?,?,1,1)')
                             ->execute([$uname,$uemail,$hash,$role,$position,$plabel?:null]);
-                        flash('ok',$uname.' adăugat. Parolă inițială: FrontDoor2026!');
+                        flash('ok',$uname.' adăugat. Parolă inițială: '.$temp_pwd);
                     } catch(PDOException $e) { flash('error','Email există deja.'); }
                 } else { flash('error','Date invalide.'); }
             }
@@ -104,10 +113,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($action === 'reset_pwd') {
-            $uid  = (int)($_POST['uid'] ?? 0);
-            $hash = password_hash('FrontDoor2026!', PASSWORD_BCRYPT, ['cost'=>12]);
+            $uid      = (int)($_POST['uid'] ?? 0);
+            $temp_pwd = gen_temp_password();
+            $hash     = password_hash($temp_pwd, PASSWORD_BCRYPT, ['cost'=>12]);
             $pdo->prepare('UPDATE bf_users SET password=?,must_change_pwd=1 WHERE id=?')->execute([$hash,$uid]);
-            flash('ok','Parolă resetată la FrontDoor2026!');
+            flash('ok','Parolă resetată la: '.$temp_pwd);
             header('Location: /admin/settings.php?s=users'); exit;
         }
 
@@ -290,7 +300,7 @@ layout_head('Setări','settings');
         </div>
         <div style="display:flex;align-items:center;gap:16px">
           <button class="btn btn-solid" type="submit">Adaugă</button>
-          <span style="font-size:12px;color:rgba(255,255,255,.25)">Parolă inițială: <code style="background:#000;padding:2px 6px;color:rgba(255,255,255,.6)">FrontDoor2026!</code></span>
+          <span style="font-size:12px;color:rgba(255,255,255,.25)">Parola inițială e generată automat și afișată o singură dată, aici, după ce adaugi membrul.</span>
         </div>
       </form>
     </div>
