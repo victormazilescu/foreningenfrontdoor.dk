@@ -1,0 +1,88 @@
+[17-Aug-2026 21:24:57 Europe/Bucharest] PHP Warning:  session_name(): Session name cannot be changed when a session is active in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/index.php on line 30
+[17-Aug-2026 21:24:57 Europe/Bucharest] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/index.php on line 31
+[17-Aug-2026 22:02:44 Europe/Bucharest] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.created_by' in 'ON' in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php:22
+Stack trace:
+#0 /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php(22): PDOStatement->execute()
+#1 {main}
+  thrown in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php on line 22
+[17-Aug-2026 22:12:54 Europe/Bucharest] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.created_by' in 'ON' in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php:22
+Stack trace:
+#0 /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php(22): PDOStatement->execute()
+#1 {main}
+  thrown in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php on line 22
+[17-Aug-2026 22:12:55 Europe/Bucharest] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.created_by' in 'ON' in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php:22
+Stack trace:
+#0 /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php(22): PDOStatement->execute()
+#1 {main}
+  thrown in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php on line 22
+[17-Aug-2026 22:13:01 Europe/Bucharest] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.created_by' in 'ON' in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php:22
+Stack trace:
+#0 /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php(22): PDOStatement->execute()
+#1 {main}
+  thrown in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php on line 22
+[17-Aug-2026 22:13:01 Europe/Bucharest] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.created_by' in 'ON' in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php:22
+Stack trace:
+#0 /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php(22): PDOStatement->execute()
+#1 {main}
+  thrown in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php on line 22
+[17-Aug-2026 22:13:05 Europe/Bucharest] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.created_by' in 'ON' in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php:22
+Stack trace:
+#0 /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php(22): PDOStatement->execute()
+#1 {main}
+  thrown in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php on line 22
+[17-Aug-2026 22:13:08 Europe/Bucharest] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.created_by' in 'ON' in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php:22
+Stack trace:
+#0 /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php(22): PDOStatement->execute()
+#1 {main}
+  thrown in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php on line 22
+[17-Aug-2026 22:13:22 Europe/Bucharest] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.created_by' in 'ON' in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php:22
+Stack trace:
+#0 /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php(22): PDOStatement->execute()
+#1 {main}
+  thrown in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php on line 22
+[17-Aug-2026 22:14:27 Europe/Bucharest] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.created_by' in 'ON' in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php:22
+Stack trace:
+#0 /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php(22): PDOStatement->execute()
+#1 {main}
+  thrown in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php on line 22
+[17-Aug-2026 22:15:03 Europe/Bucharest] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.created_by' in 'ON' in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php:22
+Stack trace:
+#0 /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php(22): PDOStatement->execute()
+#1 {main}
+  thrown in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php on line 22
+[17-Aug-2026 22:15:04 Europe/Bucharest] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.created_by' in 'ON' in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php:22
+Stack trace:
+#0 /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php(22): PDOStatement->execute()
+#1 {main}
+  thrown in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php on line 22
+[17-Aug-2026 22:15:09 Europe/Bucharest] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.created_by' in 'ON' in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php:22
+Stack trace:
+#0 /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php(22): PDOStatement->execute()
+#1 {main}
+  thrown in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php on line 22
+[17-Aug-2026 22:15:54 Europe/Bucharest] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.created_by' in 'ON' in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php:22
+Stack trace:
+#0 /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php(22): PDOStatement->execute()
+#1 {main}
+  thrown in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php on line 22
+[17-Aug-2026 22:26:39 Europe/Bucharest] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.created_by' in 'ON' in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php:22
+Stack trace:
+#0 /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php(22): PDOStatement->execute()
+#1 {main}
+  thrown in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php on line 22
+[17-Aug-2026 22:27:22 Europe/Bucharest] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.created_by' in 'ON' in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php:22
+Stack trace:
+#0 /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php(22): PDOStatement->execute()
+#1 {main}
+  thrown in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/events.php on line 22
+[18-Aug-2026 00:01:50 Europe/Bucharest] PHP Fatal error:  Cannot redeclare e() (previously declared in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/project-edit.php:92) in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/auth.php on line 75
+[18-Aug-2026 00:01:55 Europe/Bucharest] PHP Fatal error:  Cannot redeclare e() (previously declared in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/project-edit.php:92) in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/auth.php on line 75
+[18-Aug-2026 00:16:18 Europe/Bucharest] PHP Fatal error:  Cannot redeclare e() (previously declared in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/project-edit.php:92) in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/auth.php on line 74
+[18-Aug-2026 00:16:24 Europe/Bucharest] PHP Fatal error:  Cannot redeclare e() (previously declared in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/project-edit.php:92) in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/auth.php on line 74
+[18-Aug-2026 00:17:23 Europe/Bucharest] PHP Fatal error:  Cannot redeclare e() (previously declared in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/project-edit.php:92) in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/auth.php on line 75
+[18-Aug-2026 00:28:21 Europe/Bucharest] PHP Fatal error:  Cannot redeclare e() (previously declared in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/project-details.php:143) in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/auth.php on line 74
+[18-Aug-2026 00:28:28 Europe/Bucharest] PHP Fatal error:  Cannot redeclare e() (previously declared in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/project-details.php:143) in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/auth.php on line 74
+[18-Aug-2026 00:28:43 Europe/Bucharest] PHP Fatal error:  Cannot redeclare e() (previously declared in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/project-details.php:143) in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/auth.php on line 74
+[18-Aug-2026 00:45:28 Europe/Bucharest] PHP Warning:  Undefined array key "budget_needed" in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/project-details.php on line 70
+[18-Aug-2026 11:24:18 Europe/Bucharest] PHP Warning:  move_uploaded_file(/home/dzppntag/public_html/assets/events/event-1787041458-79dccb8e.jpeg): Failed to open stream: No such file or directory in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/event-edit.php on line 74
+[18-Aug-2026 11:24:18 Europe/Bucharest] PHP Warning:  move_uploaded_file(): Unable to move '/tmp/phpfzhaoA' to '/home/dzppntag/public_html/assets/events/event-1787041458-79dccb8e.jpeg' in /home/dzppntag/foreningenfrontdoor.dk/public_html/admin/event-edit.php on line 74
