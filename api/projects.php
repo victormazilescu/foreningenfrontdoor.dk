@@ -10,10 +10,8 @@
      ?all_statuses=1           → toate statusurile (admin only)
    ============================================================= */
 
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'dzppntag_evenimente_dk');
-define('DB_USER', 'dzppntag_eventmaster');
-define('DB_PASS', 'asociatiaFrontDoor2026!');
+// DB_HOST / DB_NAME / DB_USER / DB_PASS live in /config.php (gitignored).
+require_once __DIR__ . '/../config.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');

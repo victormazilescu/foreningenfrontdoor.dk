@@ -13,10 +13,8 @@
    ============================================================= */
 
 // ── CONFIGURARE BAZĂ DE DATE ──────────────────────────────────
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'dzppntag_evenimente_dk');   // ex: hostico_frontdoor
-define('DB_USER', 'dzppntag_eventmaster');   // user MySQL din cPanel
-define('DB_PASS', 'asociatiaFrontDoor2026!');   // parola MySQL
+// DB_HOST / DB_NAME / DB_USER / DB_PASS live in /config.php (gitignored).
+require_once __DIR__ . '/../config.php';
 // ─────────────────────────────────────────────────────────────
 
 header('Content-Type: application/json; charset=utf-8');
