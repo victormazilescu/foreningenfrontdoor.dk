@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transparență — Front Door</title>
+<meta name="description" content="Documente publice și situația proiectelor Front Door — transparență completă față de comunitate.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Jost',system-ui,sans-serif;font-weight:400;background:#000;color:#fff;font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+img{max-width:100%;display:block;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;}
+.wrap{max-width:1100px;margin:0 auto;padding:0 32px;}
+[data-lang]{display:none;}
+.lang-ro [data-lang="ro"]{display:block;}
+.lang-ro [data-lang="ro"].i{display:inline;}
+.lang-da [data-lang="da"]{display:block;}
+.lang-da [data-lang="da"].i{display:inline;}
+.display{font-family:'Nunito',sans-serif;font-weight:900;line-height:1.0;letter-spacing:-.02em;}
+.label{font-family:'Jost',sans-serif;font-weight:300;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:16px;}
+.line-grow{width:0;height:1px;background:#fff;opacity:.12;transition:width 1.2s cubic-bezier(.16,1,.3,1);margin-bottom:32px;}
+.line-grow.visible{width:100%;}
+.fade-in{opacity:0;transition:opacity .9s cubic-bezier(.2,.6,.2,1);}
+.fade-in.visible{opacity:1;}
+.fade-in.d1{transition-delay:.1s;}
+.fade-in.d2{transition-delay:.2s;}
+@media(prefers-reduced-motion:reduce){.fade-in{opacity:1;}.line-grow{width:100%;}}
+
+/* HEADER */
+header{position:sticky;top:0;z-index:100;background:#000;border-bottom:1px solid rgba(255,255,255,.1);}
+.nav{display:flex;align-items:center;justify-content:space-between;height:68px;gap:20px;}
+.nav-links{display:flex;gap:28px;font-size:13px;font-weight:400;letter-spacing:.04em;align-items:center;}
+.nav-links a{color:rgba(255,255,255,.45);transition:color .15s;}
+.nav-links a:hover,.nav-links a.active{color:#fff;}
+.nav-links a.don{color:#000;background:#fff;padding:7px 16px;font-weight:500;transition:opacity .15s;}
+.nav-links a.don:hover{opacity:.8;}
+.lang-toggle{display:flex;border:1px solid rgba(255,255,255,.15);overflow:hidden;flex-shrink:0;}
+.lang-toggle button{padding:5px 12px;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;background:transparent;color:rgba(255,255,255,.45);border:none;transition:background .15s,color .15s;}
+.lang-toggle button.active{background:#fff;color:#000;}
+.nav-toggle{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:8px;}
+.nav-toggle span{width:24px;height:1.5px;background:#fff;transition:.25s;}
+.nav-toggle.is-open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+.nav-toggle.is-open span:nth-child(2){opacity:0;}
+.nav-toggle.is-open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
+@media(max-width:860px){
+  .nav-toggle{display:flex;}
+  .nav-links{position:absolute;top:68px;left:0;right:0;flex-direction:column;align-items:flex-start;gap:0;background:#000;border-bottom:1px solid rgba(255,255,255,.1);padding:8px 32px 24px;transform:translateY(-8px);opacity:0;pointer-events:none;transition:transform .2s,opacity .2s;}
+  .nav-links.is-open{transform:translateY(0);opacity:1;pointer-events:auto;}
+  .nav-links a{padding:13px 0;width:100%;border-bottom:1px solid rgba(255,255,255,.08);color:#fff;}
+  .nav-links a.don{margin-top:14px;width:100%;text-align:center;}
+}
+
+/* HERO */
+.hero{padding:96px 0 72px;}
+.hero h1{font-size:clamp(40px,6vw,72px);margin-bottom:16px;}
+.hero-lead{font-weight:300;font-size:18px;line-height:1.6;color:rgba(255,255,255,.5);max-width:600px;}
+
+/* TABS */
+.tabs-bar{display:flex;gap:1px;background:rgba(255,255,255,.1);margin-bottom:48px;}
+.tab-btn{flex:1;padding:16px 24px;font-family:'Jost',sans-serif;font-size:13px;font-weight:500;letter-spacing:.06em;background:#000;color:rgba(255,255,255,.4);border:none;cursor:pointer;transition:background .15s,color .15s;text-align:left;}
+.tab-btn:hover{color:#fff;}
+.tab-btn.active{background:#fff;color:#000;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+/* DOCUMENTS */
+.doc-list{display:flex;flex-direction:column;gap:1px;background:rgba(255,255,255,.1);}
+.doc-item{background:#000;display:flex;align-items:center;gap:20px;padding:20px 24px;transition:background .2s;}
+.doc-item:hover{background:#111;}
+.doc-icon{font-size:20px;flex-shrink:0;opacity:.5;}
+.doc-info{flex:1;min-width:0;}
+.doc-title{font-family:'Nunito',sans-serif;font-weight:700;font-size:16px;letter-spacing:-.01em;margin-bottom:4px;}
+.doc-meta{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:300;color:rgba(255,255,255,.35);}
+.doc-badge{border:1px solid rgba(255,255,255,.15);padding:2px 8px;font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;}
+.doc-dl{flex-shrink:0;padding:8px 16px;font-size:12px;font-weight:500;letter-spacing:.08em;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);transition:background .15s,color .15s,border-color .15s;}
+.doc-dl:hover{background:#fff;color:#000;border-color:#fff;}
+
+/* PROJECTS */
+.projects-list{display:flex;flex-direction:column;gap:1px;background:rgba(255,255,255,.1);}
+.project-card-full{background:#000;padding:36px 32px;}
+.project-header{margin-bottom:24px;}
+.project-status-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+.status-badge{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border:1px solid currentColor;}
+.project-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(20px,3vw,28px);letter-spacing:-.02em;margin-bottom:6px;}
+.project-label{font-size:13px;font-weight:300;color:rgba(255,255,255,.4);margin-bottom:8px;}
+.project-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.proj-tag{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border:1px solid rgba(255,255,255,.15);}
+.project-body{display:flex;flex-direction:column;gap:24px;}
+.project-story{font-weight:300;font-size:15px;line-height:1.75;color:rgba(255,255,255,.55);max-width:68ch;white-space:pre-line;}
+.project-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;}
+@media(max-width:640px){.project-grid{grid-template-columns:1fr;}}
+
+/* BUDGET */
+.budget-box{border:1px solid rgba(255,255,255,.1);padding:24px;}
+.budget-title{font-size:10px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:16px;}
+.budget-nums{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.budget-num-val{font-family:'Nunito',sans-serif;font-weight:900;font-size:20px;letter-spacing:-.015em;display:block;margin-bottom:3px;}
+.budget-num-lbl{font-size:11px;font-weight:300;color:rgba(255,255,255,.35);letter-spacing:.06em;text-transform:uppercase;}
+.progress-bar{height:3px;background:rgba(255,255,255,.1);margin-bottom:8px;}
+.progress-fill{height:100%;background:#fff;transition:width .6s ease;}
+.progress-pct{font-size:12px;font-weight:300;color:rgba(255,255,255,.35);}
+.breakdown{margin-top:16px;font-size:13px;font-weight:300;color:rgba(255,255,255,.4);line-height:1.7;white-space:pre-line;border-top:1px solid rgba(255,255,255,.08);padding-top:14px;}
+
+/* PHOTOS */
+.photo-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;}
+.photo-grid img{width:100%;aspect-ratio:4/3;object-fit:cover;}
+
+/* DONORS TABLE */
+.donor-section-title{font-size:10px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:12px;}
+.donors-table{width:100%;border-collapse:collapse;font-size:13px;font-weight:300;}
+.donors-table th{text-align:left;font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3);padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.1);}
+.donors-table td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.06);color:rgba(255,255,255,.6);}
+.donors-table tr:last-child td{border-bottom:none;}
+.donor-name{font-weight:400;color:#fff;}
+
+/* EMPTY + SKELETON */
+.empty{padding:56px 0;text-align:center;}
+.empty p{font-weight:300;font-size:15px;color:rgba(255,255,255,.3);}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:.6}}
+.skel{background:#111;padding:20px 24px;margin-bottom:1px;animation:pulse 1.6s ease-in-out infinite;}
+.skel-line{height:13px;background:#1a1a1a;margin-bottom:8px;}
+
+/* FOOTER */
+footer{padding:48px 0;border-top:1px solid rgba(255,255,255,.1);background:#000;}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;}
+.foot-brand{display:flex;align-items:center;gap:16px;}
+.foot-brand img{height:52px;width:auto;opacity:.6;}
+.foot-brand p{font-size:12px;font-weight:300;color:rgba(255,255,255,.35);line-height:1.7;}
+.foot-links{display:flex;gap:24px;font-size:13px;font-weight:300;}
+.foot-links a{color:rgba(255,255,255,.35);transition:color .15s;}
+.foot-links a:hover{color:#fff;}
+a:focus-visible,button:focus-visible{outline:2px solid #fff;outline-offset:3px;}
+</style>
+</head>
+<body class="lang-ro">
+
+<header>
+  <div class="wrap nav">
+    <a href="/index.html"><img src="/assets/logos/white_logo_square_transparent_background.png" alt="Front Door" style="height:34px;width:auto"></a>
+    <nav class="nav-links" id="navLinks">
+      <a href="/index.html#piloni"><span data-lang="ro" class="i">Piloni</span><span data-lang="da" class="i">Søjler</span></a>
+      <a href="/events.html"><span data-lang="ro" class="i">Evenimente</span><span data-lang="da" class="i">Begivenheder</span></a>
+      <a href="/transparenta.html" class="active"><span data-lang="ro" class="i">Transparență</span><span data-lang="da" class="i">Transparens</span></a>
+      <a href="/index.html#despre"><span data-lang="ro" class="i">Despre</span><span data-lang="da" class="i">Om os</span></a>
+      <a class="don" href="/join.html"><span data-lang="ro" class="i">Devino membru</span><span data-lang="da" class="i">Bliv medlem</span></a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:14px;flex-shrink:0">
+      <div class="lang-toggle">
+        <button id="btnRo" class="active" onclick="setLang('ro')">RO</button>
+        <button id="btnDa" onclick="setLang('da')">DA</button>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-label="Meniu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="line-grow"></div>
+    <div data-lang="ro">
+      <p class="label fade-in">Public</p>
+      <h1 class="display fade-in d1">Transparență</h1>
+      <p class="hero-lead fade-in d2">Documente publice, situația proiectelor și bugetele la vedere — pentru că construim această asociație împreună cu comunitatea.</p>
+    </div>
+    <div data-lang="da">
+      <p class="label fade-in">Offentligt</p>
+      <h1 class="display fade-in d1">Transparens</h1>
+      <p class="hero-lead fade-in d2">Offentlige dokumenter, projektstatus og budgetter — fordi vi bygger denne forening sammen med fællesskabet.</p>
+    </div>
+  </div>
+</section>
+
+<section style="padding:0 0 96px">
+  <div class="wrap">
+    <div class="tabs-bar fade-in">
+      <button class="tab-btn active" id="btn-documente" onclick="switchTab('documente')">
+        <span data-lang="ro" class="i">Documente</span><span data-lang="da" class="i">Dokumenter</span>
+      </button>
+      <button class="tab-btn" id="btn-proiecte" onclick="switchTab('proiecte')">
+        <span data-lang="ro" class="i">Proiecte</span><span data-lang="da" class="i">Projekter</span>
+      </button>
+    </div>
+
+    <div class="tab-panel active fade-in d1" id="tab-documente">
+      <div id="docs-container">
+        <div class="skel"><div class="skel-line" style="width:55%"></div><div class="skel-line" style="width:35%"></div></div>
+        <div class="skel"><div class="skel-line" style="width:65%"></div><div class="skel-line" style="width:30%"></div></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-proiecte">
+      <div id="projects-container">
+        <div class="skel"><div class="skel-line" style="width:45%"></div><div class="skel-line" style="width:75%"></div><div class="skel-line" style="width:55%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <div class="foot-brand">
+      <img src="/assets/logos/white_logo_square_transparent_background.png" alt="">
+      <p>© 2026 Front Door<br>foreningenfrontdoor.dk<br>CVR: 46702697</p>
+    </div>
+    <nav class="foot-links">
+      <a href="/datapolitik.html"><span data-lang="ro" class="i">Politica de date</span><span data-lang="da" class="i">Datapolitik</span></a>
+      <a href="https://www.instagram.com/frontdoor_dk/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.facebook.com/profile.php?id=61593579534677" target="_blank" rel="noopener">Facebook</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+var lang='ro';
+function setLang(l){lang=l;document.body.className='lang-'+l;document.documentElement.lang=l;document.getElementById('btnRo').classList.toggle('active',l==='ro');document.getElementById('btnDa').classList.toggle('active',l==='da');try{localStorage.setItem('fd-lang',l);}catch(e){}renderDocs(window._docs||[]);renderProjects(window._projects||[]);}
+window.setLang=setLang;
+try{var s=localStorage.getItem('fd-lang');if(s==='da')setLang('da');}catch(e){}
+
+var toggle=document.getElementById('navToggle'),links=document.getElementById('navLinks');
+toggle.addEventListener('click',function(){var o=links.classList.toggle('is-open');toggle.classList.toggle('is-open',o);toggle.setAttribute('aria-expanded',o?'true':'false');});
+links.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){links.classList.remove('is-open');toggle.classList.remove('is-open');});});
+
+var rm=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+if(!rm&&'IntersectionObserver' in window){var io=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);}});},{threshold:0.08});document.querySelectorAll('.fade-in,.line-grow').forEach(function(el){io.observe(el);});}
+else{document.querySelectorAll('.fade-in,.line-grow').forEach(function(el){el.classList.add('visible');});}
+
+function switchTab(name){
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('tab-'+name).classList.add('active');
+  document.getElementById('btn-'+name).classList.add('active');
+}
+
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function fmtDKK(n){if(n===null||n===undefined)return'—';return Number(n).toLocaleString('da-DK',{minimumFractionDigits:0,maximumFractionDigits:0})+' DKK';}
+function fmtDate(ds){if(!ds)return'';var d=new Date(ds+'T00:00:00');var mr=['ian','feb','mar','apr','mai','iun','iul','aug','sep','oct','nov','dec'];var md=['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'];var m=lang==='ro'?mr[d.getMonth()]:md[d.getMonth()];return d.getDate()+' '+m+' '+d.getFullYear();}
+
+var docTypeLabels={referat:{ro:'Referat',da:'Referat'},raport:{ro:'Raport anual',da:'Årsrapport'},statut:{ro:'Statut',da:'Vedtægter'},altele:{ro:'Altele',da:'Andet'}};
+
+function renderDocs(docs){
+  var c=document.getElementById('docs-container');
+  if(!docs.length){c.innerHTML='<div class="empty"><p>'+(lang==='ro'?'Niciun document disponibil momentan.':'Ingen dokumenter tilgængelige endnu.')+'</p></div>';return;}
+  c.innerHTML='<div class="doc-list">'+docs.map(function(d){
+    var title=lang==='ro'?d.title_ro:d.title_da;
+    var typeObj=docTypeLabels[d.doc_type]||{ro:d.doc_type,da:d.doc_type};
+    var typeLbl=lang==='ro'?typeObj.ro:typeObj.da;
+    var dateLbl=d.meeting_date?fmtDate(d.meeting_date):'';
+    return'<div class="doc-item">'
+      +'<div class="doc-icon">📄</div>'
+      +'<div class="doc-info"><div class="doc-title">'+esc(title)+'</div>'
+      +'<div class="doc-meta"><span class="doc-badge">'+esc(typeLbl)+'</span>'+(dateLbl?esc(dateLbl):'')+'</div></div>'
+      +'<a class="doc-dl" href="'+esc(d.file_url)+'" target="_blank" rel="noopener">↓ PDF</a>'
+      +'</div>';
+  }).join('')+'</div>';
+}
+
+var statusCfg={
+  active:{ro:'Activ',da:'Aktiv',color:'rgba(255,255,255,.9)'},
+  seeking_funding:{ro:'Se caută finanțare',da:'Søger finansiering',color:'rgba(255,213,79,.9)'},
+  completed:{ro:'Finalizat',da:'Afsluttet',color:'rgba(255,255,255,.4)'}
+};
+var catLabels={artistic:{ro:'Artistic',da:'Kunstnerisk'},cultural:{ro:'Cultural',da:'Kulturelt'},societate:{ro:'Societate',da:'Samfund'}};
+
+function renderProjects(projects){
+  var c=document.getElementById('projects-container');
+  if(!projects.length){c.innerHTML='<div class="empty"><p>'+(lang==='ro'?'Niciun proiect disponibil momentan.':'Ingen projekter tilgængelige endnu.')+'</p></div>';return;}
+  c.innerHTML='<div class="projects-list">'+projects.map(function(p){
+    var title=lang==='ro'?(p.headline_ro||p.title_ro):(p.headline_da||p.title_da);
+    var label=lang==='ro'?(p.label_ro||''):(p.label_da||'');
+    var story=lang==='ro'?(p.story_ro||p.description_ro||''):(p.story_da||p.description_da||'');
+    var bdBreak=lang==='ro'?(p.budget_breakdown_ro||''):(p.budget_breakdown_da||'');
+    var st=statusCfg[p.status]||{ro:p.status,da:p.status,color:'rgba(255,255,255,.4)'};
+    var stLbl=lang==='ro'?st.ro:st.da;
+    var cat=catLabels[p.category]||{ro:p.category,da:p.category};
+    var catLbl=lang==='ro'?cat.ro:cat.da;
+
+    var budgetHtml='';
+    if(p.budget_needed!==null){
+      var pct=p.budget_needed>0?Math.min(100,Math.round(p.budget_raised/p.budget_needed*100)):0;
+      budgetHtml='<div class="budget-box">'
+        +'<div class="budget-title">'+(lang==='ro'?'Buget':'Budget')+'</div>'
+        +'<div class="budget-nums">'
+        +'<div class="budget-num"><span class="budget-num-val">'+fmtDKK(p.budget_needed)+'</span><span class="budget-num-lbl">'+(lang==='ro'?'Necesar':'Nødvendigt')+'</span></div>'
+        +'<div class="budget-num"><span class="budget-num-val">'+fmtDKK(p.budget_raised)+'</span><span class="budget-num-lbl">'+(lang==='ro'?'Strâns':'Indsamlet')+'</span></div>'
+        +'</div>'
+        +'<div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%"></div></div>'
+        +'<div class="progress-pct">'+pct+'% '+(lang==='ro'?'finanțat':'finansieret')+'</div>'
+        +(bdBreak?'<div class="breakdown">'+esc(bdBreak)+'</div>':'')
+        +'</div>';
+    }
+
+    var photoHtml='';
+    if(p.photos&&p.photos.length){photoHtml='<div class="photo-grid">'+p.photos.map(function(ph){return'<img src="'+esc(ph)+'" alt="" loading="lazy">';}).join('')+'</div>';}
+
+    var tagsHtml='';
+    if(p.tags&&p.tags.length){tagsHtml='<div class="project-tags">'+p.tags.map(function(t){return'<span class="proj-tag">'+esc(t.name)+'</span>';}).join('')+'</div>';}
+
+    var donorsHtml='';
+    if(p.donors&&p.donors.length){
+      var mLbl={transfer:(lang==='ro'?'Transfer':'Bankoverførsel'),bunuri_servicii:(lang==='ro'?'Bunuri/Servicii':'Varer/Tjenester'),voluntariat:(lang==='ro'?'Voluntariat':'Frivillighed')};
+      var tLbl={membru:(lang==='ro'?'Membru':'Medlem'),extern:(lang==='ro'?'Extern':'Ekstern'),anonim:(lang==='ro'?'Anonim':'Anonym')};
+      donorsHtml='<div class="donor-section-title">'+(lang==='ro'?'Contribuții & Donatori':'Bidrag & Donorer')+'</div>'
+        +'<table class="donors-table"><thead><tr>'
+        +'<th>'+(lang==='ro'?'Nume':'Navn')+'</th><th>'+(lang==='ro'?'Tip':'Type')+'</th><th>'+(lang==='ro'?'Modalitate':'Metode')+'</th><th>'+(lang==='ro'?'Detalii':'Detaljer')+'</th><th>'+(lang==='ro'?'Valoare':'Værdi')+'</th>'
+        +'</tr></thead><tbody>'
+        +p.donors.map(function(d){var val=d.value_dkk!==null?Number(d.value_dkk).toLocaleString('da-DK',{minimumFractionDigits:0,maximumFractionDigits:0})+' DKK':'—';return'<tr><td><span class="donor-name">'+esc(d.name)+'</span></td><td>'+esc(tLbl[d.donor_type]||d.donor_type)+'</td><td>'+esc(mLbl[d.method]||d.method)+'</td><td>'+esc(d.details||'—')+'</td><td style="white-space:nowrap">'+val+'</td></tr>';}).join('')
+        +'</tbody></table>';
+    }
+
+    var gridContent='';
+    if(budgetHtml&&photoHtml)gridContent='<div class="project-grid">'+budgetHtml+photoHtml+'</div>';
+    else if(budgetHtml)gridContent='<div style="max-width:480px">'+budgetHtml+'</div>';
+    else if(photoHtml)gridContent=photoHtml;
+
+    return'<div class="project-card-full">'
+      +'<div class="project-header">'
+      +'<div class="project-status-row"><span class="status-badge" style="color:'+st.color+';border-color:'+st.color+'">'+esc(stLbl)+'</span><span class="status-badge" style="color:rgba(255,255,255,.4);border-color:rgba(255,255,255,.15)">'+esc(catLbl)+'</span></div>'
+      +'<h2 class="project-title">'+esc(title)+'</h2>'
+      +(label?'<div class="project-label">'+esc(label)+'</div>':'')
+      +tagsHtml
+      +'</div>'
+      +'<div class="project-body">'
+      +(story?'<div class="project-story">'+esc(story)+'</div>':'')
+      +gridContent+donorsHtml
+      +'</div></div>';
+  }).join('')+'</div>';
+}
+
+fetch('/api/transparency.php')
+  .then(function(r){return r.json();})
+  .then(function(data){window._docs=data.documents||[];window._projects=data.projects||[];renderDocs(window._docs);renderProjects(window._projects);})
+  .catch(function(){document.getElementById('docs-container').innerHTML='<div class="empty"><p>—</p></div>';document.getElementById('projects-container').innerHTML='<div class="empty"><p>—</p></div>';});
+</script>
+</body>
+</html>

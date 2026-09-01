@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Datapolitik / Politica de date — Front Door</title>
+<meta name="description" content="Datapolitik for Front Door — hvordan vi behandler dine personoplysninger.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Jost',system-ui,sans-serif;font-weight:400;background:#000;color:#fff;font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+img{max-width:100%;display:block;}
+a{color:#fff;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;}
+.wrap{max-width:1100px;margin:0 auto;padding:0 32px;}
+[data-lang]{display:none;}
+.lang-ro [data-lang="ro"]{display:block;}
+.lang-ro [data-lang="ro"].i{display:inline;}
+.lang-da [data-lang="da"]{display:block;}
+.lang-da [data-lang="da"].i{display:inline;}
+.display{font-family:'Nunito',sans-serif;font-weight:900;line-height:1.0;letter-spacing:-.02em;}
+.label{font-family:'Jost',sans-serif;font-weight:300;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:16px;}
+.line-grow{width:0;height:1px;background:#fff;opacity:.12;transition:width 1.2s cubic-bezier(.16,1,.3,1);margin-bottom:32px;}
+.line-grow.visible{width:100%;}
+.fade-in{opacity:0;transition:opacity .9s cubic-bezier(.2,.6,.2,1);}
+.fade-in.visible{opacity:1;}
+.fade-in.d1{transition-delay:.1s;}
+@media(prefers-reduced-motion:reduce){.fade-in{opacity:1;}.line-grow{width:100%;}}
+
+/* HEADER */
+header{position:sticky;top:0;z-index:100;background:#000;border-bottom:1px solid rgba(255,255,255,.1);}
+.nav{display:flex;align-items:center;justify-content:space-between;height:68px;gap:20px;}
+.nav-links{display:flex;gap:28px;font-size:13px;font-weight:400;letter-spacing:.04em;align-items:center;}
+.nav-links a{color:rgba(255,255,255,.45);transition:color .15s;}
+.nav-links a:hover{color:#fff;}
+.nav-links a.don{color:#000;background:#fff;padding:7px 16px;font-weight:500;transition:opacity .15s;}
+.nav-links a.don:hover{opacity:.8;}
+.lang-toggle{display:flex;border:1px solid rgba(255,255,255,.15);overflow:hidden;flex-shrink:0;}
+.lang-toggle button{padding:5px 12px;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;background:transparent;color:rgba(255,255,255,.45);border:none;transition:background .15s,color .15s;}
+.lang-toggle button.active{background:#fff;color:#000;}
+.nav-toggle{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:8px;}
+.nav-toggle span{width:24px;height:1.5px;background:#fff;transition:.25s;}
+.nav-toggle.is-open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+.nav-toggle.is-open span:nth-child(2){opacity:0;}
+.nav-toggle.is-open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
+@media(max-width:860px){
+  .nav-toggle{display:flex;}
+  .nav-links{position:absolute;top:68px;left:0;right:0;flex-direction:column;align-items:flex-start;gap:0;background:#000;border-bottom:1px solid rgba(255,255,255,.1);padding:8px 32px 24px;transform:translateY(-8px);opacity:0;pointer-events:none;transition:transform .2s,opacity .2s;}
+  .nav-links.is-open{transform:translateY(0);opacity:1;pointer-events:auto;}
+  .nav-links a{padding:13px 0;width:100%;border-bottom:1px solid rgba(255,255,255,.08);color:#fff;}
+  .nav-links a.don{margin-top:14px;width:100%;text-align:center;}
+}
+
+/* HERO */
+.hero{padding:96px 0 72px;}
+.hero h1{font-size:clamp(40px,6vw,72px);margin-bottom:16px;}
+.hero-lead{font-weight:300;font-size:18px;line-height:1.6;color:rgba(255,255,255,.5);max-width:560px;}
+
+/* DOC CONTENT */
+.doc-content{max-width:720px;padding:0 0 96px;}
+.doc-content h2{font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.4);margin:48px 0 16px;display:flex;align-items:center;gap:12px;}
+.doc-content h2::after{content:"";flex:0 0 28px;height:1px;background:rgba(255,255,255,.2);}
+.doc-content h2:first-child{margin-top:0;}
+.doc-content p{font-weight:300;font-size:16px;line-height:1.75;color:rgba(255,255,255,.55);margin-bottom:14px;}
+.doc-content ul{margin:0 0 14px 20px;}
+.doc-content ul li{font-weight:300;font-size:16px;line-height:1.75;color:rgba(255,255,255,.55);margin-bottom:8px;}
+.doc-content strong{color:#fff;font-weight:500;}
+.doc-content a{color:#fff;border-bottom:1px solid rgba(255,255,255,.25);transition:border-color .15s;}
+.doc-content a:hover{border-color:#fff;}
+.info-box{border:1px solid rgba(255,255,255,.12);padding:22px 26px;margin-bottom:32px;}
+.info-box p{margin-bottom:6px;font-size:15px;}
+.info-box p:last-child{margin-bottom:0;}
+.info-label{font-family:'Jost',sans-serif;font-size:10px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:12px;display:block;}
+.updated{font-size:13px;font-weight:300;color:rgba(255,255,255,.25);margin-top:48px;padding-top:24px;border-top:1px solid rgba(255,255,255,.08);}
+
+/* FOOTER */
+footer{padding:48px 0;border-top:1px solid rgba(255,255,255,.1);background:#000;}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;}
+.foot-brand{display:flex;align-items:center;gap:16px;}
+.foot-brand img{height:52px;width:auto;opacity:.6;}
+.foot-brand p{font-size:12px;font-weight:300;color:rgba(255,255,255,.35);line-height:1.7;}
+.foot-links{display:flex;gap:24px;font-size:13px;font-weight:300;}
+.foot-links a{color:rgba(255,255,255,.35);transition:color .15s;}
+.foot-links a:hover{color:#fff;}
+a:focus-visible,button:focus-visible{outline:2px solid #fff;outline-offset:3px;}
+</style>
+</head>
+<body class="lang-ro">
+
+<header>
+  <div class="wrap nav">
+    <a href="/index.html"><img src="/assets/logos/white_logo_square_transparent_background.png" alt="Front Door" style="height:34px;width:auto"></a>
+    <nav class="nav-links" id="navLinks">
+      <a href="/index.html#piloni"><span data-lang="ro" class="i">Piloni</span><span data-lang="da" class="i">Søjler</span></a>
+      <a href="/events.html"><span data-lang="ro" class="i">Evenimente</span><span data-lang="da" class="i">Begivenheder</span></a>
+      <a href="/transparenta.html"><span data-lang="ro" class="i">Transparență</span><span data-lang="da" class="i">Transparens</span></a>
+      <a href="/index.html#despre"><span data-lang="ro" class="i">Despre</span><span data-lang="da" class="i">Om os</span></a>
+      <a class="don" href="/join.html"><span data-lang="ro" class="i">Devino membru</span><span data-lang="da" class="i">Bliv medlem</span></a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:14px;flex-shrink:0">
+      <div class="lang-toggle">
+        <button id="btnRo" class="active" onclick="setLang('ro')">RO</button>
+        <button id="btnDa" onclick="setLang('da')">DA</button>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-label="Meniu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="line-grow"></div>
+    <div data-lang="ro">
+      <p class="label fade-in">GDPR</p>
+      <h1 class="display fade-in d1">Politica de date</h1>
+    </div>
+    <div data-lang="da">
+      <p class="label fade-in">GDPR</p>
+      <h1 class="display fade-in d1">Datapolitik</h1>
+    </div>
+  </div>
+</section>
+
+<section style="padding:0 0 0">
+  <div class="wrap">
+    <!-- RO -->
+    <div class="doc-content fade-in" data-lang="ro">
+      <div class="info-box">
+        <span class="info-label">Operator de date</span>
+        <p><strong>Foreningen Front Door</strong></p>
+        <p>2500 København (Valby), Danemarca</p>
+        <p>CVR-nr.: 46702697</p>
+        <p>foreningenfrontdoor.dk</p>
+        <p>Contact GDPR: <a href="mailto:gdpr@foreningenfrontdoor.dk">gdpr@foreningenfrontdoor.dk</a></p>
+      </div>
+      <h2>Ce date colectăm?</h2>
+      <p>Colectăm și prelucrăm următoarele date cu caracter personal:</p>
+      <ul>
+        <li><strong>Date de contact:</strong> nume, adresă, e-mail și telefon</li>
+        <li><strong>Cereri de membership:</strong> nume, email, telefon (opțional), oraș, mesaj — stocate până la procesarea cererii, șterse cel târziu la 2 ani după eventuala retragere</li>
+        <li><strong>Date de plată:</strong> cotizații și donații (procesate prin furnizor de plăți)</li>
+        <li><strong>Participare la activități:</strong> înscrieri la evenimente și activități</li>
+        <li><strong>Membri ai consiliului și voluntari:</strong> nume, adresă, e-mail, telefon și rol în asociație</li>
+      </ul>
+      <h2>De ce prelucrăm datele tale?</h2>
+      <ul>
+        <li>Administrarea calității de membru și colectarea cotizațiilor</li>
+        <li>Comunicarea despre activitățile și evenimentele asociației</li>
+        <li>Respectarea cerințelor legale, inclusiv raportarea către Københavns Kommune</li>
+        <li>Administrarea internă a asociației (contabilitate, procese-verbale, decizii)</li>
+      </ul>
+      <p><strong>Temei legal (GDPR art. 6):</strong> executarea contractului de membru (lit. b), obligații legale (lit. c), interese legitime (lit. f), consimțământ (lit. a).</p>
+      <h2>Partajarea datelor</h2>
+      <ul>
+        <li><strong>Københavns Kommune</strong> — cereri de finanțare</li>
+        <li><strong>Furnizori de plăți</strong> — procesarea cotizațiilor și donațiilor</li>
+        <li><strong>MinForening</strong> — administrarea membrilor și activităților</li>
+      </ul>
+      <p>Nu vindem și nu transmitem datele tale unor terți comerciali.</p>
+      <h2>Cât timp păstrăm datele?</h2>
+      <ul>
+        <li>Datele membrilor — pe durata membership-ului activ, șterse cel târziu la 2 ani după retragere</li>
+        <li>Documente contabile — 5 ani conform legislației contabile</li>
+        <li>Înscrieri la evenimente — cel târziu la 1 an după eveniment</li>
+      </ul>
+      <h2>Drepturile tale</h2>
+      <p>Ai dreptul să accesezi, rectifici, ștergi sau să te opui prelucrării datelor tale. Contact: <a href="mailto:gdpr@foreningenfrontdoor.dk">gdpr@foreningenfrontdoor.dk</a></p>
+      <h2>Reclamație</h2>
+      <div class="info-box" style="margin-top:16px">
+        <p><strong>Datatilsynet</strong></p>
+        <p>Carl Jacobsens Vej 35, 2500 Valby</p>
+        <p><a href="https://www.datatilsynet.dk" target="_blank" rel="noopener">www.datatilsynet.dk</a></p>
+      </div>
+      <p class="updated">Ultima actualizare: august 2026</p>
+    </div>
+
+    <!-- DA -->
+    <div class="doc-content fade-in" data-lang="da">
+      <div class="info-box">
+        <span class="info-label">Dataansvarlig</span>
+        <p><strong>Foreningen Front Door</strong></p>
+        <p>2500 København (Valby), Danmark</p>
+        <p>CVR-nr.: 46702697</p>
+        <p>foreningenfrontdoor.dk</p>
+        <p>Kontakt vedr. persondata: <a href="mailto:gdpr@foreningenfrontdoor.dk">gdpr@foreningenfrontdoor.dk</a></p>
+      </div>
+      <h2>Hvilke oplysninger indsamler vi?</h2>
+      <ul>
+        <li><strong>Navn og kontaktoplysninger:</strong> navn, adresse, e-mail og telefon</li>
+        <li><strong>Ansøgninger om medlemskab:</strong> navn, e-mail, telefon (valgfrit), by, besked — opbevares til ansøgningen er behandlet, slettes senest 2 år efter udmeldelse</li>
+        <li><strong>Betalingsoplysninger:</strong> kontingent og donationer (behandles via betalingsudbyder)</li>
+        <li><strong>Aktivitetsdeltagelse:</strong> tilmeldinger til arrangementer</li>
+        <li><strong>Bestyrelsesmedlemmer og frivillige:</strong> navn, adresse, e-mail, telefon og rolle</li>
+      </ul>
+      <h2>Hvorfor behandler vi dine oplysninger?</h2>
+      <ul>
+        <li>Administration af medlemskab og kontingentopkrævning</li>
+        <li>Kommunikation om foreningens aktiviteter og arrangementer</li>
+        <li>Opfyldelse af lovkrav, herunder indberetning til Københavns Kommune</li>
+        <li>Foreningens interne administration</li>
+      </ul>
+      <p><strong>Retsgrundlag (GDPR art. 6):</strong> opfyldelse af medlemsaftalen (litra b), retlige forpligtelser (litra c), legitime interesser (litra f), samtykke (litra a).</p>
+      <h2>Deling af oplysninger</h2>
+      <ul>
+        <li><strong>Københavns Kommune</strong> — tilskudsansøgninger</li>
+        <li><strong>Betalingsudbydere</strong> — kontingenter og donationer</li>
+        <li><strong>MinForening</strong> — administration af medlemmer og aktiviteter</li>
+      </ul>
+      <p>Vi sælger eller videregiver ikke dine oplysninger til kommercielle tredjeparter.</p>
+      <h2>Hvor længe gemmer vi dine oplysninger?</h2>
+      <ul>
+        <li>Medlemsoplysninger — så længe du er aktivt medlem, slettes senest 2 år efter udmeldelse</li>
+        <li>Regnskabsbilag — 5 år jf. bogføringsloven</li>
+        <li>Tilmeldinger til arrangementer — senest 1 år efter afholdelse</li>
+      </ul>
+      <h2>Dine rettigheder</h2>
+      <p>Du har ret til indsigt, berigtigelse, sletning og indsigelse. Kontakt: <a href="mailto:gdpr@foreningenfrontdoor.dk">gdpr@foreningenfrontdoor.dk</a></p>
+      <h2>Klage</h2>
+      <div class="info-box" style="margin-top:16px">
+        <p><strong>Datatilsynet</strong></p>
+        <p>Carl Jacobsens Vej 35, 2500 Valby</p>
+        <p><a href="https://www.datatilsynet.dk" target="_blank" rel="noopener">www.datatilsynet.dk</a></p>
+      </div>
+      <p class="updated">Senest opdateret: august 2026</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <div class="foot-brand">
+      <img src="/assets/logos/white_logo_square_transparent_background.png" alt="">
+      <p>© 2026 Front Door<br>foreningenfrontdoor.dk<br>CVR: 46702697</p>
+    </div>
+    <nav class="foot-links">
+      <a href="/datapolitik.html"><span data-lang="ro" class="i">Politica de date</span><span data-lang="da" class="i">Datapolitik</span></a>
+      <a href="https://www.instagram.com/frontdoor_dk/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.facebook.com/profile.php?id=61593579534677" target="_blank" rel="noopener">Facebook</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+var lang='ro';
+function setLang(l){lang=l;document.body.className='lang-'+l;document.documentElement.lang=l;document.getElementById('btnRo').classList.toggle('active',l==='ro');document.getElementById('btnDa').classList.toggle('active',l==='da');try{localStorage.setItem('fd-lang',l);}catch(e){}}
+window.setLang=setLang;
+try{var s=localStorage.getItem('fd-lang');if(s==='da')setLang('da');}catch(e){}
+var toggle=document.getElementById('navToggle'),links=document.getElementById('navLinks');
+toggle.addEventListener('click',function(){var o=links.classList.toggle('is-open');toggle.classList.toggle('is-open',o);toggle.setAttribute('aria-expanded',o?'true':'false');});
+links.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){links.classList.remove('is-open');toggle.classList.remove('is-open');});});
+var rm=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+if(!rm&&'IntersectionObserver' in window){var io=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);}});},{threshold:0.08});document.querySelectorAll('.fade-in,.line-grow').forEach(function(el){io.observe(el);});}
+else{document.querySelectorAll('.fade-in,.line-grow').forEach(function(el){el.classList.add('visible');});}
+</script>
+</body>
+</html>

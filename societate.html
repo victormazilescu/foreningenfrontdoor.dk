@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Societate — Front Door</title>
+<meta name="description" content="Pilonul societate al Front Door — vizibilitate, contribuție și prezență în societatea daneză.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#000;--fg:#fff;--bg-inv:#fff;--fg-inv:#000;--mid:rgba(255,255,255,.45);--rule:rgba(255,255,255,.1);}
+@media(prefers-color-scheme:light){:root{--bg:#fff;--fg:#000;--bg-inv:#000;--fg-inv:#fff;--mid:rgba(0,0,0,.45);--rule:rgba(0,0,0,.1);}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Jost',system-ui,sans-serif;font-weight:400;background:var(--bg);color:var(--fg);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+img{max-width:100%;display:block;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;}
+.wrap{max-width:1100px;margin:0 auto;padding:0 32px;}
+[data-lang]{display:none;}
+.lang-ro [data-lang="ro"]{display:block;}
+.lang-ro [data-lang="ro"].i{display:inline;}
+.lang-da [data-lang="da"]{display:block;}
+.lang-da [data-lang="da"].i{display:inline;}
+.display{font-family:'Nunito',sans-serif;font-weight:900;line-height:1.0;letter-spacing:-.02em;}
+.label{font-family:'Jost',sans-serif;font-weight:300;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--mid);margin-bottom:16px;}
+.lead{font-family:'Jost',sans-serif;font-weight:300;font-size:19px;line-height:1.55;color:var(--mid);max-width:560px;}
+.prose p{font-weight:300;font-size:16px;line-height:1.75;color:var(--mid);margin-bottom:16px;max-width:60ch;}
+.prose p:last-child{margin-bottom:0;}
+.s-dark{background:#000;color:#fff;}
+.s-dark .label{color:rgba(255,255,255,.35);}
+.s-dark .lead,.s-dark .prose p{color:rgba(255,255,255,.5);}
+.s-light{background:#fff;color:#000;}
+.s-light .label{color:rgba(0,0,0,.35);}
+.s-light .lead,.s-light .prose p{color:rgba(0,0,0,.5);}
+.line-grow{width:0;height:1px;background:currentColor;opacity:.15;transition:width 1.2s cubic-bezier(.16,1,.3,1);margin-bottom:32px;}
+.line-grow.visible{width:100%;}
+.fade-in{opacity:0;transition:opacity .9s cubic-bezier(.2,.6,.2,1);}
+.fade-in.visible{opacity:1;}
+.fade-in.d1{transition-delay:.1s;}
+.fade-in.d2{transition-delay:.2s;}
+.fade-in.d3{transition-delay:.3s;}
+@media(prefers-reduced-motion:reduce){.fade-in{opacity:1;transition:none;}.line-grow{width:100%;transition:none;}}
+
+/* HEADER */
+header{position:sticky;top:0;z-index:100;background:#000;border-bottom:1px solid rgba(255,255,255,.1);}
+.nav{display:flex;align-items:center;justify-content:space-between;height:68px;gap:20px;}
+.nav-links{display:flex;gap:28px;font-size:13px;font-weight:400;letter-spacing:.04em;align-items:center;}
+.nav-links a{color:rgba(255,255,255,.45);transition:color .15s;}
+.nav-links a:hover,.nav-links a.active{color:#fff;}
+.nav-links a.don{color:#000;background:#fff;padding:7px 16px;font-weight:500;transition:opacity .15s;}
+.nav-links a.don:hover{opacity:.8;}
+.lang-toggle{display:flex;border:1px solid rgba(255,255,255,.15);overflow:hidden;flex-shrink:0;}
+.lang-toggle button{padding:5px 12px;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;background:transparent;color:rgba(255,255,255,.45);border:none;transition:background .15s,color .15s;}
+.lang-toggle button.active{background:#fff;color:#000;}
+.nav-toggle{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:8px;}
+.nav-toggle span{width:24px;height:1.5px;background:#fff;transition:.25s;}
+.nav-toggle.is-open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+.nav-toggle.is-open span:nth-child(2){opacity:0;}
+.nav-toggle.is-open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
+@media(max-width:860px){
+  .nav-toggle{display:flex;}
+  .nav-links{position:absolute;top:68px;left:0;right:0;flex-direction:column;align-items:flex-start;gap:0;background:#000;border-bottom:1px solid rgba(255,255,255,.1);padding:8px 32px 24px;transform:translateY(-8px);opacity:0;pointer-events:none;transition:transform .2s,opacity .2s;}
+  .nav-links.is-open{transform:translateY(0);opacity:1;pointer-events:auto;}
+  .nav-links a{padding:13px 0;width:100%;border-bottom:1px solid rgba(255,255,255,.08);color:#fff;}
+  .nav-links a.don{margin-top:14px;width:100%;text-align:center;}
+}
+
+/* HERO */
+.hero{padding:100px 0 110px;}
+.hero-back{font-family:'Jost',sans-serif;font-size:12px;font-weight:300;letter-spacing:.08em;color:rgba(255,255,255,.35);display:inline-flex;align-items:center;gap:8px;margin-bottom:40px;transition:color .15s;}
+.hero-back:hover{color:#fff;}
+.hero h1{font-size:clamp(44px,7vw,88px);margin-bottom:28px;}
+.hero h1 em{font-style:normal;display:block;opacity:.35;font-weight:700;font-size:.65em;margin-top:6px;}
+
+/* INTRO */
+.intro-section{padding:96px 0;}
+.intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;}
+@media(max-width:760px){.intro-grid{grid-template-columns:1fr;gap:48px;}}
+.intro-grid h2{font-size:clamp(26px,3.5vw,40px);margin-bottom:24px;letter-spacing:-.02em;}
+.values-list{display:flex;flex-direction:column;gap:0;}
+.value-item{padding:24px 0;border-bottom:1px solid rgba(0,0,0,.1);}
+.value-item:first-child{border-top:1px solid rgba(0,0,0,.1);}
+.value-item h4{font-family:'Nunito',sans-serif;font-weight:700;font-size:16px;letter-spacing:-.01em;margin-bottom:6px;}
+.value-item p{font-weight:300;font-size:14px;line-height:1.65;color:rgba(0,0,0,.5);}
+
+/* PROIECTE */
+.projects-section{padding:96px 0;}
+.projects-section h2{font-size:clamp(26px,3.5vw,40px);margin-bottom:8px;letter-spacing:-.02em;}
+.projects-section .sub{font-weight:300;font-size:14px;color:rgba(255,255,255,.35);margin-bottom:40px;}
+.carousel-wrap{position:relative;}
+.carousel{display:flex;gap:1px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;background:rgba(255,255,255,.1);}
+.carousel::-webkit-scrollbar{display:none;}
+.project-card{background:#000;min-width:300px;flex-shrink:0;padding:32px 28px;scroll-snap-align:start;display:flex;flex-direction:column;gap:12px;}
+.project-card-label{font-family:'Jost',sans-serif;font-size:10px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);}
+.project-card h3{font-family:'Nunito',sans-serif;font-weight:900;font-size:20px;letter-spacing:-.015em;}
+.project-card p{font-weight:300;font-size:14px;line-height:1.65;color:rgba(255,255,255,.5);flex:1;}
+.carousel-nav{display:flex;gap:8px;margin-top:16px;}
+.carousel-btn{width:40px;height:40px;border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.6);font-size:16px;cursor:pointer;transition:background .15s,color .15s;}
+.carousel-btn:hover{background:#fff;color:#000;}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:.6}}
+
+/* EVENIMENTE */
+.events-section{padding:96px 0;}
+.events-section h2{font-size:clamp(26px,3.5vw,40px);margin-bottom:8px;letter-spacing:-.02em;}
+.events-section .sub{font-weight:300;font-size:14px;color:rgba(0,0,0,.4);margin-bottom:40px;}
+.events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1px;background:rgba(0,0,0,.1);}
+.event-card{background:#fff;display:flex;flex-direction:column;transition:background .2s,color .2s;}
+.event-card:hover{background:#000;color:#fff;}
+.event-cover{position:relative;aspect-ratio:16/9;overflow:hidden;background:#f0f0f0;}
+.event-cover img{width:100%;height:100%;object-fit:cover;}
+.event-cover-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-weight:900;font-size:32px;color:rgba(0,0,0,.12);}
+.event-card:hover .event-cover-placeholder{background:#111;color:rgba(255,255,255,.15);}
+.event-cat-badge,.event-recurring-badge{position:absolute;top:12px;font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;background:rgba(0,0,0,.7);color:#fff;}
+.event-cat-badge{left:12px;}
+.event-recurring-badge{right:12px;}
+.event-body{padding:22px 20px;flex:1;display:flex;flex-direction:column;gap:6px;}
+.event-date-row{font-size:11px;font-weight:400;letter-spacing:.12em;text-transform:uppercase;color:rgba(0,0,0,.4);}
+.event-card:hover .event-date-row{color:rgba(255,255,255,.4);}
+.event-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:18px;letter-spacing:-.015em;line-height:1.2;}
+.event-location{font-size:13px;font-weight:300;color:rgba(0,0,0,.4);}
+.event-card:hover .event-location{color:rgba(255,255,255,.4);}
+.event-desc{font-size:14px;font-weight:300;line-height:1.6;color:rgba(0,0,0,.55);flex:1;}
+.event-card:hover .event-desc{color:rgba(255,255,255,.55);}
+.event-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+.event-tag{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border:1px solid rgba(0,0,0,.15);}
+.event-footer{padding:0 20px 20px;}
+.btn-signup{display:inline-block;padding:8px 16px;font-size:12px;font-weight:500;letter-spacing:.06em;border:1px solid rgba(0,0,0,.2);color:inherit;transition:background .15s,color .15s;}
+.btn-signup:hover{background:#000;color:#fff;border-color:#000;}
+.event-card:hover .btn-signup{border-color:rgba(255,255,255,.3);}
+.events-empty{padding:48px;text-align:center;font-weight:300;font-size:15px;color:rgba(0,0,0,.4);grid-column:1/-1;}
+.btn-center{text-align:center;margin-top:40px;}
+.btn{display:inline-block;padding:12px 26px;font-family:'Jost',sans-serif;font-weight:500;font-size:13px;letter-spacing:.06em;border:1.5px solid currentColor;transition:background .18s,color .18s;cursor:pointer;}
+.s-light .btn:hover{background:#000;color:#fff;border-color:#000;}
+.s-dark .btn:hover{background:#fff;color:#000;border-color:#fff;}
+
+/* PILLAR NAV */
+.pillar-nav-section{padding:72px 0;}
+.pillar-nav-section h2{font-size:clamp(22px,3vw,32px);margin-bottom:32px;letter-spacing:-.02em;opacity:.45;}
+.pillar-nav{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,.1);}
+@media(max-width:640px){.pillar-nav{grid-template-columns:1fr;}}
+.pillar-nav-card{background:#000;padding:28px 24px;display:flex;align-items:center;gap:16px;transition:background .2s,color .2s;}
+.pillar-nav-card:hover{background:#fff;color:#000;}
+.pillar-icon{width:44px;height:44px;border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-weight:900;font-size:18px;flex-shrink:0;}
+.pillar-nav-card:hover .pillar-icon{border-color:rgba(0,0,0,.2);}
+.pillar-nav-card b{font-family:'Nunito',sans-serif;font-weight:900;font-size:16px;letter-spacing:-.01em;display:block;margin-bottom:2px;}
+.pillar-nav-card small{font-weight:300;font-size:13px;color:rgba(255,255,255,.4);display:block;}
+.pillar-nav-card:hover small{color:rgba(0,0,0,.4);}
+.pillar-arrow{margin-left:auto;font-size:18px;opacity:.3;flex-shrink:0;}
+
+/* FOOTER */
+footer{padding:48px 0;border-top:1px solid rgba(255,255,255,.1);background:#000;}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;}
+.foot-brand{display:flex;align-items:center;gap:16px;}
+.foot-brand img{height:52px;width:auto;opacity:.6;}
+.foot-brand p{font-size:12px;font-weight:300;color:rgba(255,255,255,.35);line-height:1.7;}
+.foot-links{display:flex;gap:24px;font-size:13px;font-weight:300;}
+.foot-links a{color:rgba(255,255,255,.35);transition:color .15s;}
+.foot-links a:hover{color:#fff;}
+a:focus-visible,button:focus-visible{outline:2px solid #fff;outline-offset:3px;}
+</style>
+</head>
+<body class="lang-ro">
+
+<header>
+  <div class="wrap nav">
+    <a href="/index.html"><img src="/assets/logos/white_logo_square_transparent_background.png" alt="Front Door" style="height:34px;width:auto"></a>
+    <nav class="nav-links" id="navLinks">
+      <a href="/index.html#piloni" class="active"><span data-lang="ro" class="i">Piloni</span><span data-lang="da" class="i">Søjler</span></a>
+      <a href="/events.html"><span data-lang="ro" class="i">Evenimente</span><span data-lang="da" class="i">Begivenheder</span></a>
+      <a href="/index.html#implica-te"><span data-lang="ro" class="i">Implică-te</span><span data-lang="da" class="i">Bliv medlem</span></a>
+      <a href="/transparenta.html"><span data-lang="ro" class="i">Transparență</span><span data-lang="da" class="i">Transparens</span></a>
+      <a href="/index.html#despre"><span data-lang="ro" class="i">Despre</span><span data-lang="da" class="i">Om os</span></a>
+      <a class="don" href="/join.html"><span data-lang="ro" class="i">Devino membru</span><span data-lang="da" class="i">Bliv medlem</span></a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:14px;flex-shrink:0">
+      <div class="lang-toggle">
+        <button id="btnRo" class="active" onclick="setLang('ro')">RO</button>
+        <button id="btnDa" onclick="setLang('da')">DA</button>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-label="Meniu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<section class="hero s-dark">
+  <div class="wrap">
+    <a class="hero-back" href="/index.html#piloni">← <span data-lang="ro" class="i">Piloni</span><span data-lang="da" class="i">Søjler</span></a>
+    <div data-lang="ro">
+      <p class="label fade-in">03 — Pilonul societate</p>
+      <h1 class="display fade-in d1">Prezenți.<br><em>Vizibili. Relevanți.</em></h1>
+      <p class="lead fade-in d2">Facem vizibilă contribuția românilor în societatea daneză — prin povești reale, dezbateri actuale și oameni remarcabili.</p>
+    </div>
+    <div data-lang="da">
+      <p class="label fade-in">03 — Samfundssøjlen</p>
+      <h1 class="display fade-in d1">Til stede.<br><em>Synlige. Relevante.</em></h1>
+      <p class="lead fade-in d2">Vi gør rumænernes bidrag synligt i det danske samfund — gennem virkelige historier, aktuelle debatter og bemærkelsesværdige mennesker.</p>
+    </div>
+  </div>
+</section>
+
+<section class="intro-section s-light">
+  <div class="wrap">
+    <div class="line-grow" style="background:#000"></div>
+    <div class="intro-grid">
+      <div>
+        <div data-lang="ro">
+          <p class="label fade-in">Ce facem</p>
+          <h2 class="display fade-in d1">Vizibili în societate</h2>
+          <div class="prose fade-in d2">
+            <p>Suntem români în Danemarca. Știm cum e să construiești o viață nouă într-o țară nouă — cu o altă limbă, un alt sistem, alți oameni în jur.</p>
+            <p>Românii din Danemarca nu au nevoie să fie integrați. Sunt deja aici — construiesc, gândesc, contribuie. Ce lipsește e vizibilitatea.</p>
+            <p>Front Door face vizibil ce e deja real: românii remarcabili din Danemarca, contribuțiile lor, poveștile lor. Organizăm dezbateri pe subiecte de actualitate, explorăm tendințe emergente și celebrăm prezența românească în societatea daneză.</p>
+          </div>
+        </div>
+        <div data-lang="da">
+          <p class="label fade-in">Hvad vi gør</p>
+          <h2 class="display fade-in d1">Synlige i samfundet</h2>
+          <div class="prose fade-in d2">
+            <p>Vi er rumænere i Danmark. Vi ved, hvordan det er at bygge et nyt liv i et nyt land — med et andet sprog, et andet system og andre mennesker omkring sig.</p>
+            <p>Rumænere i Danmark behøver ikke at blive integreret. De er allerede her — de bygger, tænker, bidrager. Det der mangler, er synlighed.</p>
+            <p>Front Door gør det synligt, der allerede er virkeligt: de bemærkelsesværdige rumænere i Danmark, deres bidrag, deres historier. Vi arrangerer debatter om aktuelle emner, udforsker nye tendenser og fejrer den rumænske tilstedeværelse i det danske samfund.</p>
+          </div>
+        </div>
+      </div>
+      <div class="values-list fade-in d3">
+        <div class="value-item"><h4><span data-lang="ro" class="i">Români remarcabili</span><span data-lang="da" class="i">Bemærkelsesværdige rumænere</span></h4><p><span data-lang="ro" class="i">Portrete, povești și interviuri cu români care contribuie vizibil la societatea daneză.</span><span data-lang="da" class="i">Portrætter, historier og interviews med rumænere, der bidrager synligt til det danske samfund.</span></p></div>
+        <div class="value-item"><h4><span data-lang="ro" class="i">Dezbateri de actualitate</span><span data-lang="da" class="i">Aktuelle debatter</span></h4><p><span data-lang="ro" class="i">Conversații despre subiecte care contează azi — identitate, apartenența, viitorul diasporei, societatea daneză în schimbare.</span><span data-lang="da" class="i">Samtaler om emner der betyder noget i dag — identitet, tilhørsforhold, diasporaens fremtid, det foranderlige danske samfund.</span></p></div>
+        <div class="value-item"><h4><span data-lang="ro" class="i">Tendințe emergente</span><span data-lang="da" class="i">Nye tendenser</span></h4><p><span data-lang="ro" class="i">Explorăm ce e nou și relevant — de la schimbări în politici publice la mișcări culturale care modelează societatea de mâine.</span><span data-lang="da" class="i">Vi udforsker det nye og relevante — fra ændringer i offentlig politik til kulturelle bevægelser, der former morgendagens samfund.</span></p></div>
+        <div class="value-item"><h4><span data-lang="ro" class="i">Prezență, nu proces</span><span data-lang="da" class="i">Tilstedeværelse, ikke proces</span></h4><p><span data-lang="ro" class="i">Românii din Danemarca nu sunt o problemă de rezolvat. Sunt o poveste de spus — și Front Door o spune.</span><span data-lang="da" class="i">Rumænere i Danmark er ikke et problem der skal løses. De er en historie der skal fortælles — og Front Door fortæller den.</span></p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="projects-section s-dark">
+  <div class="wrap">
+    <div class="line-grow"></div>
+    <div data-lang="ro"><p class="label fade-in">În pregătire</p><h2 class="display fade-in d1">Proiecte viitoare</h2><p class="sub fade-in d2">Ce construim acum.</p></div>
+    <div data-lang="da"><p class="label fade-in">Under forberedelse</p><h2 class="display fade-in d1">Kommende projekter</h2><p class="sub fade-in d2">Hvad vi bygger nu.</p></div>
+    <div class="carousel-wrap fade-in d3">
+      <div class="carousel" id="carousel">
+        <div class="project-card" style="opacity:.3;animation:pulse 1.4s ease infinite"><p class="project-card-label" style="background:rgba(255,255,255,.08);height:10px;width:60px;margin-bottom:12px"></p><h3 style="background:rgba(255,255,255,.08);height:18px;width:75%;margin-bottom:8px"></h3><p style="background:rgba(255,255,255,.08);height:11px;width:100%"></p></div>
+      </div>
+      <div class="carousel-nav">
+        <button class="carousel-btn" onclick="scrollCarousel(-1)">←</button>
+        <button class="carousel-btn" onclick="scrollCarousel(1)">→</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="events-section s-light">
+  <div class="wrap">
+    <div class="line-grow" style="background:#000"></div>
+    <div data-lang="ro"><p class="label fade-in">Program</p><h2 class="display fade-in d1">Evenimente viitoare</h2><p class="sub fade-in d2">Dezbateri, portrete og aktuelle arrangementer.</p></div>
+    <div data-lang="da"><p class="label fade-in">Program</p><h2 class="display fade-in d1">Kommende begivenheder</h2><p class="sub fade-in d2">Dezbateri, portrete și evenimente de actualitate.</p></div>
+    <div class="events-grid fade-in d3" id="eventsGrid">
+      <div class="event-card" style="min-height:280px;opacity:.3;animation:pulse 1.4s ease infinite"></div>
+      <div class="event-card" style="min-height:280px;opacity:.3;animation:pulse 1.4s ease infinite;animation-delay:.2s"></div>
+    </div>
+    <div class="btn-center fade-in d3">
+      <a class="btn" href="/events.html"><span data-lang="ro" class="i">Vezi toate evenimentele →</span><span data-lang="da" class="i">Se alle begivenheder →</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="pillar-nav-section s-dark">
+  <div class="wrap">
+    <div class="line-grow"></div>
+    <div data-lang="ro"><h2 class="display fade-in">Ceilalți piloni</h2></div>
+    <div data-lang="da"><h2 class="display fade-in">De andre søjler</h2></div>
+    <div class="pillar-nav fade-in d1">
+      <a class="pillar-nav-card" href="/artistic.html">
+        <div class="pillar-icon">A</div>
+        <div><b><span data-lang="ro" class="i">Artistic</span><span data-lang="da" class="i">Kunstnerisk</span></b><small><span data-lang="ro" class="i">Scenă, vizibilitate, conexiuni</span><span data-lang="da" class="i">Scene, synlighed, forbindelser</span></small></div>
+        <span class="pillar-arrow">→</span>
+      </a>
+      <a class="pillar-nav-card" href="/cultural.html">
+        <div class="pillar-icon">C</div>
+        <div><b><span data-lang="ro" class="i">Cultural</span><span data-lang="da" class="i">Kulturelt</span></b><small><span data-lang="ro" class="i">Ateliere, proiecții, dialog</span><span data-lang="da" class="i">Workshops, visninger, dialog</span></small></div>
+        <span class="pillar-arrow">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <div class="foot-brand">
+      <img src="/assets/logos/white_logo_square_transparent_background.png" alt="">
+      <p>© 2026 Front Door<br>foreningenfrontdoor.dk<br>CVR: 46702697</p>
+    </div>
+    <nav class="foot-links">
+      <a href="/datapolitik.html"><span data-lang="ro" class="i">Politica de date</span><span data-lang="da" class="i">Datapolitik</span></a>
+      <a href="https://www.instagram.com/frontdoor_dk/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.facebook.com/profile.php?id=61593579534677" target="_blank" rel="noopener">Facebook</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+(function(){
+'use strict';
+var lang='ro';
+function setLang(l){lang=l;document.body.className='lang-'+l;document.documentElement.lang=l;document.getElementById('btnRo').classList.toggle('active',l==='ro');document.getElementById('btnDa').classList.toggle('active',l==='da');try{localStorage.setItem('fd-lang',l);}catch(e){}renderEvents(window._events||[]);renderCarousel(window._projects||[]);}
+window.setLang=setLang;
+try{var s=localStorage.getItem('fd-lang');if(s==='da')setLang('da');}catch(e){}
+var toggle=document.getElementById('navToggle'),links=document.getElementById('navLinks');
+toggle.addEventListener('click',function(){var o=links.classList.toggle('is-open');toggle.classList.toggle('is-open',o);toggle.setAttribute('aria-expanded',o?'true':'false');});
+links.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){links.classList.remove('is-open');toggle.classList.remove('is-open');});});
+var ro=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+if(!ro&&'IntersectionObserver' in window){var io=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);}});},{threshold:0.08});document.querySelectorAll('.fade-in,.line-grow').forEach(function(el){io.observe(el);});}else{document.querySelectorAll('.fade-in,.line-grow').forEach(function(el){el.classList.add('visible');});}
+function scrollCarousel(dir){document.getElementById('carousel').scrollBy({left:dir*320,behavior:'smooth'});}
+window.scrollCarousel=scrollCarousel;
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function renderCarousel(projects){var c=document.getElementById('carousel');if(!projects.length){c.innerHTML='<div class="project-card"><p style="color:rgba(255,255,255,.35);font-size:14px">'+(lang==='ro'?'Niciun proiect în pregătire momentan.':'Ingen projekter under forberedelse i øjeblikket.')+'</p></div>';return;}c.innerHTML=projects.map(function(p){var title=lang==='ro'?p.title_ro:p.title_da;var desc=lang==='ro'?p.description_ro:p.description_da;var label=lang==='ro'?(p.label_ro||''):(p.label_da||'');return'<div class="project-card">'+(label?'<p class="project-card-label">'+esc(label)+'</p>':'')+'<h3>'+esc(title)+'</h3><p>'+esc(desc)+'</p>'+(p.signup_url?'<a href="'+esc(p.signup_url)+'" target="_blank" rel="noopener" style="font-size:12px;font-weight:500;color:rgba(255,255,255,.6);border-bottom:1px solid rgba(255,255,255,.2);padding-bottom:2px;margin-top:auto;display:inline-block">'+(lang==='ro'?'Află mai mult →':'Læs mere →')+'</a>':'')+'</div>';}).join('');}
+fetch('/api/projects.php?category=societate').then(function(r){return r.json();}).then(function(data){window._projects=data.projects||[];renderCarousel(window._projects);}).catch(function(){document.getElementById('carousel').innerHTML='<div class="project-card"><p style="color:rgba(255,255,255,.35)">—</p></div>';});
+var months_ro=['ian','feb','mar','apr','mai','iun','iul','aug','sep','oct','nov','dec'];
+var months_da=['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'];
+function fmtDate(ds,ts){var d=new Date(ds+'T00:00:00');var m=lang==='ro'?months_ro[d.getMonth()]:months_da[d.getMonth()];return d.getDate()+' '+m+' '+d.getFullYear()+(ts?' · '+ts.substring(0,5):'');}
+function renderEvents(events){var grid=document.getElementById('eventsGrid');if(!events.length){grid.innerHTML='<div class="events-empty"><p>'+(lang==='ro'?'Nu există evenimente societate programate momentan.':'Ingen samfundsbegivenheder planlagt i øjeblikket.')+'</p></div>';return;}grid.innerHTML=events.map(function(ev){var title=lang==='ro'?ev.title_ro:ev.title_da;var desc=lang==='ro'?ev.description_ro:ev.description_da;var cover=ev.cover_image?'<img src="'+esc(ev.cover_image)+'" alt="'+esc(title)+'" loading="lazy">':'<div class="event-cover-placeholder">SC</div>';var tags=(ev.tags&&ev.tags.length)?'<div class="event-tags">'+ev.tags.map(function(t){return'<span class="event-tag">'+esc(t.name)+'</span>';}).join('')+'</div>':'';var signup=ev.signup_url?'<div class="event-footer"><a class="btn-signup" href="'+esc(ev.signup_url)+'" target="_blank" rel="noopener">'+(lang==='ro'?'Înscrie-te →':'Tilmeld dig →')+'</a></div>':'';return'<article class="event-card"><div class="event-cover">'+cover+'<div class="event-cat-badge">'+(lang==='ro'?'Societate':'Samfund')+'</div>'+(ev.recurring?'<div class="event-recurring-badge">'+(lang==='ro'?'Recurent':'Tilbagevendende')+'</div>':'')+'</div><div class="event-body"><div class="event-date-row">'+fmtDate(ev.date,ev.time)+'</div><h2 class="event-title">'+esc(title)+'</h2>'+(ev.location?'<p class="event-location">'+esc(ev.location)+'</p>':'')+'<p class="event-desc">'+esc(desc)+'</p>'+tags+'</div>'+signup+'</article>';}).join('');}
+fetch('/api/events.php?category=artistic&upcoming=1').then(function(r){return r.json();}).then(function(data){window._events=data.events||[];renderEvents(window._events);}).catch(function(){document.getElementById('eventsGrid').innerHTML='<div class="events-empty"><p>—</p></div>';});
+})();
+</script>
+</body>
+</html>

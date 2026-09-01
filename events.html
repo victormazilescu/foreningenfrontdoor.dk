@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evenimente — Front Door</title>
+<meta name="description" content="Toate evenimentele Front Door — deschise tuturor.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#000;--fg:#fff;--bg-inv:#fff;--fg-inv:#000;--mid:rgba(255,255,255,.45);--rule:rgba(255,255,255,.1);}
+@media(prefers-color-scheme:light){:root{--bg:#fff;--fg:#000;--bg-inv:#000;--fg-inv:#fff;--mid:rgba(0,0,0,.45);--rule:rgba(0,0,0,.1);}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Jost',system-ui,sans-serif;font-weight:400;background:var(--bg);color:var(--fg);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+img{max-width:100%;display:block;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;}
+.wrap{max-width:1100px;margin:0 auto;padding:0 32px;}
+[data-lang]{display:none;}
+.lang-ro [data-lang="ro"]{display:block;}
+.lang-ro [data-lang="ro"].i{display:inline;}
+.lang-da [data-lang="da"]{display:block;}
+.lang-da [data-lang="da"].i{display:inline;}
+.display{font-family:'Nunito',sans-serif;font-weight:900;line-height:1.0;letter-spacing:-.02em;}
+.label{font-family:'Jost',sans-serif;font-weight:300;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--mid);margin-bottom:16px;}
+.lead{font-family:'Jost',sans-serif;font-weight:300;font-size:19px;line-height:1.55;color:var(--mid);max-width:560px;}
+.s-dark{background:#000;color:#fff;}
+.s-light{background:#fff;color:#000;}
+.line-grow{width:0;height:1px;background:currentColor;opacity:.15;transition:width 1.2s cubic-bezier(.16,1,.3,1);margin-bottom:32px;}
+.line-grow.visible{width:100%;}
+.fade-in{opacity:0;transition:opacity .9s cubic-bezier(.2,.6,.2,1);}
+.fade-in.visible{opacity:1;}
+.fade-in.d1{transition-delay:.1s;}
+.fade-in.d2{transition-delay:.2s;}
+@media(prefers-reduced-motion:reduce){.fade-in{opacity:1;transition:none;}.line-grow{width:100%;transition:none;}}
+
+/* HEADER */
+header{position:sticky;top:0;z-index:100;background:#000;border-bottom:1px solid rgba(255,255,255,.1);}
+.nav{display:flex;align-items:center;justify-content:space-between;height:68px;gap:20px;}
+.nav-links{display:flex;gap:28px;font-size:13px;font-weight:400;letter-spacing:.04em;align-items:center;}
+.nav-links a{color:rgba(255,255,255,.45);transition:color .15s;}
+.nav-links a:hover,.nav-links a.active{color:#fff;}
+.nav-links a.don{color:#000;background:#fff;padding:7px 16px;font-weight:500;transition:opacity .15s;}
+.nav-links a.don:hover{opacity:.8;}
+.lang-toggle{display:flex;border:1px solid rgba(255,255,255,.15);overflow:hidden;flex-shrink:0;}
+.lang-toggle button{padding:5px 12px;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;background:transparent;color:rgba(255,255,255,.45);border:none;transition:background .15s,color .15s;}
+.lang-toggle button.active{background:#fff;color:#000;}
+.nav-toggle{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:8px;}
+.nav-toggle span{width:24px;height:1.5px;background:#fff;transition:.25s;}
+.nav-toggle.is-open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+.nav-toggle.is-open span:nth-child(2){opacity:0;}
+.nav-toggle.is-open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
+@media(max-width:860px){
+  .nav-toggle{display:flex;}
+  .nav-links{position:absolute;top:68px;left:0;right:0;flex-direction:column;align-items:flex-start;gap:0;background:#000;border-bottom:1px solid rgba(255,255,255,.1);padding:8px 32px 24px;transform:translateY(-8px);opacity:0;pointer-events:none;transition:transform .2s,opacity .2s;}
+  .nav-links.is-open{transform:translateY(0);opacity:1;pointer-events:auto;}
+  .nav-links a{padding:13px 0;width:100%;border-bottom:1px solid rgba(255,255,255,.08);color:#fff;}
+  .nav-links a.don{margin-top:14px;width:100%;text-align:center;}
+}
+
+/* HERO */
+.hero{padding:96px 0 80px;}
+.hero h1{font-size:clamp(44px,7vw,88px);margin-bottom:20px;}
+.hero h1 em{font-style:normal;display:block;opacity:.35;font-weight:700;font-size:.65em;margin-top:6px;}
+
+/* FILTERS */
+.filters-bar{padding:0 0 48px;display:flex;gap:8px;flex-wrap:wrap;}
+.filter-btn{padding:9px 20px;font-family:'Jost',sans-serif;font-size:13px;font-weight:400;letter-spacing:.06em;border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.5);cursor:pointer;transition:border-color .15s,color .15s,background .15s;}
+.filter-btn:hover{border-color:rgba(255,255,255,.5);color:#fff;}
+.filter-btn.is-active{background:#fff;color:#000;border-color:#fff;}
+
+/* EVENTS SECTION */
+.events-section{padding:0 0 96px;}
+.events-count{font-weight:300;font-size:13px;color:rgba(255,255,255,.3);letter-spacing:.06em;margin-bottom:24px;}
+.events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1px;background:rgba(255,255,255,.1);}
+
+/* EVENT CARD */
+.event-card{background:#000;display:flex;flex-direction:column;transition:background .2s;}
+.event-card:hover{background:#fff;color:#000;}
+.event-cover{position:relative;aspect-ratio:4/3;overflow:hidden;background:#111;}
+.event-cover img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease;}
+.event-card:hover .event-cover img{transform:scale(1.03);}
+.event-cover-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-weight:900;font-size:36px;color:rgba(255,255,255,.1);}
+.event-card:hover .event-cover-placeholder{color:rgba(0,0,0,.1);background:#f0f0f0;}
+.event-cat-badge{position:absolute;top:12px;left:12px;font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;background:rgba(0,0,0,.75);color:#fff;}
+.event-recurring-badge{position:absolute;top:12px;right:12px;font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;background:rgba(0,0,0,.75);color:#fff;}
+.event-status-label{position:absolute;bottom:0;left:0;right:0;text-align:center;padding:6px;font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;}
+.event-card.suspended{opacity:.5;}
+.event-card.suspended .event-status-label{background:rgba(200,80,0,.85);color:#fff;}
+.event-card.cancelled{opacity:.35;}
+.event-card.cancelled .event-status-label{background:rgba(160,30,30,.85);color:#fff;}
+.event-body{padding:22px 20px;flex:1;display:flex;flex-direction:column;gap:6px;}
+.event-date-row{font-size:11px;font-weight:400;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);}
+.event-card:hover .event-date-row{color:rgba(0,0,0,.4);}
+.event-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:18px;letter-spacing:-.015em;line-height:1.2;}
+.event-location{font-size:13px;font-weight:300;color:rgba(255,255,255,.4);}
+.event-card:hover .event-location{color:rgba(0,0,0,.4);}
+.event-desc{font-size:14px;font-weight:300;line-height:1.6;color:rgba(255,255,255,.5);flex:1;}
+.event-card:hover .event-desc{color:rgba(0,0,0,.55);}
+.event-recurring-note{font-size:12px;font-weight:300;color:rgba(255,255,255,.3);}
+.event-card:hover .event-recurring-note{color:rgba(0,0,0,.3);}
+.event-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+.event-tag{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border:1px solid rgba(255,255,255,.15);}
+.event-card:hover .event-tag{border-color:rgba(0,0,0,.15);}
+.event-footer{padding:0 20px 20px;}
+.btn-signup{display:block;width:100%;padding:10px 16px;font-family:'Jost',sans-serif;font-size:12px;font-weight:500;letter-spacing:.08em;text-align:center;border:1px solid rgba(255,255,255,.25);color:inherit;transition:background .15s,color .15s,border-color .15s;}
+.btn-signup:hover{background:#fff;color:#000;border-color:#fff;}
+.event-card:hover .btn-signup{border-color:rgba(0,0,0,.2);}
+.event-card:hover .btn-signup:hover{background:#000;color:#fff;border-color:#000;}
+.events-empty{grid-column:1/-1;text-align:center;padding:72px 24px;border:1px solid rgba(255,255,255,.08);}
+.events-empty h3{font-family:'Nunito',sans-serif;font-weight:900;font-size:22px;letter-spacing:-.015em;margin-bottom:10px;opacity:.45;}
+.events-empty p{font-weight:300;font-size:15px;color:rgba(255,255,255,.35);}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:.6}}
+.skeleton-card{background:#111;animation:pulse 1.6s ease-in-out infinite;}
+.skeleton-cover{aspect-ratio:4/3;background:#1a1a1a;}
+.skeleton-body{padding:20px;display:flex;flex-direction:column;gap:10px;}
+.skeleton-line{height:13px;background:#1a1a1a;}
+.skeleton-line.short{width:50%;}
+.skeleton-line.med{width:78%;}
+.skeleton-line.tall{height:20px;width:90%;}
+
+/* FOOTER */
+footer{padding:48px 0;border-top:1px solid rgba(255,255,255,.1);background:#000;}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;}
+.foot-brand{display:flex;align-items:center;gap:16px;}
+.foot-brand img{height:52px;width:auto;opacity:.6;}
+.foot-brand p{font-size:12px;font-weight:300;color:rgba(255,255,255,.35);line-height:1.7;}
+.foot-links{display:flex;gap:24px;font-size:13px;font-weight:300;}
+.foot-links a{color:rgba(255,255,255,.35);transition:color .15s;}
+.foot-links a:hover{color:#fff;}
+a:focus-visible,button:focus-visible{outline:2px solid #fff;outline-offset:3px;}
+</style>
+</head>
+<body class="lang-ro">
+
+<header>
+  <div class="wrap nav">
+    <a href="/index.html"><img src="/assets/logos/white_logo_square_transparent_background.png" alt="Front Door" style="height:34px;width:auto"></a>
+    <nav class="nav-links" id="navLinks">
+      <a href="/index.html#piloni"><span data-lang="ro" class="i">Piloni</span><span data-lang="da" class="i">Søjler</span></a>
+      <a href="/events.html" class="active"><span data-lang="ro" class="i">Evenimente</span><span data-lang="da" class="i">Begivenheder</span></a>
+      <a href="/index.html#implica-te"><span data-lang="ro" class="i">Implică-te</span><span data-lang="da" class="i">Bliv medlem</span></a>
+      <a href="/transparenta.html"><span data-lang="ro" class="i">Transparență</span><span data-lang="da" class="i">Transparens</span></a>
+      <a href="/index.html#despre"><span data-lang="ro" class="i">Despre</span><span data-lang="da" class="i">Om os</span></a>
+      <a class="don" href="/join.html"><span data-lang="ro" class="i">Devino membru</span><span data-lang="da" class="i">Bliv medlem</span></a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:14px;flex-shrink:0">
+      <div class="lang-toggle">
+        <button id="btnRo" class="active" onclick="setLang('ro')">RO</button>
+        <button id="btnDa" onclick="setLang('da')">DA</button>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-label="Meniu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<section class="hero s-dark">
+  <div class="wrap">
+    <div class="line-grow"></div>
+    <div data-lang="ro">
+      <p class="label fade-in">Program</p>
+      <h1 class="display fade-in d1">Evenimente<br><em>viitoare.</em></h1>
+      <p class="lead fade-in d2">Toate evenimentele Front Door — deschise tuturor.</p>
+    </div>
+    <div data-lang="da">
+      <p class="label fade-in">Program</p>
+      <h1 class="display fade-in d1">Kommende<br><em>begivenheder.</em></h1>
+      <p class="lead fade-in d2">Alle Front Door arrangementer — åbne for alle.</p>
+    </div>
+  </div>
+</section>
+
+<section class="s-dark" style="padding-bottom:0">
+  <div class="wrap">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;padding-bottom:48px" id="filtersWrap">
+      <button class="filter-btn is-active" data-cat="all" onclick="setFilter('all')">
+        <span data-lang="ro" class="i">Toate</span><span data-lang="da" class="i">Alle</span>
+      </button>
+      <button class="filter-btn" data-cat="artistic" onclick="setFilter('artistic')">Artistic</button>
+      <button class="filter-btn" data-cat="cultural" onclick="setFilter('cultural')">Cultural</button>
+      <button class="filter-btn" data-cat="societate" onclick="setFilter('societate')">
+        <span data-lang="ro" class="i">Societate</span><span data-lang="da" class="i">Samfund</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<section class="events-section s-dark">
+  <div class="wrap">
+    <p class="events-count" id="eventsCount"></p>
+    <div class="events-grid" id="eventsGrid">
+      <div class="skeleton-card"><div class="skeleton-cover"></div><div class="skeleton-body"><div class="skeleton-line short"></div><div class="skeleton-line tall"></div><div class="skeleton-line med"></div></div></div>
+      <div class="skeleton-card"><div class="skeleton-cover"></div><div class="skeleton-body"><div class="skeleton-line short"></div><div class="skeleton-line tall"></div><div class="skeleton-line med"></div></div></div>
+      <div class="skeleton-card"><div class="skeleton-cover"></div><div class="skeleton-body"><div class="skeleton-line short"></div><div class="skeleton-line tall"></div><div class="skeleton-line med"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <div class="foot-brand">
+      <img src="/assets/logos/white_logo_square_transparent_background.png" alt="">
+      <p>© 2026 Front Door<br>foreningenfrontdoor.dk<br>CVR: 46702697</p>
+    </div>
+    <nav class="foot-links">
+      <a href="/datapolitik.html"><span data-lang="ro" class="i">Politica de date</span><span data-lang="da" class="i">Datapolitik</span></a>
+      <a href="https://www.instagram.com/frontdoor_dk/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.facebook.com/profile.php?id=61593579534677" target="_blank" rel="noopener">Facebook</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+(function(){
+'use strict';
+var lang='ro', currentFilter='all', allEvents=[];
+
+function setLang(l){lang=l;document.body.className='lang-'+l;document.documentElement.lang=l;document.getElementById('btnRo').classList.toggle('active',l==='ro');document.getElementById('btnDa').classList.toggle('active',l==='da');try{localStorage.setItem('fd-lang',l);}catch(e){}renderEvents(allEvents);updateCount();}
+window.setLang=setLang;
+try{var saved=localStorage.getItem('fd-lang');if(saved==='da')setLang('da');}catch(e){}
+
+var toggle=document.getElementById('navToggle'),links=document.getElementById('navLinks');
+toggle.addEventListener('click',function(){var o=links.classList.toggle('is-open');toggle.classList.toggle('is-open',o);toggle.setAttribute('aria-expanded',o?'true':'false');});
+links.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){links.classList.remove('is-open');toggle.classList.remove('is-open');});});
+
+function setFilter(cat){currentFilter=cat;document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.toggle('is-active',b.getAttribute('data-cat')===cat);});renderEvents(allEvents);updateCount();}
+window.setFilter=setFilter;
+function filtered(){if(currentFilter==='all')return allEvents;return allEvents.filter(function(e){return e.category===currentFilter;});}
+
+function formatDate(ds,ts){var d=new Date(ds+'T00:00:00');var mr=['ian','feb','mar','apr','mai','iun','iul','aug','sep','oct','nov','dec'];var md=['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'];return{day:d.getDate(),month:lang==='ro'?mr[d.getMonth()]:md[d.getMonth()],year:d.getFullYear(),time:ts?ts.substring(0,5):null};}
+
+var catLabel={ro:{artistic:'Artistic',cultural:'Cultural',societate:'Societate'},da:{artistic:'Kunstnerisk',cultural:'Kulturelt',societate:'Samfund'}};
+var recurLabel={ro:'Recurent',da:'Tilbagevendende'};
+var signupLabel={ro:'Înscrie-te →',da:'Tilmeld dig →'};
+var emptyLabel={ro:{h:'Niciun eveniment',p:'Nu există evenimente în această categorie momentan.'},da:{h:'Ingen begivenheder',p:'Der er ingen arrangementer i denne kategori i øjeblikket.'}};
+var countLabel={ro:function(n){return n+(n===1?' eveniment':' evenimente');},da:function(n){return n+(n===1?' begivenhed':' begivenheder');}};
+var statusLabel={ro:{suspended:'Suspendat',cancelled:'Anulat'},da:{suspended:'Suspenderet',cancelled:'Aflyst'}};
+
+function escHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function renderEvents(events){
+  var list=filtered();
+  var grid=document.getElementById('eventsGrid');
+  grid.innerHTML='';
+  if(!list.length){var em=emptyLabel[lang];grid.innerHTML='<div class="events-empty"><h3>'+em.h+'</h3><p>'+em.p+'</p></div>';return;}
+  list.forEach(function(ev){
+    var df=formatDate(ev.date,ev.time);
+    var title=lang==='ro'?ev.title_ro:ev.title_da;
+    var desc=lang==='ro'?ev.description_ro:ev.description_da;
+    var cat=catLabel[lang][ev.category]||ev.category;
+    var isSusp=ev.status==='suspended', isCan=ev.status==='cancelled';
+    var cover=ev.cover_image?'<img src="'+ev.cover_image+'" alt="'+escHtml(title)+'" loading="lazy">'
+      :'<div class="event-cover-placeholder">'+ev.category.substring(0,2).toUpperCase()+'</div>';
+    var status=(isSusp||isCan)?'<div class="event-status-label">'+statusLabel[lang][ev.status]+'</div>':'';
+    var recBadge=ev.recurring?'<div class="event-recurring-badge">'+recurLabel[lang]+'</div>':'';
+    var recNote=(ev.recurring&&ev.recurring_rule)?'<p class="event-recurring-note">↺ '+escHtml(ev.recurring_rule)+'</p>':'';
+    var loc=ev.location?'<p class="event-location">'+escHtml(ev.location)+'</p>':'';
+    var tags=(ev.tags&&ev.tags.length)?'<div class="event-tags">'+ev.tags.map(function(t){return'<span class="event-tag">'+escHtml(t.name)+'</span>';}).join('')+'</div>':'';
+    var signup=(ev.signup_url&&!isCan)?'<div class="event-footer"><a class="btn-signup" href="'+escHtml(ev.signup_url)+'" target="_blank" rel="noopener">'+signupLabel[lang]+'</a></div>':'';
+    var card=document.createElement('article');
+    card.className='event-card'+(isSusp?' suspended':'')+(isCan?' cancelled':'');
+    card.innerHTML='<div class="event-cover">'+cover+'<div class="event-cat-badge">'+cat+'</div>'+recBadge+status+'</div>'
+      +'<div class="event-body"><div class="event-date-row">'+df.day+' '+df.month+' '+df.year+(df.time?' · '+df.time:'')+'</div>'
+      +'<h2 class="event-title">'+escHtml(title)+'</h2>'+loc+'<p class="event-desc">'+escHtml(desc)+'</p>'+recNote+tags+'</div>'+signup;
+    grid.appendChild(card);
+  });
+}
+
+function updateCount(){var n=filtered().length;var el=document.getElementById('eventsCount');if(allEvents.length)el.textContent=countLabel[lang](n);}
+
+// Scroll animations
+var rm=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+if(!rm&&'IntersectionObserver' in window){var io=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);}});},{threshold:0.08});document.querySelectorAll('.fade-in,.line-grow').forEach(function(el){io.observe(el);});}
+else{document.querySelectorAll('.fade-in,.line-grow').forEach(function(el){el.classList.add('visible');});}
+
+fetch('/api/events.php?upcoming=1')
+  .then(function(r){return r.json();})
+  .then(function(data){allEvents=data.events||[];renderEvents(allEvents);updateCount();})
+  .catch(function(){document.getElementById('eventsGrid').innerHTML='<div class="events-empty"><h3>Eroare</h3><p>Nu am putut încărca evenimentele.</p></div>';});
+})();
+</script>
+</body>
+</html>

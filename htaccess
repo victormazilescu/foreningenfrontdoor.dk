@@ -1,0 +1,29 @@
+Options -Indexes
+
+# ── HTTPS redirect ────────────────────────────────────────────
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# ── www → non-www (opțional, dacă vrei fără www) ─────────────
+RewriteCond %{HTTP_HOST} ^www\.foreningenfrontdoor\.dk [NC]
+RewriteRule ^(.*)$ https://foreningenfrontdoor.dk/$1 [L,R=301]
+
+# ── Securitate de bază ────────────────────────────────────────
+# Blochează accesul direct la fișierele PHP din admin dacă nu ești logat
+# (autentificarea e gestionată de PHP, nu de .htaccess)
+
+# Ascunde .htaccess însuși
+<Files ".htaccess">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Nu permite listarea directoarelor
+Options -Indexes
+
+# Protejează fișierele sensibile
+<FilesMatch "\.(sql|log|env|bak|sh)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>

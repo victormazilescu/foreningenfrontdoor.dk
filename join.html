@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bliv medlem / Devino membru — Front Door</title>
+<meta name="description" content="Bliv medlem af Front Door — en rumænsk-dansk forening for kultur, kunst og samfund.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#000;--fg:#fff;--mid:rgba(255,255,255,.45);--rule:rgba(255,255,255,.1);}
+@media(prefers-color-scheme:light){:root{--bg:#fff;--fg:#000;--mid:rgba(0,0,0,.45);--rule:rgba(0,0,0,.1);}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Jost',system-ui,sans-serif;font-weight:400;background:#000;color:#fff;font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+img{max-width:100%;display:block;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;}
+.wrap{max-width:1100px;margin:0 auto;padding:0 32px;}
+[data-lang]{display:none;}
+.lang-ro [data-lang="ro"]{display:block;}
+.lang-ro [data-lang="ro"].i{display:inline;}
+.lang-da [data-lang="da"]{display:block;}
+.lang-da [data-lang="da"].i{display:inline;}
+.display{font-family:'Nunito',sans-serif;font-weight:900;line-height:1.0;letter-spacing:-.02em;}
+.label{font-family:'Jost',sans-serif;font-weight:300;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:16px;}
+.line-grow{width:0;height:1px;background:#fff;opacity:.12;transition:width 1.2s cubic-bezier(.16,1,.3,1);margin-bottom:32px;}
+.line-grow.visible{width:100%;}
+.fade-in{opacity:0;transition:opacity .9s cubic-bezier(.2,.6,.2,1);}
+.fade-in.visible{opacity:1;}
+.fade-in.d1{transition-delay:.1s;}
+.fade-in.d2{transition-delay:.2s;}
+@media(prefers-reduced-motion:reduce){.fade-in{opacity:1;}.line-grow{width:100%;}}
+
+/* HEADER */
+header{position:sticky;top:0;z-index:100;background:#000;border-bottom:1px solid rgba(255,255,255,.1);}
+.nav{display:flex;align-items:center;justify-content:space-between;height:68px;gap:20px;}
+.nav-links{display:flex;gap:28px;font-size:13px;font-weight:400;letter-spacing:.04em;align-items:center;}
+.nav-links a{color:rgba(255,255,255,.45);transition:color .15s;}
+.nav-links a:hover,.nav-links a.active{color:#fff;}
+.nav-links a.don{color:#000;background:#fff;padding:7px 16px;font-weight:500;transition:opacity .15s;}
+.nav-links a.don:hover{opacity:.8;}
+.lang-toggle{display:flex;border:1px solid rgba(255,255,255,.15);overflow:hidden;flex-shrink:0;}
+.lang-toggle button{padding:5px 12px;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;background:transparent;color:rgba(255,255,255,.45);border:none;transition:background .15s,color .15s;}
+.lang-toggle button.active{background:#fff;color:#000;}
+.nav-toggle{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:8px;}
+.nav-toggle span{width:24px;height:1.5px;background:#fff;transition:.25s;}
+.nav-toggle.is-open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+.nav-toggle.is-open span:nth-child(2){opacity:0;}
+.nav-toggle.is-open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
+@media(max-width:860px){
+  .nav-toggle{display:flex;}
+  .nav-links{position:absolute;top:68px;left:0;right:0;flex-direction:column;align-items:flex-start;gap:0;background:#000;border-bottom:1px solid rgba(255,255,255,.1);padding:8px 32px 24px;transform:translateY(-8px);opacity:0;pointer-events:none;transition:transform .2s,opacity .2s;}
+  .nav-links.is-open{transform:translateY(0);opacity:1;pointer-events:auto;}
+  .nav-links a{padding:13px 0;width:100%;border-bottom:1px solid rgba(255,255,255,.08);color:#fff;}
+  .nav-links a.don{margin-top:14px;width:100%;text-align:center;}
+}
+
+/* HERO */
+.hero{padding:96px 0 80px;}
+.hero h1{font-size:clamp(40px,6vw,72px);margin-bottom:20px;}
+.hero h1 em{font-style:normal;display:block;opacity:.35;font-weight:700;font-size:.65em;margin-top:6px;}
+.hero-lead{font-family:'Jost',sans-serif;font-weight:300;font-size:18px;line-height:1.6;color:rgba(255,255,255,.5);max-width:520px;}
+
+/* FORM SECTION */
+.form-section{padding:0 0 96px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start;}
+@media(max-width:860px){.form-grid{grid-template-columns:1fr;gap:48px;}}
+
+/* INFO CARD */
+.info-card{border:1px solid rgba(255,255,255,.1);padding:32px;}
+.info-card h3{font-family:'Nunito',sans-serif;font-weight:900;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:20px;}
+.info-item{padding:16px 0;border-bottom:1px solid rgba(255,255,255,.08);}
+.info-item:last-child{border-bottom:none;padding-bottom:0;}
+.info-item-label{font-size:10px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.3);display:block;margin-bottom:5px;}
+.info-item-value{font-family:'Nunito',sans-serif;font-weight:700;font-size:17px;letter-spacing:-.01em;display:block;margin-bottom:3px;}
+.info-item-note{font-weight:300;font-size:14px;line-height:1.65;color:rgba(255,255,255,.45);display:block;}
+.info-item-note a{color:#fff;border-bottom:1px solid rgba(255,255,255,.25);}
+
+/* FORM */
+.field{display:flex;flex-direction:column;gap:0;margin-bottom:22px;}
+.field-label{font-family:'Nunito',sans-serif;font-weight:700;font-size:15px;letter-spacing:-.01em;margin-bottom:3px;}
+.field-sublabel{font-size:12px;font-weight:300;color:rgba(255,255,255,.35);font-style:italic;margin-bottom:9px;}
+.field input,.field select,.field textarea{padding:12px 16px;font-size:15px;font-family:'Jost',sans-serif;font-weight:400;background:transparent;border:1px solid rgba(255,255,255,.2);color:#fff;transition:border-color .15s;}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:#fff;}
+.field textarea{resize:vertical;min-height:100px;}
+.field select option{background:#000;}
+.field-opt{font-size:11px;font-weight:300;color:rgba(255,255,255,.25);margin-top:5px;letter-spacing:.04em;}
+
+/* CONSENT */
+.consent-wrap{border:1px solid rgba(255,255,255,.1);padding:18px;margin-bottom:22px;}
+.consent-check{display:flex;align-items:flex-start;gap:12px;cursor:pointer;}
+.consent-check input[type=checkbox]{width:16px;height:16px;accent-color:#fff;flex-shrink:0;margin-top:2px;cursor:pointer;}
+.consent-text{font-size:13px;font-weight:300;color:rgba(255,255,255,.5);line-height:1.65;}
+.consent-text a{color:#fff;border-bottom:1px solid rgba(255,255,255,.25);}
+
+/* SUBMIT */
+.submit-btn{padding:14px 32px;font-family:'Nunito',sans-serif;font-weight:900;font-size:14px;letter-spacing:.04em;background:#fff;color:#000;border:none;cursor:pointer;transition:opacity .15s;width:100%;}
+.submit-btn:hover{opacity:.85;}
+.submit-btn:disabled{opacity:.4;cursor:not-allowed;}
+
+/* MESSAGES */
+.msg-box{padding:16px 20px;border:1px solid;margin-bottom:20px;font-size:14px;font-weight:300;line-height:1.6;}
+.msg-ok{border-color:rgba(255,255,255,.3);color:rgba(255,255,255,.7);background:rgba(255,255,255,.05);}
+.msg-err{border-color:rgba(200,50,50,.5);color:rgba(255,150,150,.9);background:rgba(200,50,50,.08);}
+
+/* FOOTER */
+footer{padding:48px 0;border-top:1px solid rgba(255,255,255,.1);background:#000;}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;}
+.foot-brand{display:flex;align-items:center;gap:16px;}
+.foot-brand img{height:52px;width:auto;opacity:.6;}
+.foot-brand p{font-size:12px;font-weight:300;color:rgba(255,255,255,.35);line-height:1.7;}
+.foot-links{display:flex;gap:24px;font-size:13px;font-weight:300;}
+.foot-links a{color:rgba(255,255,255,.35);transition:color .15s;}
+.foot-links a:hover{color:#fff;}
+a:focus-visible,button:focus-visible{outline:2px solid #fff;outline-offset:3px;}
+</style>
+</head>
+<body class="lang-da">
+
+<header>
+  <div class="wrap nav">
+    <a href="/index.html"><img src="/assets/logos/white_logo_square_transparent_background.png" alt="Front Door" style="height:34px;width:auto"></a>
+    <nav class="nav-links" id="navLinks">
+      <a href="/index.html#piloni"><span data-lang="ro" class="i">Piloni</span><span data-lang="da" class="i">Søjler</span></a>
+      <a href="/events.html"><span data-lang="ro" class="i">Evenimente</span><span data-lang="da" class="i">Begivenheder</span></a>
+      <a href="/transparenta.html"><span data-lang="ro" class="i">Transparență</span><span data-lang="da" class="i">Transparens</span></a>
+      <a href="/index.html#despre"><span data-lang="ro" class="i">Despre</span><span data-lang="da" class="i">Om os</span></a>
+      <a class="don active" href="/join.html"><span data-lang="ro" class="i">Devino membru</span><span data-lang="da" class="i">Bliv medlem</span></a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:14px;flex-shrink:0">
+      <div class="lang-toggle">
+        <button id="btnRo" onclick="setLang('ro')">RO</button>
+        <button id="btnDa" class="active" onclick="setLang('da')">DA</button>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-label="Meniu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="line-grow"></div>
+    <div data-lang="da">
+      <p class="label fade-in">Membership</p>
+      <h1 class="display fade-in d1">Bliv en del af<br><em>Front Door.</em></h1>
+      <p class="hero-lead fade-in d2">Udfyld formularen, og vi kontakter dig inden for 5 hverdage.</p>
+    </div>
+    <div data-lang="ro">
+      <p class="label fade-in">Membership</p>
+      <h1 class="display fade-in d1">Devino parte din<br><em>Front Door.</em></h1>
+      <p class="hero-lead fade-in d2">Completează formularul și te contactăm în termen de 5 zile lucrătoare.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FORM + INFO -->
+<section class="form-section">
+  <div class="wrap">
+    <div class="form-grid">
+
+      <!-- INFO -->
+      <div class="info-card fade-in">
+        <div data-lang="da">
+          <h3>Om medlemskab</h3>
+          <div class="info-item">
+            <span class="info-item-label">Kontingent</span>
+            <span class="info-item-value">260 DKK / år</span>
+            <span class="info-item-note">Frivillige, der bidrager til foreningens aktiviteter efter særskilt aftale med bestyrelsen, er kontingentfrie.</span>
+          </div>
+          <div class="info-item">
+            <span class="info-item-label">Hvem kan blive medlem?</span>
+            <span class="info-item-value">Alle er velkomne</span>
+            <span class="info-item-note">Foreningen er åben for alle, der støtter vores formål — uanset nationalitet, baggrund eller erfaring.</span>
+          </div>
+          <div class="info-item">
+            <span class="info-item-label">Hvad sker der herefter?</span>
+            <span class="info-item-note">Vi bekræfter din ansøgning inden for 5 hverdage. Betaling af kontingent aftales personligt med bestyrelsen efter godkendelse.</span>
+          </div>
+          <div class="info-item">
+            <span class="info-item-label">Spørgsmål?</span>
+            <span class="info-item-note"><a href="mailto:office@foreningenfrontdoor.dk">office@foreningenfrontdoor.dk</a></span>
+          </div>
+        </div>
+        <div data-lang="ro">
+          <h3>Despre membership</h3>
+          <div class="info-item">
+            <span class="info-item-label">Cotizație anuală</span>
+            <span class="info-item-value">260 DKK / an</span>
+            <span class="info-item-note">Voluntarii care contribuie la activitățile asociației pe baza unei înțelegeri separate cu consiliul sunt scutiți de cotizație.</span>
+          </div>
+          <div class="info-item">
+            <span class="info-item-label">Cine poate deveni membru?</span>
+            <span class="info-item-value">Toți sunt bineveniți</span>
+            <span class="info-item-note">Asociația e deschisă oricui susține scopurile noastre — indiferent de naționalitate, background sau experiență.</span>
+          </div>
+          <div class="info-item">
+            <span class="info-item-label">Ce urmează?</span>
+            <span class="info-item-note">Confirmăm cererea ta în 5 zile lucrătoare. Plata cotizației se stabilește personal cu consiliul după aprobarea cererii.</span>
+          </div>
+          <div class="info-item">
+            <span class="info-item-label">Întrebări?</span>
+            <span class="info-item-note"><a href="mailto:office@foreningenfrontdoor.dk">office@foreningenfrontdoor.dk</a></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- FORM -->
+      <div>
+        <div id="formSuccess" class="msg-box msg-ok" style="display:none"></div>
+        <div id="formError" class="msg-box msg-err" style="display:none"></div>
+        <form id="memberForm">
+
+          <div class="field">
+            <div class="field-label"><span data-lang="da" class="i">Fulde navn</span><span data-lang="ro" class="i">Nume complet</span> *</div>
+            <div class="field-sublabel"><span data-lang="da" class="i">Dit fulde navn</span><span data-lang="ro" class="i">Numele tău complet</span></div>
+            <input type="text" name="name" required autocomplete="name" placeholder="Fornavn Efternavn">
+          </div>
+
+          <div class="field">
+            <div class="field-label"><span data-lang="da" class="i">E-mailadresse</span><span data-lang="ro" class="i">Adresă de email</span> *</div>
+            <div class="field-sublabel"><span data-lang="da" class="i">Vi sender bekræftelse hertil</span><span data-lang="ro" class="i">Trimitem confirmarea aici</span></div>
+            <input type="email" name="email" required autocomplete="email" placeholder="din@email.dk">
+          </div>
+
+          <div class="field">
+            <div class="field-label"><span data-lang="da" class="i">Telefonnummer</span><span data-lang="ro" class="i">Număr de telefon</span></div>
+            <div class="field-sublabel"><span data-lang="da" class="i">Valgfrit</span><span data-lang="ro" class="i">Opțional</span></div>
+            <input type="tel" name="phone" autocomplete="tel" placeholder="+45 xx xx xx xx">
+          </div>
+
+          <div class="field">
+            <div class="field-label"><span data-lang="da" class="i">By / område i Danmark</span><span data-lang="ro" class="i">Oraș / zonă în Danemarca</span> *</div>
+            <div class="field-sublabel"><span data-lang="da" class="i">Hvor bor du?</span><span data-lang="ro" class="i">Unde locuiești?</span></div>
+            <input type="text" name="city" required placeholder="ex: København, Frederiksberg...">
+          </div>
+
+          <div class="field">
+            <div class="field-label"><span data-lang="da" class="i">Hvordan hørte du om os?</span><span data-lang="ro" class="i">De unde ai aflat despre noi?</span></div>
+            <div class="field-sublabel"><span data-lang="da" class="i">Valgfrit</span><span data-lang="ro" class="i">Opțional</span></div>
+            <select name="source">
+              <option value="">—</option>
+              <option value="instagram">Instagram</option>
+              <option value="facebook">Facebook</option>
+              <option value="ven">Anbefaling fra ven / Recomandare</option>
+              <option value="event">Arrangement / Eveniment</option>
+              <option value="andet">Andet / Altceva</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <div class="field-label"><span data-lang="da" class="i">Besked</span><span data-lang="ro" class="i">Mesaj</span></div>
+            <div class="field-sublabel"><span data-lang="da" class="i">Fortæl os lidt om dig selv</span><span data-lang="ro" class="i">Spune-ne câte ceva despre tine</span></div>
+            <textarea name="message" placeholder="..."></textarea>
+          </div>
+
+          <div class="consent-wrap">
+            <label class="consent-check">
+              <input type="checkbox" name="consent" required>
+              <span class="consent-text">
+                <span data-lang="da" class="i">Jeg accepterer, at Front Door opbevarer mine oplysninger med henblik på behandling af min ansøgning. Oplysningerne behandles i overensstemmelse med vores <a href="/datapolitik.html" target="_blank">datapolitik</a> og slettes senest 2 år efter eventuel udmeldelse.</span>
+                <span data-lang="ro" class="i">Accept că Front Door stochează datele mele în scopul procesării cererii de membership, conform <a href="/datapolitik.html" target="_blank">politicii de date</a>, și vor fi șterse cel târziu la 2 ani după eventuala retragere.</span>
+              </span>
+            </label>
+          </div>
+
+          <button type="submit" class="submit-btn" id="submitBtn">
+            <span data-lang="da" class="i">Send ansøgning →</span>
+            <span data-lang="ro" class="i">Trimite cererea →</span>
+          </button>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <div class="foot-brand">
+      <img src="/assets/logos/white_logo_square_transparent_background.png" alt="">
+      <p>© 2026 Front Door<br>foreningenfrontdoor.dk<br>CVR: 46702697</p>
+    </div>
+    <nav class="foot-links">
+      <a href="/datapolitik.html"><span data-lang="ro" class="i">Politica de date</span><span data-lang="da" class="i">Datapolitik</span></a>
+      <a href="https://www.instagram.com/frontdoor_dk/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.facebook.com/profile.php?id=61593579534677" target="_blank" rel="noopener">Facebook</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+var lang='da';
+function setLang(l){lang=l;document.body.className='lang-'+l;document.documentElement.lang=l;document.getElementById('btnRo').classList.toggle('active',l==='ro');document.getElementById('btnDa').classList.toggle('active',l==='da');try{localStorage.setItem('fd-lang',l);}catch(e){}}
+window.setLang=setLang;
+try{var s=localStorage.getItem('fd-lang');if(s==='ro')setLang('ro');}catch(e){}
+
+var toggle=document.getElementById('navToggle'),links=document.getElementById('navLinks');
+toggle.addEventListener('click',function(){var o=links.classList.toggle('is-open');toggle.classList.toggle('is-open',o);toggle.setAttribute('aria-expanded',o?'true':'false');});
+links.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){links.classList.remove('is-open');toggle.classList.remove('is-open');});});
+
+var rm=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+if(!rm&&'IntersectionObserver' in window){var io=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);}});},{threshold:0.08});document.querySelectorAll('.fade-in,.line-grow').forEach(function(el){io.observe(el);});}
+else{document.querySelectorAll('.fade-in,.line-grow').forEach(function(el){el.classList.add('visible');});}
+
+document.getElementById('memberForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  var btn=document.getElementById('submitBtn');
+  btn.disabled=true;
+  btn.textContent=lang==='da'?'Sender...':'Se trimite...';
+  var data=new FormData(this);
+  data.append('lang',lang);
+  fetch('/join-submit.php',{method:'POST',body:data})
+    .then(function(r){return r.json();})
+    .then(function(res){
+      if(res.ok){
+        document.getElementById('memberForm').style.display='none';
+        var box=document.getElementById('formSuccess');
+        box.style.display='block';
+        box.textContent=lang==='da'
+          ?'Tak for din ansøgning! Vi vender tilbage inden for 5 hverdage.'
+          :'Mulțumim pentru cerere! Te contactăm în termen de 5 zile lucrătoare.';
+      } else {
+        var box=document.getElementById('formError');
+        box.style.display='block';
+        box.textContent=lang==='da'
+          ?(res.msg||'Noget gik galt. Prøv igen eller skriv til office@foreningenfrontdoor.dk.')
+          :(res.msg||'Ceva a mers greșit. Încearcă din nou sau scrie la office@foreningenfrontdoor.dk.');
+        btn.disabled=false;
+        btn.textContent=lang==='da'?'Send ansøgning →':'Trimite cererea →';
+      }
+    })
+    .catch(function(){
+      var box=document.getElementById('formError');
+      box.style.display='block';
+      box.textContent=lang==='da'?'Forbindelsesfejl. Skriv til office@foreningenfrontdoor.dk.':'Eroare de conexiune. Scrie la office@foreningenfrontdoor.dk.';
+      btn.disabled=false;
+    });
+});
+</script>
+</body>
+</html>
