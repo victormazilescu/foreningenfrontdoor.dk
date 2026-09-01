@@ -1,10 +1,15 @@
 <?php
 require_once __DIR__ . '/auth.php';
-$user   = require_login();
+$user   = require_perm('events', 'view');
 $pdo    = get_db();
 $id     = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $is_new = $id === 0;
 $errors = [];
+
+if ($is_new && !has_perm($user, 'events', 'create')) {
+    flash('error', 'Nu poți crea evenimente noi.');
+    header('Location: /admin/events.php'); exit;
+}
 
 $all_tags      = $pdo->query('SELECT * FROM tags ORDER BY sort_order ASC, name ASC')->fetchAll();
 $selected_tags = [];

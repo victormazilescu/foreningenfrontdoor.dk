@@ -1,10 +1,15 @@
 <?php
 require_once __DIR__ . '/auth.php';
-$user   = require_director();
+$user   = require_perm('projects', 'view');
 $pdo    = get_db();
 $id     = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $is_new = $id === 0;
 $errors = [];
+
+if (!has_perm($user, 'projects', $is_new ? 'create' : 'edit')) {
+    flash('error', $is_new ? 'Nu poți crea proiecte noi.' : 'Nu poți edita acest proiect.');
+    header('Location: /admin/projects.php'); exit;
+}
 
 $all_tags      = $pdo->query('SELECT * FROM tags ORDER BY sort_order ASC, name ASC')->fetchAll();
 $selected_tags = [];

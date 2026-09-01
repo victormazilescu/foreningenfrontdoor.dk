@@ -1,11 +1,16 @@
 <?php
 require_once __DIR__ . '/auth.php';
-$user   = require_login();
+$user   = require_perm('topics', 'view');
 $pdo    = get_db();
 $id     = isset($_GET['id'])      ? (int)$_GET['id']      : 0;
 $mid    = isset($_GET['meeting']) ? (int)$_GET['meeting']  : 0;
 $is_new = $id === 0;
 $errors = [];
+
+if ($is_new && !has_perm($user, 'topics', 'propose')) {
+    flash('error', 'Nu poți propune subiecte noi.');
+    header('Location: /admin/topics.php'); exit;
+}
 
 // Verifică meeting deschis
 $meeting = null;
@@ -26,7 +31,7 @@ $pr = ['title'=>'','description'=>'','category'=>'altul'];
 if (!$is_new) {
     $stmt = $pdo->prepare('SELECT * FROM bf_proposals WHERE id=?');
     $stmt->execute([$id]); $row = $stmt->fetch();
-    if (!$row || (int)$row['user_id'] !== (int)$user['id']) {
+    if (!$row || (int)$row['user_id'] !== (int)$user['id'] || !has_perm($user, 'topics', 'edit_own')) {
         flash('error','Nu poți edita această propunere.');
         header('Location: /admin/topics.php?meeting='.$mid); exit;
     }

@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/auth.php';
-$user = require_login();
+$user = require_perm('topics', 'view');
 $pdo  = get_db();
 $mid  = isset($_GET['meeting']) ? (int)$_GET['meeting'] : 0;
 

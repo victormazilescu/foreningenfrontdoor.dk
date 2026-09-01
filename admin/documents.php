@@ -1,7 +1,8 @@
 <?php
 require_once __DIR__ . '/auth.php';
-$user = require_director();
-$pdo  = get_db();
+$user       = require_perm('documents', 'view');
+$can_manage = has_perm($user, 'documents', 'manage');
+$pdo        = get_db();
 
 define('UPLOAD_DIR', dirname(__DIR__) . '/assets/documents/');
 define('UPLOAD_URL', '/assets/documents/');
@@ -11,6 +12,10 @@ if (!is_dir(UPLOAD_DIR)) mkdir(UPLOAD_DIR, 0755, true);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_verify();
+    if (!$can_manage) {
+        http_response_code(403);
+        die('Nu ai permisiunea de a gestiona documentele.');
+    }
     $action = $_POST['action'] ?? '';
 
     if ($action === 'add') {
@@ -97,6 +102,7 @@ layout_head('Documente', 'documents');
   </div>
 
   <!-- UPLOAD -->
+  <?php if ($can_manage): ?>
   <div class="form-section">
     <div class="section-label">Document nou</div>
     <form method="post" enctype="multipart/form-data">
@@ -141,6 +147,7 @@ layout_head('Documente', 'documents');
       <button class="btn btn-solid" type="submit">Încarcă documentul</button>
     </form>
   </div>
+  <?php endif; ?>
 
   <!-- LISTA -->
   <div class="form-section">
@@ -175,6 +182,7 @@ layout_head('Documente', 'documents');
               <td>
                 <div class="actions">
                   <a class="btn btn-ghost btn-xs" href="<?= e($doc['file_path']) ?>" target="_blank">↗ PDF</a>
+                  <?php if ($can_manage): ?>
                   <form method="post" style="display:inline">
                     <input type="hidden" name="csrf" value="<?= csrf_token() ?>">
                     <input type="hidden" name="action" value="toggle_public">
@@ -187,6 +195,7 @@ layout_head('Documente', 'documents');
                     <input type="hidden" name="doc_id" value="<?= (int)$doc['id'] ?>">
                     <button class="btn btn-danger btn-xs" type="submit">Șterge</button>
                   </form>
+                  <?php endif; ?>
                 </div>
               </td>
             </tr>

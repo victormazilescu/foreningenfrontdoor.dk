@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/auth.php';
-$user = require_director(); // doar admins
+$user = require_perm('projects', 'view');
 $pdo  = get_db();
 
 $filter_cat    = $_GET['category'] ?? '';
@@ -21,7 +21,9 @@ layout_head('Proiecte','projects');
   <?php if ($flash): ?><div class="flash flash-<?= e($flash['type']) ?>"><?= e($flash['msg']) ?></div><?php endif; ?>
   <div class="page-head">
     <h1>Proiecte</h1>
-    <a class="btn btn-solid" href="/admin/project-edit.php">+ Proiect nou</a>
+    <?php if (has_perm($user, 'projects', 'create')): ?>
+      <a class="btn btn-solid" href="/admin/project-edit.php">+ Proiect nou</a>
+    <?php endif; ?>
   </div>
   <div class="filters">
     <form style="display:contents" method="get">
@@ -42,7 +44,9 @@ layout_head('Proiecte','projects');
     </form>
   </div>
   <?php if(empty($projects)): ?>
-    <div class="empty">Niciun proiect. <a href="/admin/project-edit.php">Adaugă primul →</a></div>
+    <div class="empty">Niciun proiect.
+      <?php if (has_perm($user, 'projects', 'create')): ?><a href="/admin/project-edit.php">Adaugă primul →</a><?php endif; ?>
+    </div>
   <?php else: ?>
   <div class="table-wrap">
     <table>
@@ -59,15 +63,19 @@ layout_head('Proiecte','projects');
           <td><span class="badge" style="color:<?=$s['color']?>;background:<?=$s['color']?>22"><?=e($s['label'])?></span></td>
           <td>
             <div class="actions">
-              <a class="btn btn-ghost btn-xs" href="/admin/project-edit.php?id=<?=(int)$pr['id']?>">Editează</a>
+              <?php if (has_perm($user, 'projects', 'edit')): ?>
+                <a class="btn btn-ghost btn-xs" href="/admin/project-edit.php?id=<?=(int)$pr['id']?>">Editează</a>
+              <?php endif; ?>
               <a class="btn btn-ghost btn-xs" href="/admin/social.php?project=<?=(int)$pr['id']?>">📢 Social</a>
-              <?php if($pr['status']!=='completed'): ?>
-                <a class="btn btn-green btn-xs" href="/admin/project-action.php?action=complete&id=<?=(int)$pr['id']?>&csrf=<?=csrf_token()?>" onclick="return confirm('Marchezi ca finalizat?')">Finalizează</a>
+              <?php if (has_perm($user, 'projects', 'manage')): ?>
+                <?php if($pr['status']!=='completed'): ?>
+                  <a class="btn btn-green btn-xs" href="/admin/project-action.php?action=complete&id=<?=(int)$pr['id']?>&csrf=<?=csrf_token()?>" onclick="return confirm('Marchezi ca finalizat?')">Finalizează</a>
+                <?php endif; ?>
+                <?php if($pr['status']!=='cancelled'): ?>
+                  <a class="btn btn-danger btn-xs" href="/admin/project-action.php?action=cancel&id=<?=(int)$pr['id']?>&csrf=<?=csrf_token()?>" onclick="return confirm('Anulezi?')">Anulează</a>
+                <?php endif; ?>
+                <a class="btn btn-danger btn-xs" href="/admin/project-action.php?action=delete&id=<?=(int)$pr['id']?>&csrf=<?=csrf_token()?>" onclick="return confirm('Ștergi definitiv?')">Șterge</a>
               <?php endif; ?>
-              <?php if($pr['status']!=='cancelled'): ?>
-                <a class="btn btn-danger btn-xs" href="/admin/project-action.php?action=cancel&id=<?=(int)$pr['id']?>&csrf=<?=csrf_token()?>" onclick="return confirm('Anulezi?')">Anulează</a>
-              <?php endif; ?>
-              <a class="btn btn-danger btn-xs" href="/admin/project-action.php?action=delete&id=<?=(int)$pr['id']?>&csrf=<?=csrf_token()?>" onclick="return confirm('Ștergi definitiv?')">Șterge</a>
             </div>
           </td>
         </tr>

@@ -1,8 +1,9 @@
 <?php
 require_once __DIR__ . '/auth.php';
-// projects.php (the page that links here) is admin-only, but this endpoint
-// wasn't — any logged-in member could hit it directly on any project.
-require_director();
+// projects.php only shows these buttons with the 'manage' permission, but
+// this endpoint must enforce it too, or anyone logged in could call it
+// directly on any project.
+require_perm('projects', 'manage');
 
 $id     = isset($_GET['id'])     ? (int)$_GET['id']  : 0;
 $action = $_GET['action'] ?? '';

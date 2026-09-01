@@ -1,10 +1,10 @@
 <?php
 require_once __DIR__ . '/auth.php';
-// Suspend/reactivate/cancel/delete are admin-only actions — the events.php
-// list only shows these buttons to admins, but that was UI-only; this
-// endpoint must enforce it too, or any logged-in member could call it
-// directly on any event.
-require_director();
+// Suspend/reactivate/cancel/delete require the 'manage' permission on
+// events — the events.php list only shows these buttons when allowed, but
+// that was UI-only; this endpoint must enforce it too, or anyone logged in
+// could call it directly on any event.
+require_perm('events', 'manage');
 
 $id     = isset($_GET['id'])     ? (int)$_GET['id']     : 0;
 $action = isset($_GET['action']) ? $_GET['action']       : '';

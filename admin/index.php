@@ -8,6 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email'] ?? '');
     $pass  = $_POST['password'] ?? '';
     $pdo   = get_db();
+    ensure_user_permissions_column($pdo);
     $stmt  = $pdo->prepare('SELECT * FROM bf_users WHERE email=? AND active=1 LIMIT 1');
     $stmt->execute([$email]);
     $user  = $stmt->fetch();
@@ -22,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'position_label' => $user['position_label'],
             'avatar'         => $user['avatar'] ?? null,
             'must_change_pwd'=> (bool)$user['must_change_pwd'],
+            'permissions'    => $user['permissions'] ?? null,
         ];
         if ($user['must_change_pwd']) {
             header('Location: /admin/change-pwd.php'); exit;

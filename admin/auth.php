@@ -50,8 +50,130 @@ function require_director(): array {
     return $u;
 }
 
+/* =============================================================
+   PERMISIUNI — 3 roluri:
+     admin   (președinte/vicepreședinte/trezorier) — acces total.
+     revizor — acces fix (nu se configurează din UI), în 4 secțiuni:
+              • Evenimente — doar vizualizare (inclusiv o eventuală parte
+                financiară, dacă/când va exista pe evenimente).
+              • Proiecte — doar vizualizare, inclusiv detaliile/bugetul
+                proiectului (project-details.php e vizibil cu 'view', dar
+                doar salvabil cu 'edit' — vezi has_perm()).
+              • Propuneri — vizualizare + poate propune subiecte noi +
+                poate edita/șterge propriile propuneri. Nu votează și nu
+                gestionează adunările.
+              • Regnskab — doar vizualizare.
+     member  (consilier) — nimic implicit; adminul bifează per-tab și
+              per-acțiune ce poate face fiecare, salvat ca JSON în
+              bf_users.permissions.
+   ============================================================= */
+
+define('CONSILIER_PERMISSION_SCHEMA', [
+    'events'    => ['view' => 'Vede evenimente', 'create' => 'Poate crea evenimente noi', 'edit_own' => 'Poate edita evenimentele proprii', 'edit_any' => 'Poate edita orice eveniment', 'manage' => 'Poate suspenda/reactiva/anula/șterge evenimente'],
+    'projects'  => ['view' => 'Vede proiecte (inclusiv detalii/buget)', 'create' => 'Poate crea proiecte noi', 'edit' => 'Poate edita proiecte (inclusiv detalii/buget)', 'manage' => 'Poate finaliza/anula/șterge proiecte'],
+    'members'   => ['view' => 'Vede cererile de membership', 'edit' => 'Poate schimba status, trimite email, edita profil membru', 'delete' => 'Poate șterge cereri de membership'],
+    'topics'    => ['view' => 'Vede propuneri și adunări', 'propose' => 'Poate propune subiecte', 'edit_own' => 'Poate edita/șterge propriile propuneri', 'vote' => 'Poate vota', 'manage' => 'Poate crea/gestiona adunări'],
+    'documents' => ['view' => 'Vede documentele de transparență', 'manage' => 'Poate încărca/șterge documente'],
+    'regnskab'  => ['view' => 'Vede regnskab', 'manage' => 'Poate gestiona regnskab'],
+]);
+
+// Setul fix de permisiuni al unui revizor — nu e configurabil din UI, spre
+// deosebire de consilier. Aceeași formă (tab => [action => 1]) ca JSON-ul
+// din bf_users.permissions, ca să poată fi citit tot prin has_perm().
+const REVIZOR_PERMISSIONS = [
+    'events'   => ['view' => 1],
+    'projects' => ['view' => 1],
+    'topics'   => ['view' => 1, 'propose' => 1, 'edit_own' => 1],
+    'regnskab' => ['view' => 1],
+];
+
+/**
+ * Asigură coloana bf_users.permissions (JSON cu accesul custom al unui
+ * consilier). Migrare "lazy", ca restul aplicației.
+ */
+function ensure_user_permissions_column(PDO $pdo): void {
+    static $done = false;
+    if ($done) return;
+    try { $pdo->exec('ALTER TABLE bf_users ADD COLUMN permissions TEXT NULL'); } catch (PDOException $e) {}
+    $done = true;
+}
+
+function user_permissions(array $user): array {
+    if (empty($user['permissions'])) return [];
+    $decoded = json_decode($user['permissions'], true);
+    return is_array($decoded) ? $decoded : [];
+}
+
+/**
+ * Construiește JSON-ul de permisiuni dintr-un array $_POST['perm'][tab][action]=1,
+ * validat strict față de CONSILIER_PERMISSION_SCHEMA (nu acceptăm chei arbitrare).
+ */
+function build_permissions_json(array $posted): string {
+    $out = [];
+    foreach (CONSILIER_PERMISSION_SCHEMA as $tab => $actions) {
+        foreach (array_keys($actions) as $action) {
+            if (!empty($posted[$tab][$action])) $out[$tab][$action] = 1;
+        }
+    }
+    return json_encode($out);
+}
+
+/**
+ * Singurul punct de decizie pentru "poate userul X face acțiunea Y pe tab-ul Z".
+ * Folosit atât pentru vizibilitatea tab-urilor (action implicit 'view'), cât
+ * și pentru gating-ul acțiunilor concrete din fiecare pagină.
+ */
+function has_perm(array $user, string $tab, string $action = 'view'): bool {
+    $role = $user['role'] ?? '';
+    if ($role === 'admin') return true;
+    if ($tab === 'settings' && $action === 'view') return true; // profilul propriu, mereu vizibil
+    if ($role === 'revizor') {
+        return !empty(REVIZOR_PERMISSIONS[$tab][$action]);
+    }
+    $perms = user_permissions($user);
+    return !empty($perms[$tab][$action]);
+}
+
+/**
+ * require_login() + verificare permisiune. Înlocuiește require_login()/
+ * require_director() pe paginile ale căror acces variază acum pe rol.
+ */
+function require_perm(string $tab, string $action = 'view'): array {
+    $u = require_login();
+    if (!has_perm($u, $tab, $action)) {
+        flash('error', 'Nu ai acces la această secțiune.');
+        header('Location: /admin/settings.php'); exit;
+    }
+    return $u;
+}
+
 function can_edit_event(array $user, int $event_owner_id): bool {
-    return $user['role'] === 'admin' || (int)$user['id'] === $event_owner_id;
+    if (has_perm($user, 'events', 'edit_any')) return true;
+    return (int)$user['id'] === $event_owner_id && has_perm($user, 'events', 'edit_own');
+}
+
+/**
+ * Randează matricea de bife tab × acțiune pentru un consilier. Reutilizată
+ * din settings.php (formularul de user nou / editare poziție) și din
+ * member-profile.php (desemnarea unui membru ca și consilier).
+ * $current = array deja decodat (din user_permissions()) pentru pre-bifare.
+ * $prefix  = numele câmpului HTML, ex. "perm" → perm[events][view].
+ */
+function render_permission_matrix(array $current = [], string $name = 'perm', ?string $id_prefix = null): void {
+    $id_prefix = $id_prefix ?? $name;
+    foreach (CONSILIER_PERMISSION_SCHEMA as $tab => $actions): ?>
+      <div style="margin-bottom:14px">
+        <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:6px;text-transform:capitalize"><?= e($tab) ?></div>
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <?php foreach ($actions as $action => $label): $id = $id_prefix.'-'.$tab.'-'.$action; ?>
+            <label class="check-row" style="font-size:13px">
+              <input type="checkbox" name="<?= e($name) ?>[<?= e($tab) ?>][<?= e($action) ?>]" id="<?= e($id) ?>" value="1" <?= !empty($current[$tab][$action]) ? 'checked' : '' ?>>
+              <?= e($label) ?>
+            </label>
+          <?php endforeach; ?>
+        </div>
+      </div>
+    <?php endforeach;
 }
 
 function csrf_token(): string {
@@ -84,6 +206,63 @@ function e(string $s): string {
     return htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
 }
 
+/**
+ * Asigură coloanele/tabelele pentru profilul de membru (cotizație, scutire,
+ * voluntariat, relații de familie, contribuții la proiecte). Apelată din
+ * members.php, member-profile.php și members-export.php — pattern-ul de
+ * migrare "lazy" e deja folosit în restul aplicației (events.php, topics.php,
+ * settings.php), îl păstrăm consistent aici.
+ */
+function ensure_member_schema(PDO $pdo): void {
+    static $done = false;
+    if ($done) return;
+
+    $cols = [
+        'member_number'     => 'VARCHAR(20) NULL',
+        'joined_date'       => 'DATE NULL',
+        'dues_paid'         => 'TINYINT(1) NOT NULL DEFAULT 0',
+        'dues_paid_date'    => 'DATE NULL',
+        'dues_valid_until'  => 'DATE NULL',
+        'dues_amount'       => 'DECIMAL(8,2) NULL',
+        'dues_method'       => 'VARCHAR(30) NULL',
+        'exempt'            => 'TINYINT(1) NOT NULL DEFAULT 0',
+        'exempt_reason'     => 'TEXT NULL',
+        'is_volunteer'      => 'TINYINT(1) NOT NULL DEFAULT 0',
+        'relation_type'     => 'VARCHAR(20) NULL',
+        'related_member_id' => 'INT UNSIGNED NULL',
+    ];
+    foreach ($cols as $name => $def) {
+        try { $pdo->exec("ALTER TABLE membership_requests ADD COLUMN $name $def"); } catch (PDOException $e) {}
+    }
+
+    try { $pdo->exec("CREATE TABLE IF NOT EXISTS `member_projects` (
+        `id`         INT UNSIGNED NOT NULL AUTO_INCREMENT,
+        `member_id`  INT UNSIGNED NOT NULL,
+        `project_id` INT UNSIGNED NOT NULL,
+        `status`     ENUM('activ','finalizat') NOT NULL DEFAULT 'activ',
+        `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (`id`), UNIQUE KEY `uq_member_project` (`member_id`,`project_id`),
+        KEY `idx_project` (`project_id`),
+        FOREIGN KEY (`member_id`)  REFERENCES `membership_requests`(`id`) ON DELETE CASCADE,
+        FOREIGN KEY (`project_id`) REFERENCES `projects`(`id`) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"); } catch (PDOException $e) {}
+
+    $done = true;
+}
+
+define('DUES_METHODS', [
+    'numerar'  => 'Numerar',
+    'transfer' => 'Transfer bancar',
+    'mobilepay'=> 'MobilePay',
+    'altul'    => 'Altul',
+]);
+
+define('RELATION_TYPES', [
+    ''         => '— Fără relație —',
+    'parinte'  => 'Este părintele lui',
+    'copil'    => 'Este copilul lui',
+]);
+
 function flash(string $type, string $msg): void {
     $_SESSION['fd_flash'] = ['type' => $type, 'msg' => $msg];
 }
@@ -98,6 +277,7 @@ define('POSITIONS', [
     'presedinte'     => ['label' => 'Președinte',    'role' => 'admin'],
     'vicepresedinte' => ['label' => 'Vicepreședinte','role' => 'admin'],
     'trezorier'      => ['label' => 'Trezorier',     'role' => 'admin'],
+    'revizor'        => ['label' => 'Revizor',       'role' => 'revizor'],
     'consilier'      => ['label' => 'Consilier',     'role' => 'member'],
 ]);
 
@@ -111,15 +291,15 @@ function position_label(array $user): string {
 }
 
 function layout_head(string $title, string $active_tab): void {
-    $user     = $_SESSION['fd_user'] ?? [];
-    $is_admin = ($user['role'] ?? '') === 'admin';
+    $user = $_SESSION['fd_user'] ?? [];
     $tabs = [
-        'events'    => ['label' => 'Evenimente', 'icon' => '📅', 'url' => '/admin/events.php',    'access' => 'all'],
-        'projects'  => ['label' => 'Proiecte',   'icon' => '🗂',  'url' => '/admin/projects.php',  'access' => 'admin'],
-        'members'   => ['label' => 'Membri',     'icon' => '👥',  'url' => '/admin/members.php',   'access' => 'all'],
-        'topics'    => ['label' => 'Propuneri',  'icon' => '🗳',  'url' => '/admin/topics.php',    'access' => 'all'],
-        'documents' => ['label' => 'Documente',  'icon' => '📄',  'url' => '/admin/documents.php', 'access' => 'admin'],
-        'settings'  => ['label' => 'Setări',     'icon' => '⚙️',  'url' => '/admin/settings.php',  'access' => 'all'],
+        'events'    => ['label' => 'Evenimente', 'icon' => '📅', 'url' => '/admin/events.php'],
+        'projects'  => ['label' => 'Proiecte',   'icon' => '🗂',  'url' => '/admin/projects.php'],
+        'members'   => ['label' => 'Membri',     'icon' => '👥',  'url' => '/admin/members.php'],
+        'topics'    => ['label' => 'Propuneri',  'icon' => '🗳',  'url' => '/admin/topics.php'],
+        'documents' => ['label' => 'Documente',  'icon' => '📄',  'url' => '/admin/documents.php'],
+        'regnskab'  => ['label' => 'Regnskab',   'icon' => '💰',  'url' => '/admin/regnskab.php'],
+        'settings'  => ['label' => 'Setări',     'icon' => '⚙️',  'url' => '/admin/settings.php'],
     ];
     ?>
 <!DOCTYPE html>
@@ -272,7 +452,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 </header>
 <nav class="tabs-bar">
   <?php foreach ($tabs as $key => $tab):
-    $show = $tab['access'] === 'all' || $is_admin;
+    $show = has_perm($user, $key, 'view');
     $isActive = $active_tab === $key;
   ?>
   <button

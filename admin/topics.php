@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/auth.php';
-$user     = require_login();
+$user     = require_perm('topics', 'view');
 $pdo      = get_db();
-$is_admin = $user['role'] === 'admin';
+$is_admin = has_perm($user, 'topics', 'manage');
 $flash    = get_flash();
 
 // ── ACȚIUNI POST ──────────────────────────────────────────────
@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
 
     // Vot toggle
-    if ($action === 'vote') {
+    if ($action === 'vote' && has_perm($user, 'topics', 'vote')) {
         $pid = (int)($_POST['proposal_id'] ?? 0);
         $exists = $pdo->prepare('SELECT 1 FROM bf_votes WHERE proposal_id=? AND user_id=?');
         $exists->execute([$pid, $user['id']]);
@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Editează propunere proprie
-    if ($action === 'edit_proposal') {
+    if ($action === 'edit_proposal' && has_perm($user, 'topics', 'edit_own')) {
         $pid   = (int)($_POST['proposal_id'] ?? 0);
         $title = trim($_POST['title'] ?? '');
         $desc  = trim($_POST['description'] ?? '');
@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Șterge propunere proprie
-    if ($action === 'delete_proposal') {
+    if ($action === 'delete_proposal' && has_perm($user, 'topics', 'edit_own')) {
         $pid  = (int)($_POST['proposal_id'] ?? 0);
         $stmt = $pdo->prepare('SELECT p.*,m.status as mstatus FROM bf_proposals p JOIN bf_meetings m ON m.id=p.meeting_id WHERE p.id=?');
         $stmt->execute([$pid]); $pr = $stmt->fetch();
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Director: adaugă meeting
-    if ($action === 'add_meeting' && $is_admin) {
+    if ($action === 'add_meeting' && has_perm($user, 'topics', 'manage')) {
         $title    = trim($_POST['meeting_title'] ?? '');
         $date     = $_POST['meeting_date'] ?? '';
         $location = trim($_POST['meeting_location'] ?? '');
@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Director: toggle open/visible
-    if ($action === 'toggle_meeting' && $is_admin) {
+    if ($action === 'toggle_meeting' && has_perm($user, 'topics', 'manage')) {
         $mid   = (int)($_POST['meeting_id'] ?? 0);
         $field = $_POST['field'] ?? '';
         if (in_array($field, ['is_open','is_visible'])) {
@@ -148,7 +148,7 @@ layout_head('Propuneri', 'topics');
       <?php endif; ?>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <?php if ($meeting && ($meeting['is_open']??1)): ?>
+      <?php if ($meeting && ($meeting['is_open']??1) && has_perm($user, 'topics', 'propose')): ?>
         <a class="btn btn-solid btn-sm" href="/admin/topic-edit.php?meeting=<?= $mid ?>">+ Propunere nouă</a>
       <?php endif; ?>
       <?php if ($meeting): ?>
@@ -250,7 +250,7 @@ layout_head('Propuneri', 'topics');
       <?php if (empty($proposals)): ?>
         <div class="empty">
           <p style="margin-bottom:16px">Nicio propunere încă pentru această adunare.</p>
-          <?php if ($meeting && ($meeting['is_open']??1)): ?>
+          <?php if ($meeting && ($meeting['is_open']??1) && has_perm($user, 'topics', 'propose')): ?>
             <a class="btn btn-solid btn-sm" href="/admin/topic-edit.php?meeting=<?= $mid ?>">+ Adaugă prima propunere</a>
           <?php endif; ?>
         </div>
@@ -258,11 +258,12 @@ layout_head('Propuneri', 'topics');
       <div style="display:flex;flex-direction:column;gap:12px">
         <?php foreach ($proposals as $p):
           $isMe = ((int)$p['user_id'] === (int)$user['id']);
-          $canEdit = $isMe && ($meeting['is_open'] ?? 1);
+          $canEdit = $isMe && ($meeting['is_open'] ?? 1) && has_perm($user, 'topics', 'edit_own');
         ?>
         <div id="p<?= (int)$p['id'] ?>" style="background:#0a0a0a;border:1px solid rgba(255,255,255,.05);padding:18px 20px;display:flex;gap:16px;transition:border-color .2s" onmouseover="this.style.borderColor='rgba(255,255,255,.12)'" onmouseout="this.style.borderColor='rgba(255,255,255,.05)'">
           <!-- vot -->
           <div style="display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0;width:48px">
+            <?php if (has_perm($user, 'topics', 'vote')): ?>
             <form method="post">
               <input type="hidden" name="csrf" value="<?= csrf_token() ?>">
               <input type="hidden" name="action" value="vote">
@@ -270,6 +271,9 @@ layout_head('Propuneri', 'topics');
               <input type="hidden" name="meeting_id" value="<?= $mid ?>">
               <button type="submit" style="width:42px;height:42px;border:1.5px solid <?= $p['my_vote']?'rgba(255,255,255,.15)':'rgba(255,255,255,.1)' ?>;background:<?= $p['my_vote']?'rgba(255,255,255,.06)':'transparent' ?>;color:<?= $p['my_vote']?'rgba(255,255,255,.6)':'rgba(255,255,255,.4)' ?>;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s" title="<?= $p['my_vote']?'Retrage':'Susține' ?>">▲</button>
             </form>
+            <?php else: ?>
+              <div style="width:42px;height:42px;border:1.5px solid rgba(255,255,255,.1);color:rgba(255,255,255,.4);font-size:18px;display:flex;align-items:center;justify-content:center">▲</div>
+            <?php endif; ?>
             <span style="font-size:18px;font-weight:700;color:#fff;line-height:1"><?= (int)$p['vote_count'] ?></span>
             <span style="font-size:10px;color:rgba(255,255,255,.25);letter-spacing:.06em;text-transform:uppercase">voturi</span>
           </div>

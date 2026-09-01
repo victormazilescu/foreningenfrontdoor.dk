@@ -3,6 +3,7 @@ require_once __DIR__ . '/auth.php';
 $user     = require_login();
 $pdo      = get_db();
 $is_admin = $user['role'] === 'admin';
+ensure_user_permissions_column($pdo);
 $flash    = get_flash();
 $section  = $_GET['s'] ?? ($is_admin ? 'users' : 'profile');
 
@@ -84,11 +85,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $plabel   = trim($_POST['position_label'] ?? '');
                 if ($uname && $uemail && filter_var($uemail, FILTER_VALIDATE_EMAIL) && array_key_exists($position, POSITIONS)) {
                     $role = POSITIONS[$position]['role'];
+                    $perms_json = $role === 'member' ? build_permissions_json($_POST['perm'] ?? []) : null;
                     $temp_pwd = gen_temp_password();
                     $hash = password_hash($temp_pwd, PASSWORD_BCRYPT, ['cost'=>12]);
                     try {
-                        $pdo->prepare('INSERT INTO bf_users (name,email,password,role,position,position_label,must_change_pwd,active) VALUES (?,?,?,?,?,?,1,1)')
-                            ->execute([$uname,$uemail,$hash,$role,$position,$plabel?:null]);
+                        $pdo->prepare('INSERT INTO bf_users (name,email,password,role,position,position_label,permissions,must_change_pwd,active) VALUES (?,?,?,?,?,?,?,1,1)')
+                            ->execute([$uname,$uemail,$hash,$role,$position,$plabel?:null,$perms_json]);
                         flash('ok',$uname.' adăugat. Parolă inițială: '.$temp_pwd);
                     } catch(PDOException $e) { flash('error','Email există deja.'); }
                 } else { flash('error','Date invalide.'); }
@@ -126,8 +128,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pos  = $_POST['position']              ?? 'consilier';
             $plbl = trim($_POST['position_label']   ?? '');
             if (array_key_exists($pos, POSITIONS)) {
-                $pdo->prepare('UPDATE bf_users SET position=?,position_label=?,role=? WHERE id=?')
-                    ->execute([$pos,$plbl?:null,POSITIONS[$pos]['role'],$uid]);
+                $new_role   = POSITIONS[$pos]['role'];
+                $perms_json = $new_role === 'member' ? build_permissions_json($_POST['perm'] ?? []) : null;
+                $pdo->prepare('UPDATE bf_users SET position=?,position_label=?,role=?,permissions=? WHERE id=?')
+                    ->execute([$pos,$plbl?:null,$new_role,$perms_json,$uid]);
                 flash('ok','Poziție actualizată.');
             }
             header('Location: /admin/settings.php?s=users'); exit;
@@ -298,6 +302,10 @@ layout_head('Setări','settings');
           <label>Rol personalizat</label>
           <input type="text" name="position_label" placeholder="ex: Responsabil social media">
         </div>
+        <div id="permMatrixWrap" style="display:none;background:#000;border:1px solid rgba(255,255,255,.08);padding:16px;margin-bottom:16px;max-width:520px">
+          <p style="font-size:12px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px">Acces consilier — bifează ce poate face</p>
+          <?php render_permission_matrix([], 'perm'); ?>
+        </div>
         <div style="display:flex;align-items:center;gap:16px">
           <button class="btn btn-solid" type="submit">Adaugă</button>
           <span style="font-size:12px;color:rgba(255,255,255,.25)">Parola inițială e generată automat și afișată o singură dată, aici, după ce adaugi membrul.</span>
@@ -357,6 +365,12 @@ layout_head('Setări','settings');
                 <label>Rol personalizat</label>
                 <input type="text" name="position_label" value="<?= e($u['position_label']??'') ?>">
               </div>
+            </div>
+            <div id="epperm-<?= (int)$u['id'] ?>" style="<?= $u['position']==='consilier'?'':'display:none' ?>;background:#0a0a0a;border:1px solid rgba(255,255,255,.08);padding:16px;margin-top:12px;max-width:520px">
+              <p style="font-size:12px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px">Acces consilier — bifează ce poate face</p>
+              <?php render_permission_matrix(user_permissions($u), 'perm', 'perm-edit-' . (int)$u['id']); ?>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:12px">
               <button class="btn btn-solid btn-sm" type="submit">Salvează</button>
               <button class="btn btn-ghost btn-sm" type="button" onclick="toggleEditUser(<?= (int)$u['id'] ?>)">Anulează</button>
             </div>
@@ -465,7 +479,15 @@ document.querySelectorAll('input[type=checkbox][name="categories[]"]').forEach(f
   function upd(){ var lbl=document.querySelector('label[for="'+cb.id+'"]'); if(lbl) lbl.style.background=cb.checked?'rgba(255,255,255,.05)':''; }
   upd(); cb.addEventListener('change',upd);
 });
-function togglePLabel(){ document.getElementById('pLabelWrap').style.display=document.getElementById('posSelect').value==='consilier'?'block':'none'; }
-function toggleEditPLabel(id,sel){ document.getElementById('eplbl-'+id).style.display=sel.value==='consilier'?'block':'none'; }
+function togglePLabel(){
+  var isCons = document.getElementById('posSelect').value==='consilier';
+  document.getElementById('pLabelWrap').style.display = isCons?'block':'none';
+  document.getElementById('permMatrixWrap').style.display = isCons?'block':'none';
+}
+function toggleEditPLabel(id,sel){
+  var isCons = sel.value==='consilier';
+  document.getElementById('eplbl-'+id).style.display = isCons?'block':'none';
+  document.getElementById('epperm-'+id).style.display = isCons?'block':'none';
+}
 </script>
 <?php layout_foot(); ?>

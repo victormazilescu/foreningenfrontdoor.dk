@@ -1,8 +1,16 @@
 <?php
 require_once __DIR__ . '/auth.php';
-$user = require_login();
+$user = require_perm('events', 'view');
 $pdo  = get_db();
-$is_admin = $user['role'] === 'admin';
+
+// Adăugăm coloana created_by dacă nu există — trebuie să ruleze înainte de
+// SELECT-ul de mai jos, altfel query-ul cu e.created_by eșuează pe o bază
+// de date proaspătă unde coloana încă nu există.
+try {
+    $pdo->query('SELECT created_by FROM events LIMIT 1');
+} catch (PDOException $e) {
+    $pdo->exec('ALTER TABLE events ADD COLUMN created_by INT UNSIGNED NULL AFTER signup_url');
+}
 
 $filter_cat    = $_GET['category'] ?? '';
 $filter_status = $_GET['status']   ?? '';
@@ -21,13 +29,6 @@ $sql = 'SELECT e.*, u.name as creator_name
      . ' ORDER BY e.date ASC';
 $stmt = $pdo->prepare($sql); $stmt->execute($params);
 $events = $stmt->fetchAll();
-
-// Adăugăm coloana created_by dacă nu există
-try {
-    $pdo->query('SELECT created_by FROM events LIMIT 1');
-} catch (PDOException $e) {
-    $pdo->exec('ALTER TABLE events ADD COLUMN created_by INT UNSIGNED NULL AFTER signup_url');
-}
 
 $flash = get_flash();
 $cat_labels = ['artistic'=>'Artistic','cultural'=>'Cultural','societate'=>'Societate'];
@@ -51,7 +52,9 @@ layout_head('Evenimente', 'events');
     <h1>Evenimente</h1>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <a class="btn btn-ghost btn-sm" href="/admin/social.php">📢 Generator Social</a>
-      <a class="btn btn-solid" href="/admin/event-edit.php">+ Eveniment nou</a>
+      <?php if (has_perm($user, 'events', 'create')): ?>
+        <a class="btn btn-solid" href="/admin/event-edit.php">+ Eveniment nou</a>
+      <?php endif; ?>
     </div>
   </div>
 
@@ -76,7 +79,9 @@ layout_head('Evenimente', 'events');
   </div>
 
   <?php if (empty($events)): ?>
-    <div class="empty">Niciun eveniment găsit. <a href="/admin/event-edit.php">Adaugă primul →</a></div>
+    <div class="empty">Niciun eveniment găsit.
+      <?php if (has_perm($user, 'events', 'create')): ?><a href="/admin/event-edit.php">Adaugă primul →</a><?php endif; ?>
+    </div>
   <?php else: ?>
   <div class="table-wrap">
     <table>
@@ -93,7 +98,8 @@ layout_head('Evenimente', 'events');
       </thead>
       <tbody>
       <?php foreach ($events as $ev):
-        $can_edit = can_edit_event($user, (int)($ev['created_by'] ?? 0));
+        $can_edit   = can_edit_event($user, (int)($ev['created_by'] ?? 0));
+        $can_manage = has_perm($user, 'events', 'manage');
       ?>
         <tr>
           <td>
@@ -131,18 +137,19 @@ layout_head('Evenimente', 'events');
               <a class="btn btn-ghost btn-xs" href="/admin/social.php?event=<?= (int)$ev['id'] ?>">📢</a>
               <?php if ($can_edit): ?>
                 <a class="btn btn-ghost btn-xs" href="/admin/event-edit.php?id=<?= (int)$ev['id'] ?>">Editează</a>
-                <?php if ($is_admin): ?>
-                  <?php if ($ev['status']==='active'): ?>
-                    <a class="btn btn-warn btn-xs" href="/admin/event-delete.php?action=suspend&id=<?= (int)$ev['id'] ?>&csrf=<?= csrf_token() ?>">Suspendă</a>
-                  <?php elseif ($ev['status']==='suspended'): ?>
-                    <a class="btn btn-ghost btn-xs" href="/admin/event-delete.php?action=activate&id=<?= (int)$ev['id'] ?>&csrf=<?= csrf_token() ?>">Reactivează</a>
-                  <?php endif; ?>
-                  <?php if ($ev['status']!=='cancelled'): ?>
-                    <a class="btn btn-danger btn-xs" href="/admin/event-delete.php?action=cancel&id=<?= (int)$ev['id'] ?>&csrf=<?= csrf_token() ?>" onclick="return confirm('Anulezi?')">Anulează</a>
-                  <?php endif; ?>
-                  <a class="btn btn-danger btn-xs" href="/admin/event-delete.php?action=delete&id=<?= (int)$ev['id'] ?>&csrf=<?= csrf_token() ?>" onclick="return confirm('Ștergi definitiv?')">Șterge</a>
+              <?php endif; ?>
+              <?php if ($can_manage): ?>
+                <?php if ($ev['status']==='active'): ?>
+                  <a class="btn btn-warn btn-xs" href="/admin/event-delete.php?action=suspend&id=<?= (int)$ev['id'] ?>&csrf=<?= csrf_token() ?>">Suspendă</a>
+                <?php elseif ($ev['status']==='suspended'): ?>
+                  <a class="btn btn-ghost btn-xs" href="/admin/event-delete.php?action=activate&id=<?= (int)$ev['id'] ?>&csrf=<?= csrf_token() ?>">Reactivează</a>
                 <?php endif; ?>
-              <?php else: ?>
+                <?php if ($ev['status']!=='cancelled'): ?>
+                  <a class="btn btn-danger btn-xs" href="/admin/event-delete.php?action=cancel&id=<?= (int)$ev['id'] ?>&csrf=<?= csrf_token() ?>" onclick="return confirm('Anulezi?')">Anulează</a>
+                <?php endif; ?>
+                <a class="btn btn-danger btn-xs" href="/admin/event-delete.php?action=delete&id=<?= (int)$ev['id'] ?>&csrf=<?= csrf_token() ?>" onclick="return confirm('Ștergi definitiv?')">Șterge</a>
+              <?php endif; ?>
+              <?php if (!$can_edit && !$can_manage): ?>
                 <span style="font-size:11px;color:rgba(255,255,255,.25)">doar vizibil</span>
               <?php endif; ?>
             </div>

@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/auth.php';
-require_login();
+$user = require_perm('projects', 'view');
+$can_edit_details = has_perm($user, 'projects', 'edit');
 $pdo = get_db();
 
 $project_id = isset($_GET['project']) ? (int)$_GET['project'] : 0;
@@ -61,6 +62,10 @@ $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_verify();
+    if (!$can_edit_details) {
+        http_response_code(403);
+        die('Nu ai permisiunea de a edita detaliile proiectului.');
+    }
 
     $f = [
         'headline_ro'          => trim($_POST['headline_ro']          ?? ''),
@@ -200,8 +205,11 @@ layout_head('Detalii proiect', 'projects');
     <?php if ($errors): ?>
       <div class="errors"><strong>Erori:</strong><ul><?php foreach($errors as $err): ?><li><?= e($err) ?></li><?php endforeach; ?></ul></div>
     <?php endif; ?>
+    <?php if (!$can_edit_details): ?>
+      <div class="flash flash-error">Doar vizualizare — nu ai permisiunea de a edita aceste detalii.</div>
+    <?php endif; ?>
 
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data" <?= $can_edit_details ? '' : 'style="pointer-events:none;opacity:.65"' ?>>
       <input type="hidden" name="csrf" value="<?= csrf_token() ?>">
 
       <!-- TITLU SCURT -->
@@ -297,8 +305,10 @@ layout_head('Detalii proiect', 'projects');
 
       <!-- BUTOANE -->
       <div style="display:flex;gap:12px;flex-wrap:wrap">
-        <button class="btn btn-solid" type="submit">Salvează detaliile</button>
-        <a class="btn btn-ghost" href="/admin/projects.php">← Înapoi la proiecte</a>
+        <?php if ($can_edit_details): ?>
+          <button class="btn btn-solid" type="submit">Salvează detaliile</button>
+        <?php endif; ?>
+        <a class="btn btn-ghost" href="/admin/projects.php" style="pointer-events:auto">← Înapoi la proiecte</a>
       </div>
     </form>
 
@@ -328,12 +338,14 @@ layout_head('Detalii proiect', 'projects');
                 <td style="font-size:13px;color:rgba(255,255,255,.4)"><?= e($d['details'] ?? '—') ?></td>
                 <td style="font-size:13px;color:rgba(255,255,255,.4);white-space:nowrap"><?= $d['value_dkk'] !== null ? number_format((float)$d['value_dkk'],0,',',' ').' DKK' : '—' ?></td>
                 <td>
+                  <?php if ($can_edit_details): ?>
                   <form method="post" style="display:inline" onsubmit="return confirm('Ștergi acest donator?')">
                     <input type="hidden" name="csrf" value="<?= csrf_token() ?>">
                     <input type="hidden" name="donor_action" value="delete_donor">
                     <input type="hidden" name="donor_id" value="<?= (int)$d['id'] ?>">
                     <button class="btn btn-danger btn-sm" type="submit" style="padding:4px 10px;font-size:11px">Șterge</button>
                   </form>
+                  <?php endif; ?>
                 </td>
               </tr>
             <?php endforeach; ?>
@@ -345,6 +357,7 @@ layout_head('Detalii proiect', 'projects');
       <?php endif; ?>
 
       <!-- Adaugă donator nou -->
+      <?php if ($can_edit_details): ?>
       <form method="post">
         <input type="hidden" name="csrf" value="<?= csrf_token() ?>">
         <input type="hidden" name="donor_action" value="add_donor">
@@ -382,6 +395,7 @@ layout_head('Detalii proiect', 'projects');
         </div>
         <button class="btn btn-solid" type="submit" style="font-size:13px;padding:8px 16px">+ Adaugă contribuție</button>
       </form>
+      <?php endif; ?>
     </div>
 </div>
 <?php layout_foot(); ?>

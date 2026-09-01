@@ -1,10 +1,12 @@
 <?php
 require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/mailer.php';
-$user     = require_login();
-$pdo      = get_db();
-$is_admin = $user['role'] === 'admin';
-$flash    = get_flash();
+$user       = require_perm('members', 'view');
+$pdo        = get_db();
+$can_edit   = has_perm($user, 'members', 'edit');
+$can_delete = has_perm($user, 'members', 'delete');
+$flash      = get_flash();
+ensure_member_schema($pdo);
 
 $statuses = [
     'new'       => ['label' => 'Nou',           'color' => 'rgba(255,255,255,.6)', 'bg' => 'rgba(255,255,255,.06)'],
@@ -20,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $rid    = (int)($_POST['rid'] ?? 0);
     $filter_back = $_POST['filter_back'] ?? 'new';
 
-    if ($action === 'update_status' && $rid) {
+    if ($action === 'update_status' && $rid && $can_edit) {
         $status = $_POST['status'] ?? '';
         $notes  = trim($_POST['notes'] ?? '');
         if (array_key_exists($status, $statuses)) {
@@ -31,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: /admin/members.php?s=' . $filter_back); exit;
     }
 
-    if ($action === 'send_email' && $rid) {
+    if ($action === 'send_email' && $rid && $can_edit) {
         $to_email = trim($_POST['to_email'] ?? '');
         $to_name  = trim($_POST['to_name']  ?? '');
         $subject  = trim($_POST['subject']  ?? '');
@@ -59,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: /admin/members.php?s=' . $filter_back); exit;
     }
 
-    if ($action === 'delete' && $rid && $is_admin) {
+    if ($action === 'delete' && $rid && $can_delete) {
         $pdo->prepare('DELETE FROM membership_requests WHERE id=?')->execute([$rid]);
         flash('ok', 'Cerere ștearsă.');
         header('Location: /admin/members.php?s=' . $filter_back); exit;
@@ -90,7 +92,10 @@ layout_head('Cereri membership', 'members');
 
   <div class="page-head">
     <h1>Cereri de membership</h1>
-    <a class="btn btn-ghost btn-sm" href="/join.html" target="_blank">👁 Formularul public →</a>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <a class="btn btn-ghost btn-sm" href="/admin/members-export.php">📄 Export PDF membri activi</a>
+      <a class="btn btn-ghost btn-sm" href="/join.html" target="_blank">👁 Formularul public →</a>
+    </div>
   </div>
 
   <!-- Tabs -->
@@ -124,6 +129,15 @@ layout_head('Cereri membership', 'members');
           <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px">
             <strong style="font-size:16px"><?= e($r['name']) ?></strong>
             <span style="padding:2px 9px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:<?= e($sc['bg']) ?>;color:<?= e($sc['color']) ?>"><?= e($sc['label']) ?></span>
+            <?php if (!empty($r['exempt'])): ?>
+              <span class="badge" style="color:rgba(255,213,79,.9);background:rgba(255,213,79,.1)">Scutit</span>
+            <?php elseif (!empty($r['dues_paid'])): ?>
+              <?php $duesOk = empty($r['dues_valid_until']) || strtotime($r['dues_valid_until']) >= strtotime('today'); ?>
+              <span class="badge" style="color:<?= $duesOk?'rgba(120,200,120,.9)':'rgba(255,150,150,.9)' ?>;background:<?= $duesOk?'rgba(60,150,60,.1)':'rgba(200,50,50,.06)' ?>"><?= $duesOk?'Cotizație plătită':'Cotizație expirată' ?></span>
+            <?php endif; ?>
+            <?php if (!empty($r['is_volunteer'])): ?>
+              <span class="badge" style="color:rgba(255,255,255,.6);background:rgba(255,255,255,.06)">Voluntar</span>
+            <?php endif; ?>
           </div>
           <div style="font-size:13px;color:rgba(255,255,255,.4);display:flex;flex-wrap:wrap;gap:12px;margin-bottom:2px">
             <span style="color:rgba(255,255,255,.6)"><?= e($r['email']) ?></span>
@@ -134,9 +148,12 @@ layout_head('Cereri membership', 'members');
           <div style="font-size:12px;color:rgba(255,255,255,.25)"><?= e(date('d.m.Y H:i', strtotime($r['created_at']))) ?></div>
         </div>
         <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;flex-shrink:0">
+          <a class="btn btn-ghost btn-xs" href="/admin/member-profile.php?id=<?= (int)$r['id'] ?>">👤 Profil</a>
+          <?php if ($can_edit): ?>
           <button class="btn btn-solid btn-sm" onclick="togglePanel(<?= (int)$r['id'] ?>,'email')" style="font-size:12px">✉ Scrie email</button>
           <button class="btn btn-ghost btn-xs" onclick="togglePanel(<?= (int)$r['id'] ?>,'status')">Status</button>
-          <?php if ($is_admin): ?>
+          <?php endif; ?>
+          <?php if ($can_delete): ?>
           <form method="post" style="display:inline" onsubmit="return confirm('Ștergi definitiv?')">
             <input type="hidden" name="csrf" value="<?= csrf_token() ?>">
             <input type="hidden" name="action" value="delete">
@@ -157,6 +174,7 @@ layout_head('Cereri membership', 'members');
       <?php endif; ?>
 
       <!-- Status panel -->
+      <?php if ($can_edit): ?>
       <div id="status-<?= (int)$r['id'] ?>" style="display:none;border-top:1px solid rgba(255,255,255,.04);padding-top:14px;margin-top:4px">
         <form method="post">
           <input type="hidden" name="csrf" value="<?= csrf_token() ?>">
@@ -182,8 +200,10 @@ layout_head('Cereri membership', 'members');
           </div>
         </form>
       </div>
+      <?php endif; ?>
 
       <!-- Email panel -->
+      <?php if ($can_edit): ?>
       <div id="email-<?= (int)$r['id'] ?>" style="display:none;border-top:1px solid rgba(29,83,129,.25);padding-top:18px;margin-top:8px">
         <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:14px">
           Email către <?= e($r['name']) ?> · <span style="color:rgba(255,255,255,.25);text-transform:none;letter-spacing:0"><?= e($r['email']) ?></span>
@@ -227,6 +247,7 @@ layout_head('Cereri membership', 'members');
           </div>
         </form>
       </div>
+      <?php endif; ?>
 
     </div>
     <?php endforeach; ?>
