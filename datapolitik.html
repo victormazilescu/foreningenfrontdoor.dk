@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,8 +21,10 @@ button{font-family:inherit;cursor:pointer;}
 .lang-ro [data-lang="ro"].i{display:inline;}
 .lang-da [data-lang="da"]{display:block;}
 .lang-da [data-lang="da"].i{display:inline;}
+.lang-en [data-lang="en"]{display:block;}
+.lang-en [data-lang="en"].i{display:inline;}
 .display{font-family:'Nunito',sans-serif;font-weight:900;line-height:1.0;letter-spacing:-.02em;}
-.label{font-family:'Jost',sans-serif;font-weight:300;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:16px;}
+.label{font-family:'Jost',sans-serif;font-weight:600;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.8);margin-bottom:16px;}
 .line-grow{width:0;height:1px;background:#fff;opacity:.12;transition:width 1.2s cubic-bezier(.16,1,.3,1);margin-bottom:32px;}
 .line-grow.visible{width:100%;}
 .fade-in{opacity:0;transition:opacity .9s cubic-bezier(.2,.6,.2,1);}
@@ -33,14 +35,26 @@ button{font-family:inherit;cursor:pointer;}
 /* HEADER */
 header{position:sticky;top:0;z-index:100;background:#000;border-bottom:1px solid rgba(255,255,255,.1);}
 .nav{display:flex;align-items:center;justify-content:space-between;height:68px;gap:20px;}
-.nav-links{display:flex;gap:28px;font-size:14px;font-weight:400;letter-spacing:.04em;align-items:center;}
-.nav-links a{color:rgba(255,255,255,.65);transition:color .15s;}
+.nav-links{display:flex;gap:6px;font-size:16px;font-weight:500;letter-spacing:.02em;align-items:center;position:relative;}
+.nav-links a{color:rgba(255,255,255,.82);transition:color .15s;padding:7px 14px;position:relative;z-index:1;border-radius:9px;}
 .nav-links a:hover{color:#fff;}
-.nav-links a.don{color:#000;background:#fff;padding:7px 16px;font-weight:500;transition:opacity .15s;}
-.nav-links a.don:hover{opacity:.8;}
-.lang-toggle{display:flex;border:1px solid rgba(255,255,255,.15);overflow:hidden;flex-shrink:0;}
-.lang-toggle button{padding:5px 12px;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;background:transparent;color:rgba(255,255,255,.45);border:none;transition:background .15s,color .15s;}
-.lang-toggle button.active{background:#fff;color:#000;}
+.nav-links a.active{color:#000;background:#fff;font-weight:600;border-radius:9px;}
+.nav-links.js-nav a.active{background:none;}
+.nav-links a.is-hot{color:#000;}
+.nav-indicator{position:absolute;top:0;left:0;background:#fff;border-radius:10px;z-index:0;opacity:0;pointer-events:none;transition:transform .38s cubic-bezier(.65,0,.35,1),width .3s cubic-bezier(.65,0,.35,1),height .3s cubic-bezier(.65,0,.35,1),opacity .2s;}
+.nav-links a.don{color:#fff;background:transparent;border:1.5px solid #fff;padding:6.5px 16px;font-weight:500;transition:background .15s,color .15s;border-radius:9px;margin-left:14px;}
+.nav-links a.don:hover{background:#fff;color:#000;}
+.nav-links a.don.active{background:#fff;color:#000;font-weight:600;}
+.lang-toggle{position:relative;flex-shrink:0;}
+.lang-trigger{display:flex;align-items:center;gap:6px;padding:5px 12px;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;background:transparent;color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.15);border-radius:9px;cursor:pointer;transition:background .15s,color .15s,border-color .15s;}
+.lang-trigger::after{content:'';width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg);margin-top:-3px;transition:transform .2s;}
+.lang-toggle.open .lang-trigger::after{transform:rotate(-135deg);margin-top:2px;}
+.lang-toggle.open .lang-trigger{background:#fff;color:#000;border-color:#fff;}
+.lang-menu{position:absolute;top:calc(100% + 6px);right:0;display:flex;flex-direction:column;min-width:64px;border:1px solid rgba(255,255,255,.15);border-radius:9px;background:#000;overflow:hidden;opacity:0;visibility:hidden;transform:translateY(-4px);transition:opacity .15s,transform .15s;z-index:60;}
+.lang-toggle.open .lang-menu{opacity:1;visibility:visible;transform:translateY(0);}
+.lang-menu button{padding:8px 14px;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;background:transparent;color:rgba(255,255,255,.8);border:none;text-align:left;cursor:pointer;transition:background .15s,color .15s;}
+.lang-menu button:hover{background:rgba(255,255,255,.08);}
+.lang-menu button.active{background:#fff;color:#000;}
 .nav-toggle{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:8px;}
 .nav-toggle span{width:24px;height:1.5px;background:#fff;transition:.25s;}
 .nav-toggle.is-open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
@@ -57,54 +71,58 @@ header{position:sticky;top:0;z-index:100;background:#000;border-bottom:1px solid
 /* HERO */
 .hero{padding:96px 0 72px;}
 .hero h1{font-size:clamp(40px,6vw,72px);margin-bottom:16px;}
-.hero-lead{font-weight:300;font-size:18px;line-height:1.6;color:rgba(255,255,255,.5);max-width:560px;}
+.hero-lead{font-weight:300;font-size:18px;line-height:1.6;color:rgba(255,255,255,.8);max-width:560px;}
 
 /* DOC CONTENT */
 .doc-content{max-width:720px;padding:0 0 96px;}
-.doc-content h2{font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.4);margin:48px 0 16px;display:flex;align-items:center;gap:12px;}
+.doc-content h2{font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.8);margin:48px 0 16px;display:flex;align-items:center;gap:12px;}
 .doc-content h2::after{content:"";flex:0 0 28px;height:1px;background:rgba(255,255,255,.2);}
 .doc-content h2:first-child{margin-top:0;}
-.doc-content p{font-weight:300;font-size:16px;line-height:1.75;color:rgba(255,255,255,.55);margin-bottom:14px;}
+.doc-content p{font-weight:300;font-size:16px;line-height:1.75;color:rgba(255,255,255,.8);margin-bottom:14px;}
 .doc-content ul{margin:0 0 14px 20px;}
-.doc-content ul li{font-weight:300;font-size:16px;line-height:1.75;color:rgba(255,255,255,.55);margin-bottom:8px;}
+.doc-content ul li{font-weight:300;font-size:16px;line-height:1.75;color:rgba(255,255,255,.8);margin-bottom:8px;}
 .doc-content strong{color:#fff;font-weight:500;}
 .doc-content a{color:#fff;border-bottom:1px solid rgba(255,255,255,.25);transition:border-color .15s;}
 .doc-content a:hover{border-color:#fff;}
 .info-box{border:1px solid rgba(255,255,255,.12);padding:22px 26px;margin-bottom:32px;}
 .info-box p{margin-bottom:6px;font-size:15px;}
 .info-box p:last-child{margin-bottom:0;}
-.info-label{font-family:'Jost',sans-serif;font-size:10px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:12px;display:block;}
-.updated{font-size:13px;font-weight:300;color:rgba(255,255,255,.25);margin-top:48px;padding-top:24px;border-top:1px solid rgba(255,255,255,.08);}
+.info-label{font-family:'Jost',sans-serif;font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.8);margin-bottom:12px;display:block;}
+.updated{font-size:13px;font-weight:300;color:rgba(255,255,255,.8);margin-top:48px;padding-top:24px;border-top:1px solid rgba(255,255,255,.08);}
 
 /* FOOTER */
 footer{padding:48px 0;border-top:1px solid rgba(255,255,255,.1);background:#000;}
 .foot{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;}
 .foot-brand{display:flex;align-items:center;gap:16px;}
 .foot-brand img{height:52px;width:auto;opacity:.6;}
-.foot-brand p{font-size:12px;font-weight:300;color:rgba(255,255,255,.35);line-height:1.7;}
+.foot-brand p{font-size:12px;font-weight:300;color:rgba(255,255,255,.8);line-height:1.7;}
 .foot-links{display:flex;gap:24px;font-size:13px;font-weight:300;}
-.foot-links a{color:rgba(255,255,255,.35);transition:color .15s;}
+.foot-links a{color:rgba(255,255,255,.8);transition:color .15s;}
 .foot-links a:hover{color:#fff;}
 a:focus-visible,button:focus-visible{outline:2px solid #fff;outline-offset:3px;}
 </style>
 </head>
-<body class="lang-ro">
+<body class="lang-en">
 
 <header>
   <div class="wrap nav">
-    <a href="/index.html"><img src="/assets/logos/white_logo_square_transparent_background.png" alt="Front Door" style="height:34px;width:auto"></a>
+    <a href="/index.html"><img src="/assets/logos/white_logo_square_transparent_background.png" alt="Front Door" style="height:40px;width:auto"></a>
     <nav class="nav-links" id="navLinks">
-      <a href="/index.html#piloni"><span data-lang="ro" class="i">Piloni</span><span data-lang="da" class="i">Søjler</span></a>
-      <a href="/events.html"><span data-lang="ro" class="i">Evenimente</span><span data-lang="da" class="i">Begivenheder</span></a>
-      <a href="/index.html#implica-te"><span data-lang="ro" class="i">Implică-te</span><span data-lang="da" class="i">Bliv medlem</span></a>
-      <a href="/transparenta.html"><span data-lang="ro" class="i">Transparență</span><span data-lang="da" class="i">Transparens</span></a>
-      <a href="/index.html#despre"><span data-lang="ro" class="i">Despre</span><span data-lang="da" class="i">Om os</span></a>
-      <a class="don" href="/join.html"><span data-lang="ro" class="i">Donează</span><span data-lang="da" class="i">Donér</span></a>
+      <a href="/index.html#piloni"><span data-lang="en" class="i">Pillars</span><span data-lang="ro" class="i">Piloni</span><span data-lang="da" class="i">Søjler</span></a>
+      <a href="/events.html"><span data-lang="en" class="i">Events</span><span data-lang="ro" class="i">Evenimente</span><span data-lang="da" class="i">Begivenheder</span></a>
+      <a href="/index.html#implica-te"><span data-lang="en" class="i">Get Involved</span><span data-lang="ro" class="i">Implică-te</span><span data-lang="da" class="i">Bliv medlem</span></a>
+      <a href="/transparenta.html"><span data-lang="en" class="i">Transparency</span><span data-lang="ro" class="i">Transparență</span><span data-lang="da" class="i">Transparens</span></a>
+      <a href="/index.html#despre"><span data-lang="en" class="i">About</span><span data-lang="ro" class="i">Despre</span><span data-lang="da" class="i">Om os</span></a>
+      <a class="don" href="/join.html"><span data-lang="en" class="i">Donate</span><span data-lang="ro" class="i">Donează</span><span data-lang="da" class="i">Donér</span></a>
     </nav>
     <div style="display:flex;align-items:center;gap:14px;flex-shrink:0">
-      <div class="lang-toggle">
-        <button id="btnRo" class="active" onclick="setLang('ro')">RO</button>
-        <button id="btnDa" onclick="setLang('da')">DA</button>
+      <div class="lang-toggle" id="langToggle">
+        <button type="button" class="lang-trigger" id="langTrigger" aria-haspopup="true" aria-expanded="false">EN</button>
+        <div class="lang-menu" id="langMenu">
+          <button id="btnRo" onclick="setLang('ro')">RO</button>
+          <button id="btnDa" onclick="setLang('da')">DA</button>
+          <button id="btnEn" class="active" onclick="setLang('en')">EN</button>
+        </div>
       </div>
       <button class="nav-toggle" id="navToggle" aria-label="Meniu" aria-expanded="false"><span></span><span></span><span></span></button>
     </div>
@@ -114,6 +132,10 @@ a:focus-visible,button:focus-visible{outline:2px solid #fff;outline-offset:3px;}
 <section class="hero">
   <div class="wrap">
     <div class="line-grow"></div>
+    <div data-lang="en">
+      <p class="label fade-in">GDPR</p>
+      <h1 class="display fade-in d1">Privacy Policy</h1>
+    </div>
     <div data-lang="ro">
       <p class="label fade-in">GDPR</p>
       <h1 class="display fade-in d1">Politica de date</h1>
@@ -127,6 +149,57 @@ a:focus-visible,button:focus-visible{outline:2px solid #fff;outline-offset:3px;}
 
 <section style="padding:0 0 0">
   <div class="wrap">
+    <!-- EN -->
+    <div class="doc-content fade-in" data-lang="en">
+      <div class="info-box">
+        <span class="info-label">Data Controller</span>
+        <p><strong>Foreningen Front Door</strong></p>
+        <p>2500 København (Valby), Denmark</p>
+        <p>CVR no.: 46702697</p>
+        <p>foreningenfrontdoor.dk</p>
+        <p>GDPR contact: <a href="mailto:gdpr@foreningenfrontdoor.dk">gdpr@foreningenfrontdoor.dk</a></p>
+      </div>
+      <h2>What data do we collect?</h2>
+      <p>We collect and process the following personal data:</p>
+      <ul>
+        <li><strong>Contact details:</strong> name, address, email and phone number</li>
+        <li><strong>Membership applications:</strong> name, email, phone (optional), city, message — stored until the application is processed, deleted no later than 2 years after any withdrawal</li>
+        <li><strong>Member data for reporting to the municipality:</strong> date of birth, sex, address, postal code and, where applicable, special needs</li>
+        <li><strong>Payment data:</strong> membership fees and donations (processed via a payment provider)</li>
+        <li><strong>Activity participation:</strong> sign-ups for events and activities</li>
+        <li><strong>Board members and volunteers:</strong> name, address, email, phone and role within the association</li>
+      </ul>
+      <h2>Why do we process your data?</h2>
+      <ul>
+        <li>Administering membership and collecting fees</li>
+        <li>Communicating about the association's activities and events</li>
+        <li>Complying with legal requirements, including reporting to Københavns Kommune</li>
+        <li>Internal administration of the association (accounting, minutes, decisions)</li>
+      </ul>
+      <p><strong>Legal basis (GDPR Art. 6):</strong> performance of the membership contract (b), legal obligations (c), legitimate interests (f), consent (a). Data on special needs is sensitive data (GDPR Art. 9) and is collected only with your consent.</p>
+      <h2>Sharing of data</h2>
+      <ul>
+        <li><strong>Københavns Kommune</strong> — funding applications</li>
+        <li><strong>Payment providers</strong> — processing of fees and donations</li>
+      </ul>
+      <p>We do not sell or pass on your data to commercial third parties.</p>
+      <h2>How long do we keep the data?</h2>
+      <ul>
+        <li>Member data — for the duration of active membership, deleted no later than 2 years after withdrawal</li>
+        <li>Accounting records — 5 years under bookkeeping legislation</li>
+        <li>Event sign-ups — no later than 1 year after the event</li>
+      </ul>
+      <h2>Your rights</h2>
+      <p>You have the right to access, rectify, erase or object to the processing of your data. Contact: <a href="mailto:gdpr@foreningenfrontdoor.dk">gdpr@foreningenfrontdoor.dk</a></p>
+      <h2>Complaints</h2>
+      <div class="info-box" style="margin-top:16px">
+        <p><strong>Datatilsynet</strong> (Danish Data Protection Agency)</p>
+        <p>Carl Jacobsens Vej 35, 2500 Valby</p>
+        <p><a href="https://www.datatilsynet.dk" target="_blank" rel="noopener">www.datatilsynet.dk</a></p>
+      </div>
+      <p class="updated">Last updated: September 2026</p>
+    </div>
+
     <!-- RO -->
     <div class="doc-content fade-in" data-lang="ro">
       <div class="info-box">
@@ -142,6 +215,7 @@ a:focus-visible,button:focus-visible{outline:2px solid #fff;outline-offset:3px;}
       <ul>
         <li><strong>Date de contact:</strong> nume, adresă, e-mail și telefon</li>
         <li><strong>Cereri de membership:</strong> nume, email, telefon (opțional), oraș, mesaj — stocate până la procesarea cererii, șterse cel târziu la 2 ani după eventuala retragere</li>
+        <li><strong>Date de membru pentru raportare la comună:</strong> dată de naștere, sex, adresă, cod poștal și, dacă e cazul, nevoi speciale</li>
         <li><strong>Date de plată:</strong> cotizații și donații (procesate prin furnizor de plăți)</li>
         <li><strong>Participare la activități:</strong> înscrieri la evenimente și activități</li>
         <li><strong>Membri ai consiliului și voluntari:</strong> nume, adresă, e-mail, telefon și rol în asociație</li>
@@ -153,12 +227,11 @@ a:focus-visible,button:focus-visible{outline:2px solid #fff;outline-offset:3px;}
         <li>Respectarea cerințelor legale, inclusiv raportarea către Københavns Kommune</li>
         <li>Administrarea internă a asociației (contabilitate, procese-verbale, decizii)</li>
       </ul>
-      <p><strong>Temei legal (GDPR art. 6):</strong> executarea contractului de membru (lit. b), obligații legale (lit. c), interese legitime (lit. f), consimțământ (lit. a).</p>
+      <p><strong>Temei legal (GDPR art. 6):</strong> executarea contractului de membru (lit. b), obligații legale (lit. c), interese legitime (lit. f), consimțământ (lit. a). Datele despre nevoi speciale sunt date sensibile (GDPR art. 9) și le colectăm doar cu consimțământul tău.</p>
       <h2>Partajarea datelor</h2>
       <ul>
         <li><strong>Københavns Kommune</strong> — cereri de finanțare</li>
         <li><strong>Furnizori de plăți</strong> — procesarea cotizațiilor și donațiilor</li>
-        <li><strong>MinForening</strong> — administrarea membrilor și activităților</li>
       </ul>
       <p>Nu vindem și nu transmitem datele tale unor terți comerciali.</p>
       <h2>Cât timp păstrăm datele?</h2>
@@ -175,7 +248,7 @@ a:focus-visible,button:focus-visible{outline:2px solid #fff;outline-offset:3px;}
         <p>Carl Jacobsens Vej 35, 2500 Valby</p>
         <p><a href="https://www.datatilsynet.dk" target="_blank" rel="noopener">www.datatilsynet.dk</a></p>
       </div>
-      <p class="updated">Ultima actualizare: august 2026</p>
+      <p class="updated">Ultima actualizare: septembrie 2026</p>
     </div>
 
     <!-- DA -->
@@ -192,6 +265,7 @@ a:focus-visible,button:focus-visible{outline:2px solid #fff;outline-offset:3px;}
       <ul>
         <li><strong>Navn og kontaktoplysninger:</strong> navn, adresse, e-mail og telefon</li>
         <li><strong>Ansøgninger om medlemskab:</strong> navn, e-mail, telefon (valgfrit), by, besked — opbevares til ansøgningen er behandlet, slettes senest 2 år efter udmeldelse</li>
+        <li><strong>Medlemsoplysninger til brug for indberetning til kommunen:</strong> fødselsdato, køn, adresse, postnummer og, hvis relevant, særlige behov</li>
         <li><strong>Betalingsoplysninger:</strong> kontingent og donationer (behandles via betalingsudbyder)</li>
         <li><strong>Aktivitetsdeltagelse:</strong> tilmeldinger til arrangementer</li>
         <li><strong>Bestyrelsesmedlemmer og frivillige:</strong> navn, adresse, e-mail, telefon og rolle</li>
@@ -203,12 +277,11 @@ a:focus-visible,button:focus-visible{outline:2px solid #fff;outline-offset:3px;}
         <li>Opfyldelse af lovkrav, herunder indberetning til Københavns Kommune</li>
         <li>Foreningens interne administration</li>
       </ul>
-      <p><strong>Retsgrundlag (GDPR art. 6):</strong> opfyldelse af medlemsaftalen (litra b), retlige forpligtelser (litra c), legitime interesser (litra f), samtykke (litra a).</p>
+      <p><strong>Retsgrundlag (GDPR art. 6):</strong> opfyldelse af medlemsaftalen (litra b), retlige forpligtelser (litra c), legitime interesser (litra f), samtykke (litra a). Oplysninger om særlige behov er følsomme oplysninger (GDPR art. 9) og indsamles kun med dit samtykke.</p>
       <h2>Deling af oplysninger</h2>
       <ul>
         <li><strong>Københavns Kommune</strong> — tilskudsansøgninger</li>
         <li><strong>Betalingsudbydere</strong> — kontingenter og donationer</li>
-        <li><strong>MinForening</strong> — administration af medlemmer og aktiviteter</li>
       </ul>
       <p>Vi sælger eller videregiver ikke dine oplysninger til kommercielle tredjeparter.</p>
       <h2>Hvor længe gemmer vi dine oplysninger?</h2>
@@ -225,7 +298,7 @@ a:focus-visible,button:focus-visible{outline:2px solid #fff;outline-offset:3px;}
         <p>Carl Jacobsens Vej 35, 2500 Valby</p>
         <p><a href="https://www.datatilsynet.dk" target="_blank" rel="noopener">www.datatilsynet.dk</a></p>
       </div>
-      <p class="updated">Senest opdateret: august 2026</p>
+      <p class="updated">Senest opdateret: september 2026</p>
     </div>
   </div>
 </section>
@@ -237,7 +310,7 @@ a:focus-visible,button:focus-visible{outline:2px solid #fff;outline-offset:3px;}
       <p>© 2026 Front Door<br>foreningenfrontdoor.dk<br>CVR: 46702697</p>
     </div>
     <nav class="foot-links">
-      <a href="/datapolitik.html"><span data-lang="ro" class="i">Politica de date</span><span data-lang="da" class="i">Datapolitik</span></a>
+      <a href="/datapolitik.html"><span data-lang="en" class="i">Privacy Policy</span><span data-lang="ro" class="i">Politica de date</span><span data-lang="da" class="i">Datapolitik</span></a>
       <a href="https://www.instagram.com/frontdoor_dk/" target="_blank" rel="noopener">Instagram</a>
       <a href="https://www.facebook.com/profile.php?id=61593579534677" target="_blank" rel="noopener">Facebook</a>
     </nav>
@@ -245,13 +318,29 @@ a:focus-visible,button:focus-visible{outline:2px solid #fff;outline-offset:3px;}
 </footer>
 
 <script>
-var lang='ro';
-function setLang(l){lang=l;document.body.className='lang-'+l;document.documentElement.lang=l;document.getElementById('btnRo').classList.toggle('active',l==='ro');document.getElementById('btnDa').classList.toggle('active',l==='da');try{localStorage.setItem('fd-lang',l);}catch(e){}}
+var lang='en';
+function setLang(l){lang=l;document.body.className='lang-'+l;document.documentElement.lang=l;document.getElementById('btnEn').classList.toggle('active',l==='en');document.getElementById('btnRo').classList.toggle('active',l==='ro');document.getElementById('btnDa').classList.toggle('active',l==='da');try{localStorage.setItem('fd-lang',l);}catch(e){}document.getElementById('langTrigger').textContent=l.toUpperCase();document.getElementById('langToggle').classList.remove('open');}
 window.setLang=setLang;
-try{var s=localStorage.getItem('fd-lang');if(s==='da')setLang('da');}catch(e){}
+(function(){
+  var wrap=document.getElementById('langToggle'), trig=document.getElementById('langTrigger');
+  if(!wrap||!trig) return;
+  trig.addEventListener('click',function(e){
+    e.stopPropagation();
+    var open=wrap.classList.toggle('open');
+    trig.setAttribute('aria-expanded', open?'true':'false');
+  });
+  document.addEventListener('click',function(e){
+    if(!wrap.contains(e.target)){ wrap.classList.remove('open'); trig.setAttribute('aria-expanded','false'); }
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){ wrap.classList.remove('open'); trig.setAttribute('aria-expanded','false'); }
+  });
+})();
+try{var s=localStorage.getItem('fd-lang');if(s==='ro'||s==='da')setLang(s);}catch(e){}
 var toggle=document.getElementById('navToggle'),links=document.getElementById('navLinks');
 toggle.addEventListener('click',function(){var o=links.classList.toggle('is-open');toggle.classList.toggle('is-open',o);toggle.setAttribute('aria-expanded',o?'true':'false');});
 links.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){links.classList.remove('is-open');toggle.classList.remove('is-open');});});
+(function(){if(!links)return;var ind=document.createElement('span');ind.className='nav-indicator';links.insertBefore(ind,links.firstChild);links.classList.add('js-nav');var items=Array.prototype.slice.call(links.querySelectorAll('a:not(.don)'));var activeEl=links.querySelector('a.active:not(.don)')||null;function setHot(el){items.forEach(function(a){a.classList.toggle('is-hot',a===el);});}function move(el){if(!el){ind.style.opacity='0';return;}var nr=links.getBoundingClientRect(),r=el.getBoundingClientRect();ind.style.opacity='1';ind.style.width=r.width+'px';ind.style.height=r.height+'px';ind.style.transform='translate('+(r.left-nr.left)+'px,'+(r.top-nr.top)+'px)';}items.forEach(function(el){el.addEventListener('mouseenter',function(){setHot(el);move(el);});el.addEventListener('focus',function(){setHot(el);move(el);});});links.addEventListener('mouseleave',function(){setHot(activeEl);move(activeEl);});function sync(){move(activeEl);}setHot(activeEl);window.addEventListener('resize',sync);toggle.addEventListener('click',function(){setTimeout(sync,260);});sync();})();
 var rm=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
 if(!rm&&'IntersectionObserver' in window){var io=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);}});},{threshold:0.08});document.querySelectorAll('.fade-in,.line-grow').forEach(function(el){io.observe(el);});}
 else{document.querySelectorAll('.fade-in,.line-grow').forEach(function(el){el.classList.add('visible');});}

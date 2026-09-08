@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,8 +9,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#000;--fg:#fff;--bg-inv:#fff;--fg-inv:#000;--mid:rgba(255,255,255,.45);--rule:rgba(255,255,255,.1);}
-@media(prefers-color-scheme:light){:root{--bg:#fff;--fg:#000;--bg-inv:#000;--fg-inv:#fff;--mid:rgba(0,0,0,.45);--rule:rgba(0,0,0,.1);}}
+:root{--bg:#000;--fg:#fff;--bg-inv:#fff;--fg-inv:#000;--mid:rgba(255,255,255,.8);--rule:rgba(255,255,255,.1);}
+@media(prefers-color-scheme:light){:root{--bg:#fff;--fg:#000;--bg-inv:#000;--fg-inv:#fff;--mid:rgba(0,0,0,.82);--rule:rgba(0,0,0,.1);}}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
 body{font-family:'Jost',system-ui,sans-serif;font-weight:400;background:var(--bg);color:var(--fg);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
@@ -23,8 +23,10 @@ button{font-family:inherit;cursor:pointer;}
 .lang-ro [data-lang="ro"].i{display:inline;}
 .lang-da [data-lang="da"]{display:block;}
 .lang-da [data-lang="da"].i{display:inline;}
+.lang-en [data-lang="en"]{display:block;}
+.lang-en [data-lang="en"].i{display:inline;}
 .display{font-family:'Nunito',sans-serif;font-weight:900;line-height:1.0;letter-spacing:-.02em;}
-.label{font-family:'Jost',sans-serif;font-weight:300;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--mid);margin-bottom:16px;}
+.label{font-family:'Jost',sans-serif;font-weight:600;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--mid);margin-bottom:16px;}
 .lead{font-family:'Jost',sans-serif;font-weight:300;font-size:19px;line-height:1.55;color:var(--mid);max-width:560px;}
 .s-dark{background:#000;color:#fff;}
 .s-light{background:#fff;color:#000;}
@@ -39,14 +41,26 @@ button{font-family:inherit;cursor:pointer;}
 /* HEADER */
 header{position:sticky;top:0;z-index:100;background:#000;border-bottom:1px solid rgba(255,255,255,.1);}
 .nav{display:flex;align-items:center;justify-content:space-between;height:68px;gap:20px;}
-.nav-links{display:flex;gap:28px;font-size:14px;font-weight:400;letter-spacing:.04em;align-items:center;}
-.nav-links a{color:rgba(255,255,255,.65);transition:color .15s;}
-.nav-links a:hover,.nav-links a.active{color:#fff;}
-.nav-links a.don{color:#000;background:#fff;padding:7px 16px;font-weight:500;transition:opacity .15s;}
-.nav-links a.don:hover{opacity:.8;}
-.lang-toggle{display:flex;border:1px solid rgba(255,255,255,.15);overflow:hidden;flex-shrink:0;}
-.lang-toggle button{padding:5px 12px;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;background:transparent;color:rgba(255,255,255,.45);border:none;transition:background .15s,color .15s;}
-.lang-toggle button.active{background:#fff;color:#000;}
+.nav-links{display:flex;gap:6px;font-size:16px;font-weight:500;letter-spacing:.02em;align-items:center;position:relative;}
+.nav-links a{color:rgba(255,255,255,.82);transition:color .15s;padding:7px 14px;position:relative;z-index:1;border-radius:9px;}
+.nav-links a:hover{color:#fff;}
+.nav-links a.active{color:#000;background:#fff;font-weight:600;border-radius:9px;}
+.nav-links.js-nav a.active{background:none;}
+.nav-links a.is-hot{color:#000;}
+.nav-indicator{position:absolute;top:0;left:0;background:#fff;border-radius:10px;z-index:0;opacity:0;pointer-events:none;transition:transform .38s cubic-bezier(.65,0,.35,1),width .3s cubic-bezier(.65,0,.35,1),height .3s cubic-bezier(.65,0,.35,1),opacity .2s;}
+.nav-links a.don{color:#fff;background:transparent;border:1.5px solid #fff;padding:6.5px 16px;font-weight:500;transition:background .15s,color .15s;border-radius:9px;margin-left:14px;}
+.nav-links a.don:hover{background:#fff;color:#000;}
+.nav-links a.don.active{background:#fff;color:#000;font-weight:600;}
+.lang-toggle{position:relative;flex-shrink:0;}
+.lang-trigger{display:flex;align-items:center;gap:6px;padding:5px 12px;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;background:transparent;color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.15);border-radius:9px;cursor:pointer;transition:background .15s,color .15s,border-color .15s;}
+.lang-trigger::after{content:'';width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg);margin-top:-3px;transition:transform .2s;}
+.lang-toggle.open .lang-trigger::after{transform:rotate(-135deg);margin-top:2px;}
+.lang-toggle.open .lang-trigger{background:#fff;color:#000;border-color:#fff;}
+.lang-menu{position:absolute;top:calc(100% + 6px);right:0;display:flex;flex-direction:column;min-width:64px;border:1px solid rgba(255,255,255,.15);border-radius:9px;background:#000;overflow:hidden;opacity:0;visibility:hidden;transform:translateY(-4px);transition:opacity .15s,transform .15s;z-index:60;}
+.lang-toggle.open .lang-menu{opacity:1;visibility:visible;transform:translateY(0);}
+.lang-menu button{padding:8px 14px;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;background:transparent;color:rgba(255,255,255,.8);border:none;text-align:left;cursor:pointer;transition:background .15s,color .15s;}
+.lang-menu button:hover{background:rgba(255,255,255,.08);}
+.lang-menu button.active{background:#fff;color:#000;}
 .nav-toggle{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:8px;}
 .nav-toggle span{width:24px;height:1.5px;background:#fff;transition:.25s;}
 .nav-toggle.is-open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
@@ -63,17 +77,17 @@ header{position:sticky;top:0;z-index:100;background:#000;border-bottom:1px solid
 /* HERO */
 .hero{padding:96px 0 80px;}
 .hero h1{font-size:clamp(44px,7vw,88px);margin-bottom:20px;}
-.hero h1 em{font-style:normal;display:block;opacity:.35;font-weight:700;font-size:.65em;margin-top:6px;}
+.hero h1 em{font-style:normal;display:block;opacity:.75;font-weight:700;font-size:.65em;margin-top:6px;}
 
 /* FILTERS */
 .filters-bar{padding:0 0 48px;display:flex;gap:8px;flex-wrap:wrap;}
-.filter-btn{padding:9px 20px;font-family:'Jost',sans-serif;font-size:13px;font-weight:400;letter-spacing:.06em;border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.5);cursor:pointer;transition:border-color .15s,color .15s,background .15s;}
+.filter-btn{padding:9px 20px;font-family:'Jost',sans-serif;font-size:13px;font-weight:400;letter-spacing:.06em;border:1px solid rgba(255,255,255,.2);border-radius:999px;background:transparent;color:rgba(255,255,255,.8);cursor:pointer;transition:border-color .15s,color .15s,background .15s;}
 .filter-btn:hover{border-color:rgba(255,255,255,.5);color:#fff;}
 .filter-btn.is-active{background:#fff;color:#000;border-color:#fff;}
 
 /* EVENTS SECTION */
 .events-section{padding:0 0 96px;}
-.events-count{font-weight:300;font-size:13px;color:rgba(255,255,255,.3);letter-spacing:.06em;margin-bottom:24px;}
+.events-count{font-weight:300;font-size:13px;color:rgba(255,255,255,.8);letter-spacing:.06em;margin-bottom:24px;}
 .events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1px;background:rgba(255,255,255,.1);}
 
 /* EVENT CARD */
@@ -92,26 +106,25 @@ header{position:sticky;top:0;z-index:100;background:#000;border-bottom:1px solid
 .event-card.cancelled{opacity:.35;}
 .event-card.cancelled .event-status-label{background:rgba(160,30,30,.85);color:#fff;}
 .event-body{padding:22px 20px;flex:1;display:flex;flex-direction:column;gap:6px;}
-.event-date-row{font-size:11px;font-weight:400;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);}
-.event-card:hover .event-date-row{color:rgba(0,0,0,.4);}
 .event-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:18px;letter-spacing:-.015em;line-height:1.2;}
-.event-location{font-size:13px;font-weight:300;color:rgba(255,255,255,.4);}
-.event-card:hover .event-location{color:rgba(0,0,0,.4);}
-.event-desc{font-size:14px;font-weight:300;line-height:1.6;color:rgba(255,255,255,.5);flex:1;}
-.event-card:hover .event-desc{color:rgba(0,0,0,.55);}
-.event-recurring-note{font-size:12px;font-weight:300;color:rgba(255,255,255,.3);}
-.event-card:hover .event-recurring-note{color:rgba(0,0,0,.3);}
+.event-meta{display:flex;flex-wrap:wrap;gap:6px;}
+.event-chip{display:inline-flex;align-items:center;font-size:11px;font-weight:600;letter-spacing:.03em;padding:4px 10px;border-radius:999px;background:rgba(127,127,127,.22);color:inherit;opacity:.9;}
+.event-chip-soon{font-style:italic;font-weight:500;background:transparent;border:1px dashed currentColor;opacity:.62;}
+.event-desc{font-size:14px;font-weight:300;line-height:1.6;color:rgba(255,255,255,.8);flex:1;}
+.event-card:hover .event-desc{color:rgba(0,0,0,.82);}
+.event-recurring-note{font-size:12px;font-weight:300;color:rgba(255,255,255,.8);}
+.event-card:hover .event-recurring-note{color:rgba(0,0,0,.82);}
 .event-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
 .event-tag{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border:1px solid rgba(255,255,255,.15);}
 .event-card:hover .event-tag{border-color:rgba(0,0,0,.15);}
 .event-footer{padding:0 20px 20px;}
-.btn-signup{display:block;width:100%;padding:10px 16px;font-family:'Jost',sans-serif;font-size:12px;font-weight:500;letter-spacing:.08em;text-align:center;border:1px solid rgba(255,255,255,.25);color:inherit;transition:background .15s,color .15s,border-color .15s;}
+.btn-signup{display:block;width:100%;padding:10px 16px;font-family:'Jost',sans-serif;font-size:12px;font-weight:500;letter-spacing:.08em;text-align:center;border:1px solid rgba(255,255,255,.25);border-radius:9px;color:inherit;transition:background .15s,color .15s,border-color .15s;}
 .btn-signup:hover{background:#fff;color:#000;border-color:#fff;}
 .event-card:hover .btn-signup{border-color:rgba(0,0,0,.2);}
 .event-card:hover .btn-signup:hover{background:#000;color:#fff;border-color:#000;}
 .events-empty{grid-column:1/-1;text-align:center;padding:72px 24px;border:1px solid rgba(255,255,255,.08);}
-.events-empty h3{font-family:'Nunito',sans-serif;font-weight:900;font-size:22px;letter-spacing:-.015em;margin-bottom:10px;opacity:.45;}
-.events-empty p{font-weight:300;font-size:15px;color:rgba(255,255,255,.35);}
+.events-empty h3{font-family:'Nunito',sans-serif;font-weight:900;font-size:22px;letter-spacing:-.015em;margin-bottom:10px;opacity:.85;}
+.events-empty p{font-weight:300;font-size:15px;color:rgba(255,255,255,.8);}
 @keyframes pulse{0%,100%{opacity:.3}50%{opacity:.6}}
 .skeleton-card{background:#111;animation:pulse 1.6s ease-in-out infinite;}
 .skeleton-cover{aspect-ratio:4/3;background:#1a1a1a;}
@@ -126,30 +139,34 @@ footer{padding:48px 0;border-top:1px solid rgba(255,255,255,.1);background:#000;
 .foot{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;}
 .foot-brand{display:flex;align-items:center;gap:16px;}
 .foot-brand img{height:52px;width:auto;opacity:.6;}
-.foot-brand p{font-size:12px;font-weight:300;color:rgba(255,255,255,.35);line-height:1.7;}
+.foot-brand p{font-size:12px;font-weight:300;color:rgba(255,255,255,.8);line-height:1.7;}
 .foot-links{display:flex;gap:24px;font-size:13px;font-weight:300;}
-.foot-links a{color:rgba(255,255,255,.35);transition:color .15s;}
+.foot-links a{color:rgba(255,255,255,.8);transition:color .15s;}
 .foot-links a:hover{color:#fff;}
 a:focus-visible,button:focus-visible{outline:2px solid #fff;outline-offset:3px;}
 </style>
 </head>
-<body class="lang-ro">
+<body class="lang-en">
 
 <header>
   <div class="wrap nav">
-    <a href="/index.html"><img src="/assets/logos/white_logo_square_transparent_background.png" alt="Front Door" style="height:34px;width:auto"></a>
+    <a href="/index.html"><img src="/assets/logos/white_logo_square_transparent_background.png" alt="Front Door" style="height:40px;width:auto"></a>
     <nav class="nav-links" id="navLinks">
-      <a href="/index.html#piloni"><span data-lang="ro" class="i">Piloni</span><span data-lang="da" class="i">Søjler</span></a>
-      <a href="/events.html" class="active"><span data-lang="ro" class="i">Evenimente</span><span data-lang="da" class="i">Begivenheder</span></a>
-      <a href="/index.html#implica-te"><span data-lang="ro" class="i">Implică-te</span><span data-lang="da" class="i">Bliv medlem</span></a>
-      <a href="/transparenta.html"><span data-lang="ro" class="i">Transparență</span><span data-lang="da" class="i">Transparens</span></a>
-      <a href="/index.html#despre"><span data-lang="ro" class="i">Despre</span><span data-lang="da" class="i">Om os</span></a>
-      <a class="don" href="/join.html"><span data-lang="ro" class="i">Donează</span><span data-lang="da" class="i">Donér</span></a>
+      <a href="/index.html#piloni"><span data-lang="en" class="i">Pillars</span><span data-lang="ro" class="i">Piloni</span><span data-lang="da" class="i">Søjler</span></a>
+      <a href="/events.html" class="active"><span data-lang="en" class="i">Events</span><span data-lang="ro" class="i">Evenimente</span><span data-lang="da" class="i">Begivenheder</span></a>
+      <a href="/index.html#implica-te"><span data-lang="en" class="i">Get Involved</span><span data-lang="ro" class="i">Implică-te</span><span data-lang="da" class="i">Bliv medlem</span></a>
+      <a href="/transparenta.html"><span data-lang="en" class="i">Transparency</span><span data-lang="ro" class="i">Transparență</span><span data-lang="da" class="i">Transparens</span></a>
+      <a href="/index.html#despre"><span data-lang="en" class="i">About</span><span data-lang="ro" class="i">Despre</span><span data-lang="da" class="i">Om os</span></a>
+      <a class="don" href="/join.html"><span data-lang="en" class="i">Donate</span><span data-lang="ro" class="i">Donează</span><span data-lang="da" class="i">Donér</span></a>
     </nav>
     <div style="display:flex;align-items:center;gap:14px;flex-shrink:0">
-      <div class="lang-toggle">
-        <button id="btnRo" class="active" onclick="setLang('ro')">RO</button>
-        <button id="btnDa" onclick="setLang('da')">DA</button>
+      <div class="lang-toggle" id="langToggle">
+        <button type="button" class="lang-trigger" id="langTrigger" aria-haspopup="true" aria-expanded="false">EN</button>
+        <div class="lang-menu" id="langMenu">
+          <button id="btnRo" onclick="setLang('ro')">RO</button>
+          <button id="btnDa" onclick="setLang('da')">DA</button>
+          <button id="btnEn" class="active" onclick="setLang('en')">EN</button>
+        </div>
       </div>
       <button class="nav-toggle" id="navToggle" aria-label="Meniu" aria-expanded="false"><span></span><span></span><span></span></button>
     </div>
@@ -159,6 +176,11 @@ a:focus-visible,button:focus-visible{outline:2px solid #fff;outline-offset:3px;}
 <section class="hero s-dark">
   <div class="wrap">
     <div class="line-grow"></div>
+    <div data-lang="en">
+      <p class="label fade-in">Programme</p>
+      <h1 class="display fade-in d1">Upcoming<br><em>events.</em></h1>
+      <p class="lead fade-in d2">All Front Door events — open to everyone.</p>
+    </div>
     <div data-lang="ro">
       <p class="label fade-in">Program</p>
       <h1 class="display fade-in d1">Evenimente<br><em>viitoare.</em></h1>
@@ -176,12 +198,12 @@ a:focus-visible,button:focus-visible{outline:2px solid #fff;outline-offset:3px;}
   <div class="wrap">
     <div style="display:flex;gap:8px;flex-wrap:wrap;padding-bottom:48px" id="filtersWrap">
       <button class="filter-btn is-active" data-cat="all" onclick="setFilter('all')">
-        <span data-lang="ro" class="i">Toate</span><span data-lang="da" class="i">Alle</span>
+        <span data-lang="en" class="i">All</span><span data-lang="ro" class="i">Toate</span><span data-lang="da" class="i">Alle</span>
       </button>
       <button class="filter-btn" data-cat="artistic" onclick="setFilter('artistic')">Artistic</button>
       <button class="filter-btn" data-cat="cultural" onclick="setFilter('cultural')">Cultural</button>
       <button class="filter-btn" data-cat="societate" onclick="setFilter('societate')">
-        <span data-lang="ro" class="i">Societate</span><span data-lang="da" class="i">Samfund</span>
+        <span data-lang="en" class="i">Society</span><span data-lang="ro" class="i">Societate</span><span data-lang="da" class="i">Samfund</span>
       </button>
     </div>
   </div>
@@ -205,7 +227,7 @@ a:focus-visible,button:focus-visible{outline:2px solid #fff;outline-offset:3px;}
       <p>© 2026 Front Door<br>foreningenfrontdoor.dk<br>CVR: 46702697</p>
     </div>
     <nav class="foot-links">
-      <a href="/datapolitik.html"><span data-lang="ro" class="i">Politica de date</span><span data-lang="da" class="i">Datapolitik</span></a>
+      <a href="/datapolitik.html"><span data-lang="en" class="i">Privacy Policy</span><span data-lang="ro" class="i">Politica de date</span><span data-lang="da" class="i">Datapolitik</span></a>
       <a href="https://www.instagram.com/frontdoor_dk/" target="_blank" rel="noopener">Instagram</a>
       <a href="https://www.facebook.com/profile.php?id=61593579534677" target="_blank" rel="noopener">Facebook</a>
     </nav>
@@ -215,30 +237,48 @@ a:focus-visible,button:focus-visible{outline:2px solid #fff;outline-offset:3px;}
 <script>
 (function(){
 'use strict';
-var lang='ro', currentFilter='all', allEvents=[];
+var lang='en', currentFilter='all', allEvents=[];
 
-function setLang(l){lang=l;document.body.className='lang-'+l;document.documentElement.lang=l;document.getElementById('btnRo').classList.toggle('active',l==='ro');document.getElementById('btnDa').classList.toggle('active',l==='da');try{localStorage.setItem('fd-lang',l);}catch(e){}renderEvents(allEvents);updateCount();}
+function setLang(l){lang=l;document.body.className='lang-'+l;document.documentElement.lang=l;document.getElementById('btnEn').classList.toggle('active',l==='en');document.getElementById('btnRo').classList.toggle('active',l==='ro');document.getElementById('btnDa').classList.toggle('active',l==='da');try{localStorage.setItem('fd-lang',l);}catch(e){}document.getElementById('langTrigger').textContent=l.toUpperCase();document.getElementById('langToggle').classList.remove('open');renderEvents(allEvents);updateCount();}
 window.setLang=setLang;
-try{var saved=localStorage.getItem('fd-lang');if(saved==='da')setLang('da');}catch(e){}
+(function(){
+  var wrap=document.getElementById('langToggle'), trig=document.getElementById('langTrigger');
+  if(!wrap||!trig) return;
+  trig.addEventListener('click',function(e){
+    e.stopPropagation();
+    var open=wrap.classList.toggle('open');
+    trig.setAttribute('aria-expanded', open?'true':'false');
+  });
+  document.addEventListener('click',function(e){
+    if(!wrap.contains(e.target)){ wrap.classList.remove('open'); trig.setAttribute('aria-expanded','false'); }
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){ wrap.classList.remove('open'); trig.setAttribute('aria-expanded','false'); }
+  });
+})();
+try{var saved=localStorage.getItem('fd-lang');if(saved==='ro'||saved==='da')setLang(saved);}catch(e){}
 
 var toggle=document.getElementById('navToggle'),links=document.getElementById('navLinks');
 toggle.addEventListener('click',function(){var o=links.classList.toggle('is-open');toggle.classList.toggle('is-open',o);toggle.setAttribute('aria-expanded',o?'true':'false');});
 links.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){links.classList.remove('is-open');toggle.classList.remove('is-open');});});
+(function(){if(!links)return;var ind=document.createElement('span');ind.className='nav-indicator';links.insertBefore(ind,links.firstChild);links.classList.add('js-nav');var items=Array.prototype.slice.call(links.querySelectorAll('a:not(.don)'));var activeEl=links.querySelector('a.active:not(.don)')||null;function setHot(el){items.forEach(function(a){a.classList.toggle('is-hot',a===el);});}function move(el){if(!el){ind.style.opacity='0';return;}var nr=links.getBoundingClientRect(),r=el.getBoundingClientRect();ind.style.opacity='1';ind.style.width=r.width+'px';ind.style.height=r.height+'px';ind.style.transform='translate('+(r.left-nr.left)+'px,'+(r.top-nr.top)+'px)';}items.forEach(function(el){el.addEventListener('mouseenter',function(){setHot(el);move(el);});el.addEventListener('focus',function(){setHot(el);move(el);});});links.addEventListener('mouseleave',function(){setHot(activeEl);move(activeEl);});function sync(){move(activeEl);}setHot(activeEl);window.addEventListener('resize',sync);toggle.addEventListener('click',function(){setTimeout(sync,260);});sync();})();
 
 function setFilter(cat){currentFilter=cat;document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.toggle('is-active',b.getAttribute('data-cat')===cat);});renderEvents(allEvents);updateCount();}
 window.setFilter=setFilter;
 function filtered(){if(currentFilter==='all')return allEvents;return allEvents.filter(function(e){return e.category===currentFilter;});}
 
-function formatDate(ds,ts){var d=new Date(ds+'T00:00:00');var mr=['ian','feb','mar','apr','mai','iun','iul','aug','sep','oct','nov','dec'];var md=['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'];return{day:d.getDate(),month:lang==='ro'?mr[d.getMonth()]:md[d.getMonth()],year:d.getFullYear(),time:ts?ts.substring(0,5):null};}
+function formatDate(ds,ts){if(!ds)return null;var d=new Date(ds+'T00:00:00');var mr=['ian','feb','mar','apr','mai','iun','iul','aug','sep','oct','nov','dec'];var md=['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'];var me=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return{day:d.getDate(),month:(lang==='ro'?mr:lang==='da'?md:me)[d.getMonth()],year:d.getFullYear(),time:ts?ts.substring(0,5):null};}
 
-var catLabel={ro:{artistic:'Artistic',cultural:'Cultural',societate:'Societate'},da:{artistic:'Kunstnerisk',cultural:'Kulturelt',societate:'Samfund'}};
-var recurLabel={ro:'Recurent',da:'Tilbagevendende'};
-var signupLabel={ro:'Înscrie-te →',da:'Tilmeld dig →'};
-var emptyLabel={ro:{h:'Niciun eveniment',p:'Nu există evenimente în această categorie momentan.'},da:{h:'Ingen begivenheder',p:'Der er ingen arrangementer i denne kategori i øjeblikket.'}};
-var countLabel={ro:function(n){return n+(n===1?' eveniment':' evenimente');},da:function(n){return n+(n===1?' begivenhed':' begivenheder');}};
-var statusLabel={ro:{suspended:'Suspendat',cancelled:'Anulat'},da:{suspended:'Suspenderet',cancelled:'Aflyst'}};
+var catLabel={en:{artistic:'Artistic',cultural:'Cultural',societate:'Society'},ro:{artistic:'Artistic',cultural:'Cultural',societate:'Societate'},da:{artistic:'Kunstnerisk',cultural:'Kulturelt',societate:'Samfund'}};
+var recurLabel={en:'Recurring',ro:'Recurent',da:'Tilbagevendende'};
+var signupLabel={en:'Sign up →',ro:'Înscrie-te →',da:'Tilmeld dig →'};
+var emptyLabel={en:{h:'No events',p:'There are no events in this category at the moment.'},ro:{h:'Niciun eveniment',p:'Nu există evenimente în această categorie momentan.'},da:{h:'Ingen begivenheder',p:'Der er ingen arrangementer i denne kategori i øjeblikket.'}};
+var countLabel={en:function(n){return n+(n===1?' event':' events');},ro:function(n){return n+(n===1?' eveniment':' evenimente');},da:function(n){return n+(n===1?' begivenhed':' begivenheder');}};
+var statusLabel={en:{suspended:'Suspended',cancelled:'Cancelled'},ro:{suspended:'Suspendat',cancelled:'Anulat'},da:{suspended:'Suspenderet',cancelled:'Aflyst'}};
+var soonLabel={en:'Coming soon',ro:'În curând',da:'Snart'};
 
 function escHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function tagName(tg){return(lang==='ro'?tg.name_ro:lang==='da'?tg.name_da:tg.name_en)||tg.name;}
 
 function renderEvents(events){
   var list=filtered();
@@ -247,8 +287,8 @@ function renderEvents(events){
   if(!list.length){var em=emptyLabel[lang];grid.innerHTML='<div class="events-empty"><h3>'+em.h+'</h3><p>'+em.p+'</p></div>';return;}
   list.forEach(function(ev){
     var df=formatDate(ev.date,ev.time);
-    var title=lang==='ro'?ev.title_ro:ev.title_da;
-    var desc=lang==='ro'?ev.description_ro:ev.description_da;
+    var title=lang==='da'?ev.title_da:(lang==='en'?(ev.title_en||ev.title_ro):ev.title_ro);
+    var desc=lang==='da'?ev.description_da:(lang==='en'?(ev.description_en||ev.description_ro):ev.description_ro);
     var cat=catLabel[lang][ev.category]||ev.category;
     var isSusp=ev.status==='suspended', isCan=ev.status==='cancelled';
     var cover=ev.cover_image?'<img src="'+ev.cover_image+'" alt="'+escHtml(title)+'" loading="lazy">'
@@ -256,14 +296,17 @@ function renderEvents(events){
     var status=(isSusp||isCan)?'<div class="event-status-label">'+statusLabel[lang][ev.status]+'</div>':'';
     var recBadge=ev.recurring?'<div class="event-recurring-badge">'+recurLabel[lang]+'</div>':'';
     var recNote=(ev.recurring&&ev.recurring_rule)?'<p class="event-recurring-note">↺ '+escHtml(ev.recurring_rule)+'</p>':'';
-    var loc=ev.location?'<p class="event-location">'+escHtml(ev.location)+'</p>':'';
-    var tags=(ev.tags&&ev.tags.length)?'<div class="event-tags">'+ev.tags.map(function(t){return'<span class="event-tag">'+escHtml(t.name)+'</span>';}).join('')+'</div>':'';
+    var tags=(ev.tags&&ev.tags.length)?'<div class="event-tags">'+ev.tags.map(function(t){return'<span class="event-tag">'+escHtml(tagName(t))+'</span>';}).join('')+'</div>':'';
     var signup=(ev.signup_url&&!isCan)?'<div class="event-footer"><a class="btn-signup" href="'+escHtml(ev.signup_url)+'" target="_blank" rel="noopener">'+signupLabel[lang]+'</a></div>':'';
+    var dateChip='<span class="event-chip'+(df?'':' event-chip-soon')+'">'+(df?(df.day+' '+df.month+' '+df.year):soonLabel[lang])+'</span>';
+    var timeChip='<span class="event-chip'+(df&&df.time?'':' event-chip-soon')+'">'+(df&&df.time?df.time:soonLabel[lang])+'</span>';
+    var locChip='<span class="event-chip'+(ev.location?'':' event-chip-soon')+'">'+(ev.location?escHtml(ev.location):soonLabel[lang])+'</span>';
     var card=document.createElement('article');
     card.className='event-card'+(isSusp?' suspended':'')+(isCan?' cancelled':'');
     card.innerHTML='<div class="event-cover">'+cover+'<div class="event-cat-badge">'+cat+'</div>'+recBadge+status+'</div>'
-      +'<div class="event-body"><div class="event-date-row">'+df.day+' '+df.month+' '+df.year+(df.time?' · '+df.time:'')+'</div>'
-      +'<h2 class="event-title">'+escHtml(title)+'</h2>'+loc+'<p class="event-desc">'+escHtml(desc)+'</p>'+recNote+tags+'</div>'+signup;
+      +'<div class="event-body"><h2 class="event-title">'+escHtml(title)+'</h2>'
+      +'<div class="event-meta">'+dateChip+timeChip+locChip+'</div>'
+      +'<p class="event-desc">'+escHtml(desc)+'</p>'+recNote+tags+'</div>'+signup;
     grid.appendChild(card);
   });
 }
@@ -278,7 +321,7 @@ else{document.querySelectorAll('.fade-in,.line-grow').forEach(function(el){el.cl
 fetch('/api/events.php?upcoming=1')
   .then(function(r){return r.json();})
   .then(function(data){allEvents=data.events||[];renderEvents(allEvents);updateCount();})
-  .catch(function(){document.getElementById('eventsGrid').innerHTML='<div class="events-empty"><h3>Eroare</h3><p>Nu am putut încărca evenimentele.</p></div>';});
+  .catch(function(){var errAll={en:{h:'Error',p:"We couldn't load the events."},ro:{h:'Eroare',p:'Nu am putut încărca evenimentele.'},da:{h:'Fejl',p:'Vi kunne ikke indlæse begivenhederne.'}};var errLbl=errAll[lang]||errAll.en;document.getElementById('eventsGrid').innerHTML='<div class="events-empty"><h3>'+errLbl.h+'</h3><p>'+errLbl.p+'</p></div>';});
 })();
 </script>
 </body>

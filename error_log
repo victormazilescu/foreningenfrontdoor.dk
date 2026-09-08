@@ -1,0 +1,20 @@
+[31-Aug-2026 18:47:21 Europe/Bucharest] PHP Fatal error:  Uncaught Error: Call to undefined function mail() in /home/dzppntag/foreningenfrontdoor.dk/public_html/join-submit.php:93
+Stack trace:
+#0 {main}
+  thrown in /home/dzppntag/foreningenfrontdoor.dk/public_html/join-submit.php on line 93
+[01-Sep-2026 09:27:36 Europe/Bucharest] PHP Fatal error:  Uncaught Error: Call to undefined function mail() in /home/dzppntag/foreningenfrontdoor.dk/public_html/join-submit.php:93
+Stack trace:
+#0 {main}
+  thrown in /home/dzppntag/foreningenfrontdoor.dk/public_html/join-submit.php on line 93
+[01-Sep-2026 09:48:52 Europe/Bucharest] PHP Fatal error:  Uncaught Error: Call to undefined function mail() in /home/dzppntag/foreningenfrontdoor.dk/public_html/join-submit.php:93
+Stack trace:
+#0 {main}
+  thrown in /home/dzppntag/foreningenfrontdoor.dk/public_html/join-submit.php on line 93
+[01-Sep-2026 09:55:24 Europe/Bucharest] PHP Parse error:  syntax error, unexpected token "\", expecting ")" in /home/dzppntag/foreningenfrontdoor.dk/public_html/join-submit.php on line 98
+[01-Sep-2026 09:55:56 Europe/Bucharest] PHP Parse error:  syntax error, unexpected token "\", expecting ")" in /home/dzppntag/foreningenfrontdoor.dk/public_html/join-submit.php on line 98
+[01-Sep-2026 09:56:47 Europe/Bucharest] PHP Parse error:  syntax error, unexpected token "\", expecting ")" in /home/dzppntag/foreningenfrontdoor.dk/public_html/join-submit.php on line 98
+[02-Sep-2026 13:20:08 Europe/Bucharest] PHP Warning:  require(/home/dzppntag/foreningenfrontdoor.dk/public_html/dk-postal-codes.php): Failed to open stream: No such file or directory in /home/dzppntag/foreningenfrontdoor.dk/public_html/join-submit.php on line 23
+[02-Sep-2026 13:20:08 Europe/Bucharest] PHP Fatal error:  Uncaught Error: Failed opening required '/home/dzppntag/foreningenfrontdoor.dk/public_html/dk-postal-codes.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/dzppntag/foreningenfrontdoor.dk/public_html/join-submit.php:23
+Stack trace:
+#0 {main}
+  thrown in /home/dzppntag/foreningenfrontdoor.dk/public_html/join-submit.php on line 23

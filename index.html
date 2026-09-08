@@ -17,7 +17,7 @@
   --fg:    #ffffff;
   --bg-inv:#ffffff;
   --fg-inv:#000000;
-  --mid:   #888888;
+  --mid:   #c2c2c2;
   --rule:  rgba(255,255,255,.1);
   --rule-inv: rgba(0,0,0,.1);
 }
@@ -27,7 +27,7 @@
     --fg:    #000000;
     --bg-inv:#000000;
     --fg-inv:#ffffff;
-    --mid:   #666666;
+    --mid:   #404040;
     --rule:  rgba(0,0,0,.1);
     --rule-inv: rgba(255,255,255,.1);
   }
@@ -69,7 +69,7 @@ button { font-family:inherit; cursor:pointer; }
 }
 .label {
   font-family:'Jost',sans-serif;
-  font-weight:300;
+  font-weight:600;
   font-size:11px;
   letter-spacing:.28em;
   text-transform:uppercase;
@@ -102,6 +102,8 @@ button { font-family:inherit; cursor:pointer; }
 .lang-ro [data-lang="ro"].inline { display:inline; }
 .lang-da [data-lang="da"] { display:block; }
 .lang-da [data-lang="da"].inline { display:inline; }
+.lang-en [data-lang="en"] { display:block; }
+.lang-en [data-lang="en"].inline { display:inline; }
 
 /* ═══════════════════════════════════════════════════
    HEADER
@@ -110,9 +112,8 @@ header {
   position:sticky;
   top:0;
   z-index:100;
-  background:var(--bg);
-  border-bottom:1px solid var(--rule);
-  transition:background .4s ease, border-color .4s ease;
+  background:#000;
+  border-bottom:1px solid rgba(255,255,255,.1);
 }
 .nav {
   display:flex;
@@ -121,7 +122,12 @@ header {
   height:68px;
   gap:20px;
 }
-.brand img { height:34px; width:auto; }
+.brand {
+  display:inline-flex;
+  align-items:center;
+  flex-shrink:0;
+}
+.brand img { height:40px; width:auto; }
 
 /* logo swap for light mode */
 .logo-dark  { display:block; }
@@ -133,30 +139,46 @@ header {
 
 .nav-links {
   display:flex;
-  gap:28px;
-  font-size:14px;
-  font-weight:400;
-  letter-spacing:.04em;
-  align-items:center;
-}
-.nav-links a { color:rgba(255,255,255,.65); transition:color .15s; }
-.nav-links a:hover { color:var(--fg); }
-.nav-links a.don {
-  color:var(--bg);
-  background:var(--fg);
-  padding:7px 16px;
+  gap:6px;
+  font-size:16px;
   font-weight:500;
-  transition:opacity .15s;
+  letter-spacing:.02em;
+  align-items:center;
+  position:relative;
 }
-.nav-links a.don:hover { opacity:.8; }
+.nav-links a { color:rgba(255,255,255,.82); transition:color .15s; padding:7px 14px; position:relative; z-index:1; border-radius:9px; }
+.nav-links a:hover { color:#fff; }
+.nav-links a.active { color:#000; background:#fff; font-weight:600; border-radius:9px; }
+.nav-links.js-nav a.active { background:none; }
+.nav-links a.is-hot { color:#000; }
+.nav-indicator {
+  position:absolute;
+  top:0; left:0;
+  background:#fff;
+  border-radius:10px;
+  z-index:0;
+  opacity:0;
+  pointer-events:none;
+  transition:transform .38s cubic-bezier(.65,0,.35,1), width .3s cubic-bezier(.65,0,.35,1), height .3s cubic-bezier(.65,0,.35,1), opacity .2s;
+}
+.nav-links a.don {
+  color:#fff;
+  background:transparent;
+  border:1.5px solid #fff;
+  padding:6.5px 16px;
+  font-weight:500;
+  transition:background .15s, color .15s;
+  border-radius:9px;
+  margin-left:14px;
+}
+.nav-links a.don:hover { background:#fff; color:#000; }
+.nav-links a.don.active { background:#fff; color:#000; font-weight:600; }
 
-.lang-toggle {
+.lang-toggle { position:relative; flex-shrink:0; }
+.lang-trigger {
   display:flex;
-  border:1px solid var(--rule);
-  overflow:hidden;
-  flex-shrink:0;
-}
-.lang-toggle button {
+  align-items:center;
+  gap:6px;
   padding:5px 12px;
   font-family:'Jost',sans-serif;
   font-size:11px;
@@ -164,11 +186,49 @@ header {
   letter-spacing:.12em;
   text-transform:uppercase;
   background:transparent;
-  color:var(--mid);
+  color:rgba(255,255,255,.8);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:9px;
+  cursor:pointer;
+  transition:background .15s, color .15s, border-color .15s;
+}
+.lang-trigger::after { content:''; width:6px; height:6px; border-right:1.5px solid currentColor; border-bottom:1.5px solid currentColor; transform:rotate(45deg); margin-top:-3px; transition:transform .2s; }
+.lang-toggle.open .lang-trigger::after { transform:rotate(-135deg); margin-top:2px; }
+.lang-toggle.open .lang-trigger { background:#fff; color:#000; border-color:#fff; }
+.lang-menu {
+  position:absolute;
+  top:calc(100% + 6px);
+  right:0;
+  display:flex;
+  flex-direction:column;
+  min-width:64px;
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:9px;
+  background:#000;
+  overflow:hidden;
+  opacity:0;
+  visibility:hidden;
+  transform:translateY(-4px);
+  transition:opacity .15s, transform .15s;
+  z-index:60;
+}
+.lang-toggle.open .lang-menu { opacity:1; visibility:visible; transform:translateY(0); }
+.lang-menu button {
+  padding:8px 14px;
+  font-family:'Jost',sans-serif;
+  font-size:11px;
+  font-weight:500;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  background:transparent;
+  color:rgba(255,255,255,.8);
   border:none;
+  text-align:left;
+  cursor:pointer;
   transition:background .15s, color .15s;
 }
-.lang-toggle button.active { background:var(--fg); color:var(--bg); }
+.lang-menu button:hover { background:rgba(255,255,255,.08); }
+.lang-menu button.active { background:#fff; color:#000; }
 
 .nav-toggle {
   display:none;
@@ -178,7 +238,7 @@ header {
   border:none;
   padding:8px;
 }
-.nav-toggle span { width:24px; height:1.5px; background:var(--fg); transition:.25s; }
+.nav-toggle span { width:24px; height:1.5px; background:#fff; transition:.25s; }
 .nav-toggle.is-open span:nth-child(1) { transform:translateY(6.5px) rotate(45deg); }
 .nav-toggle.is-open span:nth-child(2) { opacity:0; }
 .nav-toggle.is-open span:nth-child(3) { transform:translateY(-6.5px) rotate(-45deg); }
@@ -191,8 +251,8 @@ header {
     flex-direction:column;
     align-items:flex-start;
     gap:0;
-    background:var(--bg);
-    border-bottom:1px solid var(--rule);
+    background:#000;
+    border-bottom:1px solid rgba(255,255,255,.1);
     padding:8px 32px 24px;
     transform:translateY(-8px);
     opacity:0;
@@ -200,7 +260,7 @@ header {
     transition:transform .2s, opacity .2s;
   }
   .nav-links.is-open { transform:translateY(0); opacity:1; pointer-events:auto; }
-  .nav-links a { padding:13px 0; width:100%; border-bottom:1px solid var(--rule); color:var(--fg); }
+  .nav-links a { padding:13px 0; width:100%; border-bottom:1px solid rgba(255,255,255,.08); color:#fff; }
   .nav-links a.don { margin-top:14px; width:100%; text-align:center; }
 }
 
@@ -215,23 +275,23 @@ header {
   background:var(--bg-inv);
   color:var(--fg-inv);
 }
-.s-dark .label  { color:rgba(255,255,255,.35); }
-.s-dark .lead   { color:rgba(255,255,255,.5); }
-.s-dark .prose p { color:rgba(255,255,255,.5); }
+.s-dark .label  { color:rgba(255,255,255,.8); }
+.s-dark .lead   { color:rgba(255,255,255,.8); }
+.s-dark .prose p { color:rgba(255,255,255,.8); }
 .s-dark .rule   { border-color:rgba(255,255,255,.1); }
 
-.s-light .label  { color:rgba(0,0,0,.35); }
-.s-light .lead   { color:rgba(0,0,0,.5); }
-.s-light .prose p { color:rgba(0,0,0,.5); }
+.s-light .label  { color:rgba(0,0,0,.82); }
+.s-light .lead   { color:rgba(0,0,0,.82); }
+.s-light .prose p { color:rgba(0,0,0,.82); }
 
 @media (prefers-color-scheme: light) {
   .s-dark {
     background:#000;
     color:#fff;
   }
-  .s-dark .label  { color:rgba(255,255,255,.4); }
-  .s-dark .lead   { color:rgba(255,255,255,.55); }
-  .s-dark .prose p { color:rgba(255,255,255,.55); }
+  .s-dark .label  { color:rgba(255,255,255,.8); }
+  .s-dark .lead   { color:rgba(255,255,255,.8); }
+  .s-dark .prose p { color:rgba(255,255,255,.8); }
   .s-light {
     background:#fff;
     color:#000;
@@ -301,6 +361,7 @@ header {
   font-size:14px;
   letter-spacing:.06em;
   border:1.5px solid var(--fg);
+  border-radius:9px;
   color:var(--fg);
   background:transparent;
   transition:background .18s, color .18s;
@@ -351,6 +412,7 @@ header {
 
 .card {
   background:var(--bg-inv);
+  color:var(--fg-inv);
   padding:40px 32px;
   display:grid;
   grid-template-rows: 24px auto 1fr auto;
@@ -362,13 +424,13 @@ header {
   background:var(--fg-inv);
   color:var(--bg-inv);
 }
-.card:hover .card-label { color:inherit; opacity:.5; }
+.card:hover .card-label { color:inherit; opacity:.8; }
 .card:hover .card-cta { opacity:1; }
 
 .card-label {
   font-family:'Jost',sans-serif;
   font-size:10px;
-  font-weight:400;
+  font-weight:600;
   letter-spacing:.24em;
   text-transform:uppercase;
   color:var(--mid);
@@ -388,7 +450,7 @@ header {
   color:var(--mid);
   flex:1;
 }
-.card:hover p { color:inherit; opacity:.6; }
+.card:hover p { color:inherit; opacity:.8; }
 .card-cta {
   font-size:13px;
   font-weight:500;
@@ -401,10 +463,10 @@ header {
 /* Cards in dark sections */
 .s-dark .cards { background:#fff; border-color:#fff; }
 .s-dark .card { background:#000; color:#fff; }
-.s-dark .card p { color:rgba(255,255,255,.4); }
+.s-dark .card p { color:rgba(255,255,255,.8); }
 .s-dark .card:hover { background:#fff; color:#000; }
-.s-dark .card:hover p { color:rgba(0,0,0,.6); }
-.s-dark .card-label { color:rgba(255,255,255,.3); }
+.s-dark .card:hover p { color:rgba(0,0,0,.82); }
+.s-dark .card-label { color:rgba(255,255,255,.8); }
 
 /* ═══════════════════════════════════════════════════
    EVENIMENTE
@@ -457,7 +519,8 @@ header {
 @media (max-width:640px) { .involve-grid { grid-template-columns:1fr; } }
 
 .involve-card {
-  background:var(--bg);
+  background:#fff;
+  color:#000;
   padding:40px 36px;
   display:flex;
   flex-direction:column;
@@ -468,17 +531,16 @@ header {
   font-weight:900;
   font-size:22px;
   letter-spacing:-.02em;
+  color:#000;
 }
 .involve-card p {
   font-weight:300;
   font-size:15px;
   line-height:1.65;
-  color:var(--mid);
+  color:rgba(0,0,0,.72);
   flex:1;
 }
 .s-light .involve-grid { background:rgba(0,0,0,.08); border-color:rgba(0,0,0,.08); }
-.s-light .involve-card { background:var(--bg-inv); }
-.s-light .involve-card p { color:rgba(0,0,0,.5); }
 
 /* ═══════════════════════════════════════════════════
    DESPRE
@@ -601,21 +663,25 @@ a:focus-visible, button:focus-visible {
 <header class="s-dark">
   <div class="wrap nav">
     <a class="brand" href="#top">
-      <img class="logo-dark"  src="/assets/logos/white_logo_square_transparent_background.png" alt="Front Door" style="height:36px">
-      <img class="logo-light" src="/assets/logos/black_logo_square_transparent_background.png" alt="Front Door" style="height:36px">
+      <img class="logo-dark"  src="/assets/logos/white_logo_square_transparent_background.png" alt="Front Door" style="height:40px">
+      <img class="logo-light" src="/assets/logos/black_logo_square_transparent_background.png" alt="Front Door" style="height:40px">
     </a>
     <nav class="nav-links" id="navLinks">
-      <a href="#piloni"><span data-lang="ro" class="inline">Piloni</span><span data-lang="da" class="inline">Søjler</span></a>
-      <a href="/events.html"><span data-lang="ro" class="inline">Evenimente</span><span data-lang="da" class="inline">Begivenheder</span></a>
-      <a href="#implica-te"><span data-lang="ro" class="inline">Implică-te</span><span data-lang="da" class="inline">Bliv medlem</span></a>
-      <a href="/transparenta.html"><span data-lang="ro" class="inline">Transparență</span><span data-lang="da" class="inline">Transparens</span></a>
-      <a href="#despre"><span data-lang="ro" class="inline">Despre</span><span data-lang="da" class="inline">Om os</span></a>
-      <a class="don" href="#implica-te"><span data-lang="ro" class="inline">Donează</span><span data-lang="da" class="inline">Donér</span></a>
+      <a href="#piloni"><span data-lang="ro" class="inline">Piloni</span><span data-lang="da" class="inline">Søjler</span><span data-lang="en" class="inline">Pillars</span></a>
+      <a href="/events.html"><span data-lang="ro" class="inline">Evenimente</span><span data-lang="da" class="inline">Begivenheder</span><span data-lang="en" class="inline">Events</span></a>
+      <a href="#implica-te"><span data-lang="ro" class="inline">Implică-te</span><span data-lang="da" class="inline">Bliv medlem</span><span data-lang="en" class="inline">Get Involved</span></a>
+      <a href="/transparenta.html"><span data-lang="ro" class="inline">Transparență</span><span data-lang="da" class="inline">Transparens</span><span data-lang="en" class="inline">Transparency</span></a>
+      <a href="#despre"><span data-lang="ro" class="inline">Despre</span><span data-lang="da" class="inline">Om os</span><span data-lang="en" class="inline">About</span></a>
+      <a class="don" href="#implica-te"><span data-lang="ro" class="inline">Donează</span><span data-lang="da" class="inline">Donér</span><span data-lang="en" class="inline">Donate</span></a>
     </nav>
     <div style="display:flex;align-items:center;gap:14px;flex-shrink:0">
-      <div class="lang-toggle">
-        <button id="btnRo" class="active" onclick="setLang('ro')">RO</button>
-        <button id="btnDa" onclick="setLang('da')">DA</button>
+      <div class="lang-toggle" id="langToggle">
+        <button type="button" class="lang-trigger" id="langTrigger" aria-haspopup="true" aria-expanded="false">RO</button>
+        <div class="lang-menu" id="langMenu">
+          <button id="btnRo" class="active" onclick="setLang('ro')">RO</button>
+          <button id="btnDa" onclick="setLang('da')">DA</button>
+          <button id="btnEn" onclick="setLang('en')">EN</button>
+        </div>
       </div>
       <button class="nav-toggle" id="navToggle" aria-label="Meniu" aria-expanded="false">
         <span></span><span></span><span></span>
@@ -656,6 +722,18 @@ a:focus-visible, button:focus-visible {
           <a class="btn" href="#implica-te">Bliv medlem</a>
         </div>
       </div>
+      <div data-lang="en">
+        <p class="label fade-in">Romanian-Danish association for culture, art and society</p>
+        <h1 class="display fade-in delay-1">
+          We open<br>the front door.
+          <em>Art. Culture. Society.</em>
+        </h1>
+        <p class="lead fade-in delay-2">Art, culture and society — where Romania meets Denmark.</p>
+        <div class="cta fade-in delay-3">
+          <a class="btn btn-filled" href="/events.html">See events</a>
+          <a class="btn" href="#implica-te">Get involved</a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -673,34 +751,41 @@ a:focus-visible, button:focus-visible {
         <p class="label fade-in">De tre søjler</p>
         <h2 class="display fade-in delay-1">Hvad vi bygger</h2>
       </div>
+      <div data-lang="en">
+        <p class="label fade-in">The three pillars</p>
+        <h2 class="display fade-in delay-1">What we're building</h2>
+      </div>
     </div>
     <div class="cards fade-in delay-2">
       <a class="card" href="/artistic.html">
         <p class="card-label">01</p>
-        <h3><span data-lang="ro" class="inline">Artistic</span><span data-lang="da" class="inline">Kunstnerisk</span></h3>
+        <h3><span data-lang="ro" class="inline">Artistic</span><span data-lang="da" class="inline">Kunstnerisk</span><span data-lang="en" class="inline">Artistic</span></h3>
         <p>
           <span data-lang="ro" class="inline">Scenă, mentorat și vizibilitate pentru artiști emergenți — muzică, poezie, teatru, film, arte vizuale.</span>
           <span data-lang="da" class="inline">Scene, mentorskab og synlighed for nye kunstnere — musik, poesi, teater, film, billedkunst.</span>
+          <span data-lang="en" class="inline">Stage, mentorship and visibility for emerging artists — music, poetry, theatre, film, visual arts.</span>
         </p>
-        <span class="card-cta"><span data-lang="ro" class="inline">Descoperă →</span><span data-lang="da" class="inline">Udforsk →</span></span>
+        <span class="card-cta"><span data-lang="ro" class="inline">Descoperă →</span><span data-lang="da" class="inline">Udforsk →</span><span data-lang="en" class="inline">Discover →</span></span>
       </a>
       <a class="card" href="/cultural.html">
         <p class="card-label">02</p>
-        <h3><span data-lang="ro" class="inline">Cultural</span><span data-lang="da" class="inline">Kulturelt</span></h3>
+        <h3><span data-lang="ro" class="inline">Cultural</span><span data-lang="da" class="inline">Kulturelt</span><span data-lang="en" class="inline">Cultural</span></h3>
         <p>
           <span data-lang="ro" class="inline">Ateliere, proiecții, dezbateri și dialog intercultural. Actul cultural ca bun comun, accesibil tuturor.</span>
           <span data-lang="da" class="inline">Workshops, filmvisninger, debatter og interkulturel dialog. Kultur som et fælles gode, tilgængeligt for alle.</span>
+          <span data-lang="en" class="inline">Workshops, screenings, debates and intercultural dialogue. Culture as a shared good, accessible to everyone.</span>
         </p>
-        <span class="card-cta"><span data-lang="ro" class="inline">Descoperă →</span><span data-lang="da" class="inline">Udforsk →</span></span>
+        <span class="card-cta"><span data-lang="ro" class="inline">Descoperă →</span><span data-lang="da" class="inline">Udforsk →</span><span data-lang="en" class="inline">Discover →</span></span>
       </a>
       <a class="card" href="/societate.html">
         <p class="card-label">03</p>
-        <h3><span data-lang="ro" class="inline">Societate</span><span data-lang="da" class="inline">Samfund</span></h3>
+        <h3><span data-lang="ro" class="inline">Societate</span><span data-lang="da" class="inline">Samfund</span><span data-lang="en" class="inline">Society</span></h3>
         <p>
-          <span data-lang="ro" class="inline">Facem vizibilă contribuția românilor în societatea daneză.</span>
-          <span data-lang="da" class="inline">Vi gør rumænernes bidrag synligt i det danske samfund.</span>
+          <span data-lang="ro" class="inline">Facem vizibilă contribuția românească într-o societate din care facem deja parte.</span>
+          <span data-lang="da" class="inline">Vi gør det rumænske bidrag synligt i et samfund, vi allerede er en del af.</span>
+          <span data-lang="en" class="inline">We make the Romanian contribution visible within a society we're already part of.</span>
         </p>
-        <span class="card-cta"><span data-lang="ro" class="inline">Descoperă →</span><span data-lang="da" class="inline">Udforsk →</span></span>
+        <span class="card-cta"><span data-lang="ro" class="inline">Descoperă →</span><span data-lang="da" class="inline">Udforsk →</span><span data-lang="en" class="inline">Discover →</span></span>
       </a>
     </div>
   </div>
@@ -721,19 +806,27 @@ a:focus-visible, button:focus-visible {
         <h2 class="display fade-in delay-1">Begivenheder</h2>
         <p class="lead fade-in delay-2" style="margin-bottom:40px">Kommende arrangementer åbne for alle.</p>
       </div>
+      <div data-lang="en">
+        <p class="label fade-in">Schedule</p>
+        <h2 class="display fade-in delay-1">Events</h2>
+        <p class="lead fade-in delay-2" style="margin-bottom:40px">Upcoming events, open to everyone.</p>
+      </div>
     </div>
     <div class="event-placeholder fade-in delay-3">
       <h3>
         <span data-lang="ro" class="inline">Primul eveniment vine în curând</span>
         <span data-lang="da" class="inline">Første begivenhed kommer snart</span>
+        <span data-lang="en" class="inline">Our first event is coming soon</span>
       </h3>
       <p>
         <span data-lang="ro" class="inline">Pregătim primele evenimente. Urmărește-ne pe Instagram sau Facebook.</span>
         <span data-lang="da" class="inline">Vi forbereder de første arrangementer. Følg os på Instagram eller Facebook.</span>
+        <span data-lang="en" class="inline">We're preparing our first events. Follow us on Instagram or Facebook.</span>
       </p>
       <a class="btn" href="/events.html">
         <span data-lang="ro" class="inline">Vezi toate evenimentele →</span>
         <span data-lang="da" class="inline">Se alle begivenheder →</span>
+        <span data-lang="en" class="inline">See all events →</span>
       </a>
     </div>
   </div>
@@ -754,28 +847,37 @@ a:focus-visible, button:focus-visible {
         <h2 class="display fade-in delay-1">Åbn en dør</h2>
         <p class="lead fade-in delay-2" style="margin-bottom:48px">Bliv medlem eller støt foreningen — ethvert bidrag tæller.</p>
       </div>
+      <div data-lang="en">
+        <p class="label fade-in">Get involved</p>
+        <h2 class="display fade-in delay-1">Open a door</h2>
+        <p class="lead fade-in delay-2" style="margin-bottom:48px">Become a member or support the association — every contribution counts.</p>
+      </div>
     </div>
     <div class="involve-grid fade-in delay-3">
       <div class="involve-card">
-        <h3><span data-lang="ro" class="inline">Devino membru</span><span data-lang="da" class="inline">Bliv medlem</span></h3>
+        <h3><span data-lang="ro" class="inline">Devino membru</span><span data-lang="da" class="inline">Bliv medlem</span><span data-lang="en" class="inline">Become a member</span></h3>
         <p>
           <span data-lang="ro" class="inline">Completează formularul de membership și te contactăm în 5 zile. Cotizație anuală: 260 DKK.</span>
           <span data-lang="da" class="inline">Udfyld vores medlemsformular, og vi kontakter dig inden for 5 hverdage. Årligt kontingent: 260 DKK.</span>
+          <span data-lang="en" class="inline">Fill in our membership form and we'll contact you within 5 days. Annual fee: 260 DKK.</span>
         </p>
         <a class="btn btn-filled" href="/join.html">
           <span data-lang="ro" class="inline">Completează formularul →</span>
           <span data-lang="da" class="inline">Udfyld formularen →</span>
+          <span data-lang="en" class="inline">Fill in the form →</span>
         </a>
       </div>
       <div class="involve-card">
-        <h3><span data-lang="ro" class="inline">Susține asociația</span><span data-lang="da" class="inline">Støt foreningen</span></h3>
+        <h3><span data-lang="ro" class="inline">Susține asociația</span><span data-lang="da" class="inline">Støt foreningen</span><span data-lang="en" class="inline">Support the association</span></h3>
         <p>
           <span data-lang="ro" class="inline">O donație unică sau recurentă ne ajută să organizăm mai multe evenimente și să sprijinim comunitatea.</span>
           <span data-lang="da" class="inline">En engangs- eller løbende donation hjælper os med at arrangere flere events og støtte fællesskabet.</span>
+          <span data-lang="en" class="inline">A one-time or recurring donation helps us run more events and support the community.</span>
         </p>
         <a class="btn disabled" href="#" aria-disabled="true">
           <span data-lang="ro" class="inline">MobilePay — în curând</span>
           <span data-lang="da" class="inline">MobilePay — kommer snart</span>
+          <span data-lang="en" class="inline">MobilePay — coming soon</span>
         </a>
       </div>
     </div>
@@ -806,12 +908,22 @@ a:focus-visible, button:focus-visible {
             <p>Vi er apolitiske, uafhængige og transparente. Alt, hvad vi gør, er dokumenteret og offentligt rapporteret.</p>
           </div>
         </div>
+        <div data-lang="en">
+          <p class="label fade-in">About us</p>
+          <h2 class="display fade-in delay-1">Who we are</h2>
+          <div class="prose fade-in delay-2">
+            <p>Foreningen Front Door is a cultural association with Romanian roots, built in Denmark — a space where cultures meet, not separate.</p>
+            <p>We believe that access to art and culture shouldn't depend on where you were born, what language you speak, or where you live now. We open the front door for everyone.</p>
+            <p>We're apolitical, independent and transparent. Everything we do is documented and reported publicly.</p>
+          </div>
+        </div>
       </div>
       <div class="about-aside fade-in delay-3">
         <img src="/assets/logos/white_logo_square_transparent_background.png" alt="Front Door DK" style="width:80px;height:auto">
         <p>
           <span data-lang="ro" class="inline">Trei piloni — artistic, cultural și societate — și totul la vedere: fiecare inițiativă are pagina ei publică, de la buget la rezultat.</span>
           <span data-lang="da" class="inline">Tre søjler — kunstnerisk, kulturelt og samfund — og alt er synligt: ethvert initiativ har sin egen offentlige side, fra budget til resultat.</span>
+          <span data-lang="en" class="inline">Three pillars — artistic, cultural and society — and everything in the open: every initiative has its own public page, from budget to outcome.</span>
         </p>
       </div>
     </div>
@@ -830,7 +942,7 @@ a:focus-visible, button:focus-visible {
       </p>
     </div>
     <nav class="foot-links">
-      <a href="/datapolitik.html"><span data-lang="ro" class="inline">Politica de date</span><span data-lang="da" class="inline">Datapolitik</span></a>
+      <a href="/datapolitik.html"><span data-lang="ro" class="inline">Politica de date</span><span data-lang="da" class="inline">Datapolitik</span><span data-lang="en" class="inline">Privacy Policy</span></a>
       <a href="https://www.instagram.com/frontdoor_dk/" target="_blank" rel="noopener">Instagram</a>
       <a href="https://www.facebook.com/profile.php?id=61593579534677" target="_blank" rel="noopener">Facebook</a>
     </nav>
@@ -847,10 +959,28 @@ function setLang(lang) {
   document.documentElement.lang = lang;
   document.getElementById('btnRo').classList.toggle('active', lang === 'ro');
   document.getElementById('btnDa').classList.toggle('active', lang === 'da');
+  document.getElementById('btnEn').classList.toggle('active', lang === 'en');
   try { localStorage.setItem('fd-lang', lang); } catch(e) {}
+  document.getElementById('langTrigger').textContent = lang.toUpperCase();
+  document.getElementById('langToggle').classList.remove('open');
 }
 window.setLang = setLang;
-try { var s = localStorage.getItem('fd-lang'); if (s === 'da') setLang('da'); } catch(e) {}
+try { var s = localStorage.getItem('fd-lang'); if (s === 'da' || s === 'en') setLang(s); } catch(e) {}
+(function(){
+  var wrap=document.getElementById('langToggle'), trig=document.getElementById('langTrigger');
+  if(!wrap||!trig) return;
+  trig.addEventListener('click',function(e){
+    e.stopPropagation();
+    var open=wrap.classList.toggle('open');
+    trig.setAttribute('aria-expanded', open?'true':'false');
+  });
+  document.addEventListener('click',function(e){
+    if(!wrap.contains(e.target)){ wrap.classList.remove('open'); trig.setAttribute('aria-expanded','false'); }
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){ wrap.classList.remove('open'); trig.setAttribute('aria-expanded','false'); }
+  });
+})();
 
 /* ── NAV MOBIL ── */
 var toggle = document.getElementById('navToggle');
@@ -868,6 +998,7 @@ toggle.addEventListener('click', function(){
 links.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeNav); });
 window.addEventListener('resize', function(){ if (window.innerWidth > 860) closeNav(); });
 document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeNav(); });
+(function(){if(!links)return;var ind=document.createElement('span');ind.className='nav-indicator';links.insertBefore(ind,links.firstChild);links.classList.add('js-nav');var items=Array.prototype.slice.call(links.querySelectorAll('a:not(.don)'));var activeEl=links.querySelector('a.active:not(.don)')||null;function setHot(el){items.forEach(function(a){a.classList.toggle('is-hot',a===el);});}function move(el){if(!el){ind.style.opacity='0';return;}var nr=links.getBoundingClientRect(),r=el.getBoundingClientRect();ind.style.opacity='1';ind.style.width=r.width+'px';ind.style.height=r.height+'px';ind.style.transform='translate('+(r.left-nr.left)+'px,'+(r.top-nr.top)+'px)';}items.forEach(function(el){el.addEventListener('mouseenter',function(){setHot(el);move(el);});el.addEventListener('focus',function(){setHot(el);move(el);});});links.addEventListener('mouseleave',function(){setHot(activeEl);move(activeEl);});function sync(){move(activeEl);}setHot(activeEl);window.addEventListener('resize',sync);toggle.addEventListener('click',function(){setTimeout(sync,260);});sync();})();
 
 /* ── SCROLL ANIMATIONS ── */
 var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
