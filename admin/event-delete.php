@@ -12,7 +12,7 @@ $token  = $_GET['csrf'] ?? '';
 
 if (!$id || !hash_equals(csrf_token(), $token)) {
     http_response_code(403);
-    die('Acțiune invalidă.');
+    die(t('invalid_action'));
 }
 
 $allowed = ['activate', 'suspend', 'cancel', 'delete'];
@@ -33,7 +33,7 @@ if ($action === 'delete') {
         if (file_exists($path)) @unlink($path);
     }
     $pdo->prepare('DELETE FROM events WHERE id = ?')->execute([$id]);
-    $_SESSION['flash'] = ['type' => 'ok', 'msg' => 'Evenimentul a fost șters definitiv.'];
+    $_SESSION['flash'] = ['type' => 'ok', 'msg' => t('event_deleted')];
 } else {
     $map = [
         'activate' => 'active',
@@ -42,8 +42,8 @@ if ($action === 'delete') {
     ];
     $new_status = $map[$action];
     $pdo->prepare('UPDATE events SET status = ? WHERE id = ?')->execute([$new_status, $id]);
-    $labels = ['active' => 'reactivat', 'suspended' => 'suspendat', 'cancelled' => 'anulat'];
-    $_SESSION['flash'] = ['type' => 'ok', 'msg' => 'Evenimentul a fost ' . $labels[$new_status] . '.'];
+    $status_msg_keys = ['active' => 'event_status_reactivated', 'suspended' => 'event_status_suspended', 'cancelled' => 'event_status_cancelled'];
+    $_SESSION['flash'] = ['type' => 'ok', 'msg' => t($status_msg_keys[$new_status])];
 }
 
 header('Location: /admin/dashboard.php');

@@ -2,6 +2,7 @@
 require_once __DIR__ . '/auth.php';
 $user = require_perm('events', 'view');
 $pdo  = get_db();
+ensure_events_translation_schema($pdo);
 
 // Adăugăm coloana created_by dacă nu există — trebuie să ruleze înainte de
 // SELECT-ul de mai jos, altfel query-ul cu e.created_by eșuează pe o bază
@@ -26,34 +27,34 @@ $sql = 'SELECT e.*, u.name as creator_name
         FROM events e
         LEFT JOIN bf_users u ON u.id = e.created_by'
      . ($where ? ' WHERE ' . implode(' AND ', $where) : '')
-     . ' ORDER BY e.date ASC';
+     . ' ORDER BY (e.date IS NULL) ASC, e.date ASC';
 $stmt = $pdo->prepare($sql); $stmt->execute($params);
 $events = $stmt->fetchAll();
 
 $flash = get_flash();
-$cat_labels = ['artistic'=>'Artistic','cultural'=>'Cultural','societate'=>'Societate'];
+$cat_labels = ['artistic'=>t('cat_artistic'),'cultural'=>t('cat_cultural'),'societate'=>t('cat_societate')];
 $status_cfg = [
-    'active'    => ['label'=>'Activ',    'color'=>'#2e7d32'],
-    'suspended' => ['label'=>'Suspendat','color'=>'#e65100'],
-    'cancelled' => ['label'=>'Anulat',   'color'=>'#b4242a'],
+    'active'    => ['label'=>t('status_active'),    'color'=>'#2e7d32'],
+    'suspended' => ['label'=>t('status_suspended'), 'color'=>'#e65100'],
+    'cancelled' => ['label'=>t('status_cancelled'), 'color'=>'#b4242a'],
 ];
 
-layout_head('Evenimente', 'events');
+layout_head(t('nav_events'), 'events');
 ?>
 <div class="content">
   <?php if ($flash): ?>
     <div class="flash flash-<?= e($flash['type']) ?>"><?= e($flash['msg']) ?></div>
   <?php endif; ?>
   <?php if (isset($_GET['err'])): ?>
-    <div class="flash flash-error">Acces restricționat.</div>
+    <div class="flash flash-error"><?= e(t('access_restricted')) ?></div>
   <?php endif; ?>
 
   <div class="page-head">
-    <h1>Evenimente</h1>
+    <h1><?= e(t('nav_events')) ?></h1>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <a class="btn btn-ghost btn-sm" href="/admin/social.php">📢 Generator Social</a>
+      <a class="btn btn-ghost btn-sm" href="/admin/social.php"><?= e(t('social_generator')) ?></a>
       <?php if (has_perm($user, 'events', 'create')): ?>
-        <a class="btn btn-solid" href="/admin/event-edit.php">+ Eveniment nou</a>
+        <a class="btn btn-solid" href="/admin/event-edit.php">+ <?= e(t('new_event')) ?></a>
       <?php endif; ?>
     </div>
   </div>
@@ -61,39 +62,39 @@ layout_head('Evenimente', 'events');
   <div class="filters">
     <form style="display:contents" method="get">
       <select name="category" onchange="this.form.submit()">
-        <option value="">Toate categoriile</option>
-        <option value="artistic"  <?= $filter_cat==='artistic'  ?'selected':'' ?>>Artistic</option>
-        <option value="cultural"  <?= $filter_cat==='cultural'  ?'selected':'' ?>>Cultural</option>
-        <option value="societate"    <?= $filter_cat==='societate'    ?'selected':'' ?>>Societate</option>
+        <option value=""><?= e(t('all_categories')) ?></option>
+        <option value="artistic"  <?= $filter_cat==='artistic'  ?'selected':'' ?>><?= e(t('cat_artistic')) ?></option>
+        <option value="cultural"  <?= $filter_cat==='cultural'  ?'selected':'' ?>><?= e(t('cat_cultural')) ?></option>
+        <option value="societate"    <?= $filter_cat==='societate'    ?'selected':'' ?>><?= e(t('cat_societate')) ?></option>
       </select>
       <select name="status" onchange="this.form.submit()">
-        <option value="">Toate statusurile</option>
-        <option value="active"    <?= $filter_status==='active'    ?'selected':'' ?>>Activ</option>
-        <option value="suspended" <?= $filter_status==='suspended' ?'selected':'' ?>>Suspendat</option>
-        <option value="cancelled" <?= $filter_status==='cancelled' ?'selected':'' ?>>Anulat</option>
+        <option value=""><?= e(t('all_statuses')) ?></option>
+        <option value="active"    <?= $filter_status==='active'    ?'selected':'' ?>><?= e(t('status_active')) ?></option>
+        <option value="suspended" <?= $filter_status==='suspended' ?'selected':'' ?>><?= e(t('status_suspended')) ?></option>
+        <option value="cancelled" <?= $filter_status==='cancelled' ?'selected':'' ?>><?= e(t('status_cancelled')) ?></option>
       </select>
       <?php if ($filter_cat || $filter_status): ?>
-        <a href="/admin/events.php" class="btn btn-ghost btn-sm">✕ Resetează</a>
+        <a href="/admin/events.php" class="btn btn-ghost btn-sm">✕ <?= e(t('reset_filters')) ?></a>
       <?php endif; ?>
     </form>
   </div>
 
   <?php if (empty($events)): ?>
-    <div class="empty">Niciun eveniment găsit.
-      <?php if (has_perm($user, 'events', 'create')): ?><a href="/admin/event-edit.php">Adaugă primul →</a><?php endif; ?>
+    <div class="empty"><?= e(t('no_events_found')) ?>
+      <?php if (has_perm($user, 'events', 'create')): ?><a href="/admin/event-edit.php"><?= e(t('add_first')) ?></a><?php endif; ?>
     </div>
   <?php else: ?>
   <div class="table-wrap">
     <table>
       <thead>
         <tr>
-          <th>Copertă</th>
-          <th>Titlu</th>
-          <th>Categorie</th>
-          <th>Data</th>
-          <th>Status</th>
-          <th>Creat de</th>
-          <th>Acțiuni</th>
+          <th><?= e(t('th_cover')) ?></th>
+          <th><?= e(t('th_title')) ?></th>
+          <th><?= e(t('th_category')) ?></th>
+          <th><?= e(t('th_date')) ?></th>
+          <th><?= e(t('th_status')) ?></th>
+          <th><?= e(t('th_created_by')) ?></th>
+          <th><?= e(t('th_actions')) ?></th>
         </tr>
       </thead>
       <tbody>
@@ -111,7 +112,7 @@ layout_head('Evenimente', 'events');
           </td>
           <td>
             <strong><?= e($ev['title_ro']) ?></strong><br>
-            <small style="color:rgba(255,255,255,.4)"><?= e($ev['title_da']) ?></small>
+            <small style="color:rgba(255,255,255,.65)"><?= e($ev['title_da']) ?></small>
           </td>
           <td>
             <span class="badge" style="background:rgba(255,255,255,.06);color:rgba(255,255,255,.6)">
@@ -119,9 +120,13 @@ layout_head('Evenimente', 'events');
             </span>
           </td>
           <td style="white-space:nowrap">
-            <?= e(date('d.m.Y', strtotime($ev['date']))) ?>
+            <?php if ($ev['date']): ?>
+              <?= e(date('d.m.Y', strtotime($ev['date']))) ?>
+            <?php else: ?>
+              <span style="color:rgba(255,255,255,.45)"><?= e(t('date_tbd')) ?></span>
+            <?php endif; ?>
             <?php if ($ev['time']): ?>
-              <br><small style="color:rgba(255,255,255,.4)"><?= e(substr($ev['time'],0,5)) ?></small>
+              <br><small style="color:rgba(255,255,255,.65)"><?= e(substr($ev['time'],0,5)) ?></small>
             <?php endif; ?>
           </td>
           <td>
@@ -130,27 +135,30 @@ layout_head('Evenimente', 'events');
               <?= e($s['label']) ?>
             </span>
           </td>
-          <td style="font-size:12px;color:rgba(255,255,255,.25)"><?= e($ev['creator_name'] ?? '—') ?></td>
+          <td style="font-size:12px;color:rgba(255,255,255,.45)"><?= e($ev['creator_name'] ?? '—') ?></td>
           <td>
             <div class="actions">
               <!-- Social — toți -->
-              <a class="btn btn-ghost btn-xs" href="/admin/social.php?event=<?= (int)$ev['id'] ?>">📢</a>
+              <a class="btn btn-ghost btn-xs" href="/admin/social.php?event=<?= (int)$ev['id'] ?>"><?= e(t('social_short')) ?></a>
               <?php if ($can_edit): ?>
-                <a class="btn btn-ghost btn-xs" href="/admin/event-edit.php?id=<?= (int)$ev['id'] ?>">Editează</a>
+                <a class="btn btn-ghost btn-xs" href="/admin/event-social.php?id=<?= (int)$ev['id'] ?>"><?= e(t('auto_post_link')) ?></a>
+              <?php endif; ?>
+              <?php if ($can_edit): ?>
+                <a class="btn btn-ghost btn-xs" href="/admin/event-edit.php?id=<?= (int)$ev['id'] ?>"><?= e(t('edit')) ?></a>
               <?php endif; ?>
               <?php if ($can_manage): ?>
                 <?php if ($ev['status']==='active'): ?>
-                  <a class="btn btn-warn btn-xs" href="/admin/event-delete.php?action=suspend&id=<?= (int)$ev['id'] ?>&csrf=<?= csrf_token() ?>">Suspendă</a>
+                  <a class="btn btn-warn btn-xs" href="/admin/event-delete.php?action=suspend&id=<?= (int)$ev['id'] ?>&csrf=<?= csrf_token() ?>"><?= e(t('suspend')) ?></a>
                 <?php elseif ($ev['status']==='suspended'): ?>
-                  <a class="btn btn-ghost btn-xs" href="/admin/event-delete.php?action=activate&id=<?= (int)$ev['id'] ?>&csrf=<?= csrf_token() ?>">Reactivează</a>
+                  <a class="btn btn-ghost btn-xs" href="/admin/event-delete.php?action=activate&id=<?= (int)$ev['id'] ?>&csrf=<?= csrf_token() ?>"><?= e(t('reactivate')) ?></a>
                 <?php endif; ?>
                 <?php if ($ev['status']!=='cancelled'): ?>
-                  <a class="btn btn-danger btn-xs" href="/admin/event-delete.php?action=cancel&id=<?= (int)$ev['id'] ?>&csrf=<?= csrf_token() ?>" onclick="return confirm('Anulezi?')">Anulează</a>
+                  <a class="btn btn-danger btn-xs" href="/admin/event-delete.php?action=cancel&id=<?= (int)$ev['id'] ?>&csrf=<?= csrf_token() ?>" onclick="return confirm('<?= e(t('cancel_event_confirm')) ?>')"><?= e(t('cancel')) ?></a>
                 <?php endif; ?>
-                <a class="btn btn-danger btn-xs" href="/admin/event-delete.php?action=delete&id=<?= (int)$ev['id'] ?>&csrf=<?= csrf_token() ?>" onclick="return confirm('Ștergi definitiv?')">Șterge</a>
+                <a class="btn btn-danger btn-xs" href="/admin/event-delete.php?action=delete&id=<?= (int)$ev['id'] ?>&csrf=<?= csrf_token() ?>" onclick="return confirm('<?= e(t('delete_confirm')) ?>')"><?= e(t('delete')) ?></a>
               <?php endif; ?>
               <?php if (!$can_edit && !$can_manage): ?>
-                <span style="font-size:11px;color:rgba(255,255,255,.25)">doar vizibil</span>
+                <span style="font-size:11px;color:rgba(255,255,255,.45)"><?= e(t('view_only')) ?></span>
               <?php endif; ?>
             </div>
           </td>

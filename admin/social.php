@@ -10,26 +10,26 @@ $projects = $pdo->query("SELECT id,title_ro,title_da,description_ro,description_
 $preselect_event   = isset($_GET['event'])   ? (int)$_GET['event']   : 0;
 $preselect_project = isset($_GET['project']) ? (int)$_GET['project'] : 0;
 
-$cat_ro = ['artistic'=>'Artistic','cultural'=>'Cultural','social'=>'Social'];
+$cat_ro = ['artistic'=>t('cat_artistic'),'cultural'=>t('cat_cultural'),'social'=>t('cat_social')];
 
-layout_head('Generator Social Media', 'events');
+layout_head(t('social_gen_h'), 'events');
 ?>
 <div class="content">
   <div class="page-head">
-    <h1>Generator Social Media</h1>
-    <p style="font-size:14px;color:rgba(255,255,255,.25);margin-top:4px">Selectează un eveniment sau proiect, alege platforma și copiază textul.</p>
+    <h1><?= e(t('social_gen_h')) ?></h1>
+    <p style="font-size:14px;color:rgba(255,255,255,.65);margin-top:4px"><?= e(t('social_gen_sub')) ?></p>
   </div>
 
   <!-- Tabs Evenimente / Proiecte -->
   <div style="display:flex;gap:0;border-bottom:1px solid rgba(255,255,255,.07);margin-bottom:24px">
-    <button id="tabEvBtn" class="tab-trigger active" onclick="switchTab('events')">📅 Evenimente</button>
-    <button id="tabPrBtn" class="tab-trigger" onclick="switchTab('projects')">🗂 Proiecte</button>
+    <button id="tabEvBtn" class="tab-trigger active" onclick="switchTab('events')"><?= e(t('nav_events')) ?></button>
+    <button id="tabPrBtn" class="tab-trigger" onclick="switchTab('projects')"><?= e(t('nav_projects')) ?></button>
   </div>
 
   <!-- Evenimente -->
   <div id="tab-events">
     <?php if(empty($events)): ?>
-      <div class="empty">Niciun eveniment viitor activ.</div>
+      <div class="empty"><?= e(t('no_upcoming_events')) ?></div>
     <?php else: ?>
     <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:28px">
       <?php foreach($events as $ev): ?>
@@ -47,8 +47,8 @@ layout_head('Generator Social Media', 'events');
            data-signup="<?= e($ev['signup_url']??'') ?>">
         <input type="radio" style="accent-color:rgba(255,255,255,.15)" <?= $preselect_event===$ev['id']?'checked':'' ?>>
         <div style="flex:1">
-          <div style="font-size:14px;font-weight:700"><?= e($ev['title_ro']) ?> <span style="color:rgba(255,255,255,.25);font-weight:400;font-size:12px">/ <?= e($ev['title_da']) ?></span></div>
-          <div style="font-size:12px;color:rgba(255,255,255,.25)"><span style="padding:1px 7px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.6);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-right:6px"><?= e($cat_ro[$ev['category']]??$ev['category']) ?></span><?= e(date('d.m.Y',strtotime($ev['date']))) ?><?= $ev['time']?' · '.e(substr($ev['time'],0,5)):'' ?><?= $ev['location']?' · '.e($ev['location']):'' ?></div>
+          <div style="font-size:14px;font-weight:700"><?= e($ev['title_ro']) ?> <span style="color:rgba(255,255,255,.6);font-weight:400;font-size:12px">/ <?= e($ev['title_da']) ?></span></div>
+          <div style="font-size:12px;color:rgba(255,255,255,.6)"><span style="padding:1px 7px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.6);border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-right:6px"><?= e($cat_ro[$ev['category']]??$ev['category']) ?></span><?= e(date('d.m.Y',strtotime($ev['date']))) ?><?= $ev['time']?' · '.e(substr($ev['time'],0,5)):'' ?><?= $ev['location']?' · '.e($ev['location']):'' ?></div>
         </div>
       </div>
       <?php endforeach; ?>
@@ -59,7 +59,7 @@ layout_head('Generator Social Media', 'events');
   <!-- Proiecte -->
   <div id="tab-projects" style="display:none">
     <?php if(empty($projects)): ?>
-      <div class="empty">Niciun proiect activ.</div>
+      <div class="empty"><?= e(t('no_active_projects_social')) ?></div>
     <?php else: ?>
     <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:28px">
       <?php foreach($projects as $pr): ?>
@@ -76,8 +76,8 @@ layout_head('Generator Social Media', 'events');
            data-signup="<?= e($pr['signup_url']??'') ?>">
         <input type="radio" style="accent-color:rgba(255,255,255,.15)" <?= $preselect_project===$pr['id']?'checked':'' ?>>
         <div style="flex:1">
-          <div style="font-size:14px;font-weight:700"><?= e($pr['title_ro']) ?> <span style="color:rgba(255,255,255,.25);font-weight:400;font-size:12px">/ <?= e($pr['title_da']) ?></span></div>
-          <div style="font-size:12px;color:rgba(255,255,255,.25)"><span style="padding:1px 7px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.6);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-right:6px"><?= e($cat_ro[$pr['category']]??$pr['category']) ?></span><?= e($pr['label_ro']??'') ?></div>
+          <div style="font-size:14px;font-weight:700"><?= e($pr['title_ro']) ?> <span style="color:rgba(255,255,255,.6);font-weight:400;font-size:12px">/ <?= e($pr['title_da']) ?></span></div>
+          <div style="font-size:12px;color:rgba(255,255,255,.6)"><span style="padding:1px 7px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.6);border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-right:6px"><?= e($cat_ro[$pr['category']]??$pr['category']) ?></span><?= e($pr['label_ro']??'') ?></div>
         </div>
       </div>
       <?php endforeach; ?>
@@ -87,38 +87,37 @@ layout_head('Generator Social Media', 'events');
 
   <!-- Generator -->
   <div id="generator" style="display:<?= ($preselect_event||$preselect_project)?'block':'none' ?>">
-    <div style="background:#0a0a0a;border:1px solid rgba(255,255,255,.07);padding:24px;position:relative">
-      <div style="position:absolute;top:0;left:0;width:56px;height:4px;background:rgba(255,255,255,.15);transform:skewX(-45deg) translateX(-12px)"></div>
-      <div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:20px">Conținut generat</div>
+    <div style="background:rgba(255,255,255,.03);backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:24px;position:relative;box-shadow:0 8px 30px rgba(0,0,0,.25)">
+      <div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.65);margin-bottom:20px"><?= e(t('generated_content_label')) ?></div>
 
       <!-- Opțiuni -->
       <div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:20px">
-        <label style="display:flex;align-items:center;gap:7px;font-size:13px;color:rgba(255,255,255,.4);cursor:pointer"><input type="checkbox" id="optEmoji" checked style="accent-color:rgba(255,255,255,.15)"> Emoji</label>
-        <label style="display:flex;align-items:center;gap:7px;font-size:13px;color:rgba(255,255,255,.4);cursor:pointer"><input type="checkbox" id="optHash" checked style="accent-color:rgba(255,255,255,.15)"> Hashtag-uri</label>
-        <label style="display:flex;align-items:center;gap:7px;font-size:13px;color:rgba(255,255,255,.4);cursor:pointer"><input type="checkbox" id="optLink" style="accent-color:rgba(255,255,255,.15)"> Link înscriere</label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:13px;color:rgba(255,255,255,.65);cursor:pointer"><input type="checkbox" id="optEmoji" checked style="accent-color:rgba(255,255,255,.15)"> <?= e(t('opt_emoji')) ?></label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:13px;color:rgba(255,255,255,.65);cursor:pointer"><input type="checkbox" id="optHash" checked style="accent-color:rgba(255,255,255,.15)"> <?= e(t('opt_hashtags')) ?></label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:13px;color:rgba(255,255,255,.65);cursor:pointer"><input type="checkbox" id="optLink" style="accent-color:rgba(255,255,255,.15)"> <?= e(t('opt_signup_link')) ?></label>
       </div>
 
       <!-- Platform tabs -->
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
-        <button class="plat-btn active" onclick="switchPlat('fb',this)">f Facebook</button>
-        <button class="plat-btn" onclick="switchPlat('ig',this)">📷 Instagram</button>
-        <button class="plat-btn" onclick="switchPlat('tt',this)">♪ TikTok</button>
+        <button class="plat-btn active" onclick="switchPlat('fb',this)">Facebook</button>
+        <button class="plat-btn" onclick="switchPlat('ig',this)">Instagram</button>
+        <button class="plat-btn" onclick="switchPlat('tt',this)">TikTok</button>
       </div>
 
       <?php foreach(['fb'=>['Facebook',63206],'ig'=>['Instagram',2200],'tt'=>['TikTok',150]] as $pk=>[$pname,$plim]): ?>
       <div class="plat-panel <?= $pk==='fb'?'':'hidden' ?>" id="panel-<?= $pk ?>">
-        <div style="background:rgba(29,83,129,.08);border:1px solid rgba(255,255,255,.06);padding:12px 16px;font-size:13px;color:rgba(255,255,255,.4);margin-bottom:14px">
-          <?php if($pk==='fb'): ?>Text lung ok, link-uri funcționează. Imaginea din cover eveniment.
-          <?php elseif($pk==='ig'): ?>Caption scurt vizibil (sub 150 car.), hashtag-uri la final, link în bio.
-          <?php else: ?>Max 150 caractere vizibile. Hook în prima linie.<?php endif; ?>
+        <div style="background:rgba(29,83,129,.1);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px 16px;font-size:13px;color:rgba(255,255,255,.7);margin-bottom:14px">
+          <?php if($pk==='fb'): ?><?= e(t('fb_hint')) ?>
+          <?php elseif($pk==='ig'): ?><?= e(t('ig_hint')) ?>
+          <?php else: ?><?= e(t('tt_hint')) ?><?php endif; ?>
         </div>
         <div style="display:flex;gap:8px;margin-bottom:10px">
-          <button class="lang-btn active" onclick="switchLang('<?= $pk ?>','ro',this)">🇷🇴 Română</button>
-          <button class="lang-btn" onclick="switchLang('<?= $pk ?>','da',this)">🇩🇰 Daneză</button>
+          <button class="lang-btn active" onclick="switchLang('<?= $pk ?>','ro',this)">Română</button>
+          <button class="lang-btn" onclick="switchLang('<?= $pk ?>','da',this)">Daneză</button>
         </div>
         <div class="out-wrap"><textarea class="out-box" id="out-<?= $pk ?>-ro" readonly></textarea><div class="char-cnt" id="cnt-<?= $pk ?>-ro" data-limit="<?= $plim ?>"></div></div>
         <div class="out-wrap hidden"><textarea class="out-box" id="out-<?= $pk ?>-da" readonly></textarea><div class="char-cnt" id="cnt-<?= $pk ?>-da" data-limit="<?= $plim ?>"></div></div>
-        <button class="copy-btn" onclick="doCopy('<?= $pk ?>')">📋 Copiază pentru <?= $pname ?></button>
+        <button class="copy-btn" onclick="doCopy('<?= $pk ?>')"><?= e(t('copy_for_prefix')) ?><?= $pname ?></button>
       </div>
       <?php endforeach; ?>
     </div>
@@ -126,28 +125,29 @@ layout_head('Generator Social Media', 'events');
 </div>
 
 <style>
-.tab-trigger{padding:10px 18px;font-size:14px;font-weight:600;color:rgba(255,255,255,.25);border:none;background:transparent;cursor:pointer;font-family:inherit;border-bottom:2px solid transparent;transition:color .15s,border-color .15s}
-.tab-trigger:hover{color:rgba(255,255,255,.4)}
-.tab-trigger.active{color:#fff;border-bottom-color:rgba(255,255,255,.15)}
-.social-item{background:#0a0a0a;border:1px solid rgba(255,255,255,.05);padding:14px 16px;cursor:pointer;transition:border-color .15s,background .15s;display:flex;align-items:center;gap:12px}
-.social-item:hover,.social-item.selected{border-color:rgba(255,255,255,.15);background:rgba(29,83,129,.08)}
-.plat-btn{padding:8px 16px;font-size:13px;font-weight:700;border:1.5px solid rgba(255,255,255,.1);background:transparent;color:rgba(255,255,255,.4);cursor:pointer;font-family:inherit;transition:all .15s}
-.plat-btn:hover{border-color:rgba(255,255,255,.3);color:#fff}
-.plat-btn.active{border-color:rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff}
+.tab-trigger{padding:10px 18px;font-size:14px;font-weight:600;color:rgba(255,255,255,.55);border:none;background:transparent;cursor:pointer;font-family:inherit;border-bottom:2px solid transparent;transition:color .15s,border-color .15s}
+.tab-trigger:hover{color:rgba(255,255,255,.75)}
+.tab-trigger.active{color:#fff;border-bottom-color:rgba(255,255,255,.4)}
+.social-item{background:rgba(255,255,255,.03);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:14px 16px;cursor:pointer;transition:border-color .15s,background .15s;display:flex;align-items:center;gap:12px}
+.social-item:hover,.social-item.selected{border-color:rgba(255,255,255,.2);background:rgba(29,83,129,.12)}
+.plat-btn{padding:9px 18px;font-size:13px;font-weight:700;border:1.5px solid rgba(255,255,255,.12);border-radius:999px;background:rgba(255,255,255,.02);color:rgba(255,255,255,.65);cursor:pointer;font-family:inherit;transition:all .15s}
+.plat-btn:hover{border-color:rgba(255,255,255,.35);color:#fff}
+.plat-btn.active{border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.09);color:#fff}
 .plat-panel.hidden,.out-wrap.hidden{display:none}
-.lang-btn{padding:5px 12px;font-size:12px;font-weight:700;border:1.5px solid rgba(255,255,255,.1);background:transparent;color:rgba(255,255,255,.4);cursor:pointer;font-family:inherit;transition:all .15s}
-.lang-btn.active{border-color:rgba(255,255,255,.15);color:#fff;background:rgba(255,255,255,.06)}
+.lang-btn{padding:6px 14px;font-size:12px;font-weight:700;border:1.5px solid rgba(255,255,255,.12);border-radius:999px;background:rgba(255,255,255,.02);color:rgba(255,255,255,.65);cursor:pointer;font-family:inherit;transition:all .15s}
+.lang-btn.active{border-color:rgba(255,255,255,.2);color:#fff;background:rgba(255,255,255,.09)}
 .out-wrap{margin-bottom:12px}
-.out-box{width:100%;padding:14px;font-size:14px;font-family:'Nunito',sans-serif;background:#000;border:1.5px solid rgba(255,255,255,.1);color:#fff;resize:vertical;min-height:140px;line-height:1.65}
-.char-cnt{font-size:11px;color:rgba(255,255,255,.25);text-align:right;margin-top:3px}
+.out-box{width:100%;padding:14px;font-size:14px;font-family:'Nunito',sans-serif;background:rgba(255,255,255,.02);border:1.5px solid rgba(255,255,255,.12);border-radius:14px;color:#fff;resize:vertical;min-height:140px;line-height:1.65}
+.char-cnt{font-size:11px;color:rgba(255,255,255,.55);text-align:right;margin-top:3px}
 .char-cnt.warn{color:#e65100}.char-cnt.over{color:rgba(255,100,100,.8)}
-.copy-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;font-size:13px;font-weight:700;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.15);color:#fff;cursor:pointer;font-family:inherit;transition:background .15s}
-.copy-btn:hover{background:#000;border-color:#000}
-.copy-btn.ok{background:#2e7d32;border-color:rgba(120,200,120,.9)}
+.copy-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;font-size:13px;font-weight:700;border-radius:999px;background:rgba(255,255,255,.16);border:1.5px solid rgba(255,255,255,.18);color:#fff;cursor:pointer;font-family:inherit;transition:background .15s,box-shadow .15s}
+.copy-btn:hover{background:#fff;color:#000;box-shadow:0 6px 20px rgba(255,255,255,.16)}
+.copy-btn.ok{background:#2e7d32;border-color:rgba(120,200,120,.9);color:#fff}
 </style>
 
 <script>
 var cur=null, platLangs={fb:'ro',ig:'ro',tt:'ro'}, curPlat='fb';
+var I18N_CHARACTERS = <?= json_encode(t('characters_word')) ?>, I18N_COPIED = <?= json_encode(t('copied_label')) ?>;
 
 function switchTab(t){
   document.getElementById('tab-events').style.display=t==='events'?'block':'none';
@@ -215,7 +215,7 @@ function gen(){
     var el=document.getElementById('out-'+p+'-'+l),cnt=document.getElementById('cnt-'+p+'-'+l);
     el.value=o[p][l];
     var len=o[p][l].length,lim=parseInt(cnt.dataset.limit);
-    cnt.textContent=len+' / '+lim+' caractere';
+    cnt.textContent=len+' / '+lim+' '+I18N_CHARACTERS;
     cnt.className='char-cnt'+(len>lim?' over':len>lim*.85?' warn':'');
   })});
 }
@@ -224,7 +224,7 @@ function doCopy(p){
   var l=platLangs[p],el=document.getElementById('out-'+p+'-'+l);
   navigator.clipboard.writeText(el.value).then(function(){
     var btn=document.querySelector('#panel-'+p+' .copy-btn'),orig=btn.innerHTML;
-    btn.innerHTML='✓ Copiat!';btn.classList.add('ok');
+    btn.innerHTML=I18N_COPIED;btn.classList.add('ok');
     setTimeout(function(){btn.innerHTML=orig;btn.classList.remove('ok')},2000);
   });
 }
