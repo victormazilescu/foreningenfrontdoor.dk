@@ -1,0 +1,40 @@
+[17-Aug-2026 21:33:15 Europe/Bucharest] PHP Warning:  require_once(/home/dzppntag/foreningenfrontdoor.dk/public_html/api/auth.php): Failed to open stream: No such file or directory in /home/dzppntag/foreningenfrontdoor.dk/public_html/api/projects.php on line 2
+[17-Aug-2026 21:33:15 Europe/Bucharest] PHP Fatal error:  Uncaught Error: Failed opening required '/home/dzppntag/foreningenfrontdoor.dk/public_html/api/auth.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/dzppntag/foreningenfrontdoor.dk/public_html/api/projects.php:2
+Stack trace:
+#0 {main}
+  thrown in /home/dzppntag/foreningenfrontdoor.dk/public_html/api/projects.php on line 2
+[17-Aug-2026 21:33:26 Europe/Bucharest] PHP Warning:  require_once(/home/dzppntag/foreningenfrontdoor.dk/public_html/api/auth.php): Failed to open stream: No such file or directory in /home/dzppntag/foreningenfrontdoor.dk/public_html/api/projects.php on line 2
+[17-Aug-2026 21:33:26 Europe/Bucharest] PHP Fatal error:  Uncaught Error: Failed opening required '/home/dzppntag/foreningenfrontdoor.dk/public_html/api/auth.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/dzppntag/foreningenfrontdoor.dk/public_html/api/projects.php:2
+Stack trace:
+#0 {main}
+  thrown in /home/dzppntag/foreningenfrontdoor.dk/public_html/api/projects.php on line 2
+[17-Aug-2026 21:54:35 Europe/Bucharest] PHP Warning:  require_once(/home/dzppntag/foreningenfrontdoor.dk/public_html/api/auth.php): Failed to open stream: No such file or directory in /home/dzppntag/foreningenfrontdoor.dk/public_html/api/projects.php on line 2
+[17-Aug-2026 21:54:35 Europe/Bucharest] PHP Fatal error:  Uncaught Error: Failed opening required '/home/dzppntag/foreningenfrontdoor.dk/public_html/api/auth.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/dzppntag/foreningenfrontdoor.dk/public_html/api/projects.php:2
+Stack trace:
+#0 {main}
+  thrown in /home/dzppntag/foreningenfrontdoor.dk/public_html/api/projects.php on line 2
+[17-Aug-2026 22:58:31 Europe/Bucharest] PHP Warning:  require_once(/home/dzppntag/foreningenfrontdoor.dk/public_html/api/auth.php): Failed to open stream: No such file or directory in /home/dzppntag/foreningenfrontdoor.dk/public_html/api/projects.php on line 2
+[17-Aug-2026 22:58:31 Europe/Bucharest] PHP Fatal error:  Uncaught Error: Failed opening required '/home/dzppntag/foreningenfrontdoor.dk/public_html/api/auth.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/dzppntag/foreningenfrontdoor.dk/public_html/api/projects.php:2
+Stack trace:
+#0 {main}
+  thrown in /home/dzppntag/foreningenfrontdoor.dk/public_html/api/projects.php on line 2
+[17-Aug-2026 22:58:37 Europe/Bucharest] PHP Warning:  require_once(/home/dzppntag/foreningenfrontdoor.dk/public_html/api/auth.php): Failed to open stream: No such file or directory in /home/dzppntag/foreningenfrontdoor.dk/public_html/api/projects.php on line 2
+[17-Aug-2026 22:58:37 Europe/Bucharest] PHP Fatal error:  Uncaught Error: Failed opening required '/home/dzppntag/foreningenfrontdoor.dk/public_html/api/auth.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/dzppntag/foreningenfrontdoor.dk/public_html/api/projects.php:2
+Stack trace:
+#0 {main}
+  thrown in /home/dzppntag/foreningenfrontdoor.dk/public_html/api/projects.php on line 2
+[17-Aug-2026 22:59:12 Europe/Bucharest] PHP Warning:  require_once(/home/dzppntag/foreningenfrontdoor.dk/public_html/api/auth.php): Failed to open stream: No such file or directory in /home/dzppntag/foreningenfrontdoor.dk/public_html/api/projects.php on line 2
+[17-Aug-2026 22:59:12 Europe/Bucharest] PHP Fatal error:  Uncaught Error: Failed opening required '/home/dzppntag/foreningenfrontdoor.dk/public_html/api/auth.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/dzppntag/foreningenfrontdoor.dk/public_html/api/projects.php:2
+Stack trace:
+#0 {main}
+  thrown in /home/dzppntag/foreningenfrontdoor.dk/public_html/api/projects.php on line 2
+[17-Aug-2026 22:59:23 Europe/Bucharest] PHP Warning:  require_once(/home/dzppntag/foreningenfrontdoor.dk/public_html/api/auth.php): Failed to open stream: No such file or directory in /home/dzppntag/foreningenfrontdoor.dk/public_html/api/projects.php on line 2
+[17-Aug-2026 22:59:23 Europe/Bucharest] PHP Fatal error:  Uncaught Error: Failed opening required '/home/dzppntag/foreningenfrontdoor.dk/public_html/api/auth.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/dzppntag/foreningenfrontdoor.dk/public_html/api/projects.php:2
+Stack trace:
+#0 {main}
+  thrown in /home/dzppntag/foreningenfrontdoor.dk/public_html/api/projects.php on line 2
+[17-Aug-2026 23:01:00 Europe/Bucharest] PHP Warning:  require_once(/home/dzppntag/foreningenfrontdoor.dk/public_html/api/auth.php): Failed to open stream: No such file or directory in /home/dzppntag/foreningenfrontdoor.dk/public_html/api/projects.php on line 2
+[17-Aug-2026 23:01:00 Europe/Bucharest] PHP Fatal error:  Uncaught Error: Failed opening required '/home/dzppntag/foreningenfrontdoor.dk/public_html/api/auth.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/dzppntag/foreningenfrontdoor.dk/public_html/api/projects.php:2
+Stack trace:
+#0 {main}
+  thrown in /home/dzppntag/foreningenfrontdoor.dk/public_html/api/projects.php on line 2
